@@ -321,7 +321,6 @@ require([
           templateOptions: {
             scaleEnabled: false,
           },
-          advancedOptions: false,
           allowedLayouts: [
             "letter-ansi-a-landscape",
             "letter-ansi-a-portrait",
