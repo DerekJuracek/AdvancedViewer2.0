@@ -7,7 +7,7 @@
   "cssViewBackground": "#9dbac7",
   "cssLayerFilterColor": "#9dbac7",
   "cssLayerFilterTextColor": "#474747",
-  "basemapTitle": "Washington Basemap",
+  "basemapTitle": "Ortho 2019",
   "parcelRenderer": "#91C73D",
   "condos": "yes",
   "imageUrl": "https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Washington_CT/",
