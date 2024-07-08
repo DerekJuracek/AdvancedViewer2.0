@@ -105,7 +105,9 @@ require([
       $(".help-url").attr("href", configVars.helpUrl);
       // configVars.homeExtent = config.homeExtent;
       document.getElementById("title").innerHTML = configVars.title;
+      document.getElementById("print-title").innerHTML = configVars.title;
       document.getElementById("imageContainer").src = configVars.welcomeImage;
+      document.getElementById("print-image").src = configVars.welcomeImage;
       document.getElementById("tab-title").innerHTML = configVars.tabTitle;
 
       function formatDate(timestamp) {
@@ -365,16 +367,6 @@ require([
           }
         });
 
-        let scaleBar = new ScaleBar({
-          view: view,
-          style: "ruler",
-          unit: "imperial",
-        });
-
-        view.ui.add(scaleBar, {
-          position: "bottom-right",
-        });
-
         if (sessionStorage.getItem("condos") === "yes") {
           originalRenderer = CondosLayer.renderer;
         } else {
@@ -468,7 +460,7 @@ require([
       });
 
       webmap.add(sketchGL);
-
+      let scaleBar;
       let runQuerySearchTerm;
       let clickedToggle;
       let detailSelected = [];
@@ -512,6 +504,17 @@ require([
       let zoomToItemId;
       let zoomToObjectID;
       let overRide;
+
+      scaleBar = new ScaleBar({
+        view: view,
+        style: "ruler",
+        unit: "imperial",
+        container: document.createElement("div"),
+      });
+
+      view.ui.add(scaleBar, {
+        position: "bottom-right",
+      });
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -1258,6 +1261,114 @@ require([
       }
 
       generateFilters();
+
+      document
+        .getElementById("Print-selector")
+        .addEventListener("click", function () {
+          captureMap();
+        });
+
+      function captureMap() {
+        // return reactiveUtils.create(function (resolve, reject) {
+        view.takeScreenshot().then(function (screenshot) {
+          const title = "Map Title"; // Set your dynamic title here
+          const printWindow = window.open("", "_blank");
+          const scaleBarHTML = scaleBar.container.outerHTML;
+          const currentDate = new Date().toLocaleString();
+          // const currentScale = document.getElementById()
+
+          printWindow.document.write(`
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Print Map</title>
+                  <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+                  <style>
+                      body {
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                          margin: 0;
+                          padding: 0;
+                      }
+                     .print-title {
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      text-align: center;
+                      font-size: 24px;
+                      margin: 20px 0;
+                  }
+
+                  .print-scale {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    text-align: center;
+                    font-size: 24px;
+                    margin: 20px 0;
+                    width: 100%;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                  }
+                  .print-title img {
+                      margin-right: 20px; /* Adjust spacing between image and title */
+                  }
+                        /* Increase the size of the scale bar */
+                                .scale-bar-container {
+                                    transform: scale(1.5);
+                                    margin-right: 50px;
+                                     /* Adjust the scaling factor as needed */
+                                }
+
+                      .print-scale-bar {
+                      width: 300px;
+                      height: 30px;
+                      }
+                      @media print {
+                          body * {
+                              visibility: visible;
+                          }
+                      }
+                  </style>
+              </head>
+              <body>
+
+   
+                  <div class="print-title" id="print-title">
+                  <img id="town-logo"  src="${configVars.welcomeImage}" alt="Town Logo"></img>
+                  <h1 id="title-text">${configVars.title}</h1>
+              
+                  </div>
+                  <div class="print-map">
+                      <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: 1200px; height: 900;">
+                  </div>
+                  <div class="print-scale">
+                  <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
+                  <div id="to-scale" class="scale-bar-container"></div>
+                  <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
+                  </div>
+                  <div style="text-align: center;">
+                   <p>MAP DISCLAIMER - NOTICE OF LIABILITY
+                    This map is for assessment purposes only. It is not for legal description or conveyances. All information is subject to verification by any user. The Town of Burlington and its mapping contractors assume no legal responsibility for the information contained herein.
+                    </p>
+                  </div>
+
+ 
+                  <script>
+                      window.onload = function() {
+                          window.print();
+                      };
+                  </script>
+              </body>
+              </html>
+          `);
+          printWindow.document.close();
+        });
+      }
 
       function clearContents(e, string) {
         const currentUrl = window.location.href;
@@ -2129,7 +2240,7 @@ require([
               graphicsLayer.addMany(polygonGraphics2);
             }
 
-            view.goTo(polygonGraphics);
+            view.goTo(polygonGraphics2);
           }
         }
 
@@ -2817,6 +2928,7 @@ require([
             $(".center-container").show();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
+            view.goTo(polygonGraphics);
           } else {
             $("#total-results").hide();
             $("#ResultDiv").hide();
@@ -4033,6 +4145,8 @@ require([
           matchedObject.Total_Acres === undefined
             ? ""
             : matchedObject.Total_Acres;
+
+        let AcreCheck = Number(Total_Acres);
         let Parcel_Primary_Use =
           matchedObject.Parcel_Primary_Use === undefined
             ? ""
@@ -4118,19 +4232,19 @@ require([
           zoomToItemId = locationGIS_LINK;
           Id = locationGIS_LINK;
         }
+        console.log(Parcel_Type);
 
-        if (
-          !locationGeom ||
-          locationGeom == "" ||
-          locationGeom == undefined ||
-          locationGeom === null
-        ) {
-          $("#abutters-attributes").prop("disabled", true);
-          $("#abutters-zoom").prop("disabled", true);
-        } else {
-          $("#abutters-attributes").prop("disabled", false);
-          $("#abutters-zoom").prop("disabled", false);
-        }
+        // if (
+        //   !locationGeom ||
+        //   locationGeom == "" ||
+        //   (locationGeom == undefined && Total_Acres === 0)
+        // ) {
+        //   $("#abutters-attributes").prop("disabled", true);
+        //   $("#abutters-zoom").prop("disabled", true);
+        // } else {
+        //   $("#abutters-attributes").prop("disabled", false);
+        //   $("#abutters-zoom").prop("disabled", false);
+        // }
 
         // zoomToItemId = locationUniqueId;
         zoomToObjectID = objectID2;
@@ -4408,6 +4522,7 @@ require([
               let geometry = feature.features[0].geometry;
 
               targetExtent = geometry;
+              detailsGeometry = geometry;
 
               view.goTo({
                 target: geometry,
@@ -4424,7 +4539,7 @@ require([
               };
 
               const polygonGraphic = new Graphic({
-                geometry: targetExtent,
+                geometry: detailsGeometry,
                 symbol: fillSymbol,
                 id: bufferGraphicId,
               });
@@ -4479,7 +4594,7 @@ require([
                 let feature = response;
                 let geometry = feature.features[0].geometry;
 
-                targetExtent = geometry;
+                detailsGeometry = geometry;
 
                 view.goTo({
                   target: geometry,
@@ -4496,7 +4611,7 @@ require([
                 };
 
                 const polygonGraphic = new Graphic({
-                  geometry: targetExtent,
+                  geometry: detailsGeometry,
                   symbol: fillSymbol,
                   id: bufferGraphicId,
                 });
@@ -5881,17 +5996,17 @@ require([
           $("#group-container-right").show();
         });
 
-        $("#Print-selector").on("click", function () {
-          $("#rightPanel").hide();
-          $("#BookmarksDiv").hide();
-          $("#AddDataDiv").hide();
-          $("#ContactDiv").hide();
-          $("#BasemapDiv").hide();
-          $("#Right-Btn-div").show();
-          $("#PrintDiv").show();
-          $("#LegendDiv").hide();
-          $("#group-container-right").show();
-        });
+        // $("#Print-selector").on("click", function () {
+        //   $("#rightPanel").hide();
+        //   $("#BookmarksDiv").hide();
+        //   $("#AddDataDiv").hide();
+        //   $("#ContactDiv").hide();
+        //   $("#BasemapDiv").hide();
+        //   $("#Right-Btn-div").show();
+        //   $("#PrintDiv").show();
+        //   $("#LegendDiv").hide();
+        //   $("#group-container-right").show();
+        // });
 
         $("#Contact-selector").on("click", function () {
           $("#rightPanel").hide();
@@ -5926,19 +6041,19 @@ require([
           $("#group-container-right").show();
         });
 
-        $("#Print-selector").on("click", function () {
-          $("#rightPanel").hide();
-          $("#BookmarksDiv").hide();
-          $("#BasemapDiv").hide();
-          $("#Right-Btn-div").hide();
-          $("#PrintDiv").hide();
-          $("#ContactDiv").hide();
-          $("#Right-Btn-div").show();
-          $("#AddDataDiv").hide();
-          $("#PrintDiv").show();
-          $("#LegendDiv").hide();
-          $("#group-container-right").show();
-        });
+        // $("#Print-selector").on("click", function () {
+        //   $("#rightPanel").hide();
+        //   $("#BookmarksDiv").hide();
+        //   $("#BasemapDiv").hide();
+        //   $("#Right-Btn-div").hide();
+        //   $("#PrintDiv").hide();
+        //   $("#ContactDiv").hide();
+        //   $("#Right-Btn-div").show();
+        //   $("#AddDataDiv").hide();
+        //   $("#PrintDiv").show();
+        //   $("#LegendDiv").hide();
+        //   $("#group-container-right").show();
+        // });
 
         $("#Legend-selector").on("click", function () {
           $("#rightPanel").hide();
