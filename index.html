@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="tab-title">Advanced CAMA</title>
-      <!-- Google Tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TBH7CK70V1"></script>
-   <!-- Google tag (gtag.js) --> 
-  <script async src='https://www.googletagmanager.com/gtag/js?id=G-BVSDZNZVFS'></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BVSDZNZVFS'); </script>
+<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVSDZNZVFS"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BVSDZNZVFS'); </script>
 
     <!-- Bootstrap CSS CDN -->
     <link
@@ -812,7 +809,7 @@
                     ><strong>Report an Issue</strong></a
                   >
                   &nbsp; &nbsp;
-                  <a href="mailto:mgonzalez@qds.biz" target="_blank"><strong>Contact</strong></a>
+                  <!-- <a href="mailto:mgonzalez@qds.biz" target="_blank"><strong>Contact</strong></a> -->
               </div>
             </div>
           </div>
@@ -993,6 +990,31 @@
 
         <div class="btn-group-vertical">
           <button
+          type="button"
+          id="layerListBtn"
+          class="btn bg-light bar-Buttons"
+          data-toggle="popover"
+          data-placement="right"
+          data-html="true"
+          data-content="Use layer list to toggle layers visibility."
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-stack"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"
+            />
+            <path
+              d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z"
+            />
+          </svg>
+        </button>
+          <button
             type="button"
             id="filterButton"
             class="btn bg-light bar-Buttons"
@@ -1014,31 +1036,7 @@
               />
             </svg>
           </button>
-          <button
-            type="button"
-            id="layerListBtn"
-            class="btn bg-light bar-Buttons"
-            data-toggle="popover"
-            data-placement="right"
-            data-html="true"
-            data-content="Use layer list to toggle layers visibility."
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-stack"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"
-              />
-              <path
-                d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z"
-              />
-            </svg>
-          </button>
+      
           <div class="dropdown">
             <button class="btn bg-light" id="exportButtons" type="button" data-toggle="dropdown" aria-expanded="false" style="display: none; border-radius: 0px 0px 5px 5px; width: 43px">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
@@ -1176,7 +1174,7 @@
             </p> -->
           </div>
               </div>
-          <div
+          <!-- <div
             id="ContactDiv"
             style="
               display: none;
@@ -1191,7 +1189,7 @@
               <span>Marwin Gonzalez GIS Division</span>
               <span>Email: mgonzalez@qds.biz</span>
             </div>
-          </div>
+          </div> -->
         </div>
         <div id="rightPanel">
           <ul style="padding-top: 20px" class="list-right">
@@ -1208,7 +1206,7 @@
               id="Basemap-selector"
               class="list-group-item list-group-item-info options-bar-li"
             >
-              Basemaps
+            Basemaps / Aerials-Ortho
             </li>
             <li
               id="Bookmarks-selector"
@@ -1236,12 +1234,12 @@
                 >Report an Issue</a
               >
             </li>
-            <li
+            <!-- <li
               id="Contact-selector"
               class="list-group-item list-group-item-info options-bar-li"
             >
               Contact Information
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>

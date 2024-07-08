@@ -20,6 +20,7 @@
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=columbia",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Columbia/Tax_Maps/2020_ColumbiaUpdates_Map",
   "useUniqueIdforParcelMap": "yes",
+  "includeFilter": "yes",
   "parcelMapUrl": "CT_Columbia",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
   "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Columbia_Housing_2022.pdf",

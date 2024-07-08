@@ -100,6 +100,7 @@ require([
       configVars.parcelRenderer = config.parcelRenderer;
       configVars.useUniqueIdforParcelMap = config.useUniqueIdforParcelMap;
       configVars.helpUrl = config.helpUrl;
+      configVars.includeFilter = config.includeFilter;
       document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
       // configVars.homeExtent = config.homeExtent;
@@ -146,6 +147,12 @@ require([
       view.when(() => {
         configVars.homeExtent = view.extent;
       });
+
+      if (configVars.includeFilter === "no") {
+        $("#filterButton").remove();
+      } else {
+      }
+
       // console.log("extent is", extent);
 
       view.when(() => {
@@ -335,53 +342,9 @@ require([
       });
 
       view.when(() => {
-        // Filter out layers belonging to the "hidden group" and layers with a specific title "Do Not Show"
-        const visibleLayers = webmap.layers.items.filter((layer) => {
-          return !(
-            (layer.type === "group" &&
-              layer.title &&
-              layer.title.toLowerCase() === "hidden group") ||
-            (layer.title && layer.title === `${configVars.parcelTitle}`)
-          );
-        });
-
-        // Create legend with filtered layers
-        const legend = new Legend({
-          view: view,
-          container: $("#LegendDiv")[0],
-          layerInfos: visibleLayers.map((layer) => {
-            return { layer: layer };
-          }),
-        });
-      });
-
-      // view.when(() => {
-      //   // Filter out layers belonging to the "hidden group"
-      //   const visibleLayers = webmap.layers.items.filter((layer) => {
-      //     return !(
-      //       layer.type === "group" &&
-      //       layer.title &&
-      //       layer.title.toLowerCase() === "hidden group"
-      //     );
-      //   });
-
-      //   // Create legend with filtered layers
-      //   const legend = new Legend({
-      //     view: view,
-      //     container: $("#LegendDiv")[0],
-      //     layerInfos: visibleLayers.map((layer) => {
-      //       return {
-      //         layer: layer,
-      //       };
-      //     }),
-      //   });
-      // });
-
-      view.when(() => {
         const basemaps = new BasemapLayerList({
           view: view,
           container: $("#BasemapDiv")[0],
-          // allows bookmarks to be added, edited, or deleted
           dragEnabled: true,
         });
 
@@ -407,7 +370,7 @@ require([
           style: "ruler",
           unit: "imperial",
         });
-        // Add widget to the bottom left corner of the view
+
         view.ui.add(scaleBar, {
           position: "bottom-right",
         });
@@ -418,41 +381,37 @@ require([
           originalRenderer = noCondosLayer.renderer;
         }
 
-        // console.log(view.map.basemap.baseLayers);
+        // Initialize visibility tracking
+        const layerVisibility = {};
+        view.map.basemap.baseLayers.forEach((layer) => {
+          layerVisibility[layer.id] = layer.visible;
+        });
 
         reactiveUtils.watch(
-          () => [view.map.basemap.baseLayers.map((layer) => layer.visible)],
+          () => view.map.basemap.baseLayers.map((layer) => layer.visible),
           () => {
-            const orthoLayersVisible = isAnyOrthoLayerVisible(
-              view.map.basemap.baseLayers
+            console.log(
+              "Visibility changed:",
+              view.map.basemap.baseLayers.map((layer) => ({
+                title: layer.title,
+                visible: layer.visible,
+              }))
             );
-            manageBasemapVisibility(view.map.basemap.baseLayers);
+            manageBasemapVisibility(
+              view.map.basemap.baseLayers,
+              layerVisibility
+            );
           }
         );
 
-        function isAnyOrthoLayerVisible(baseLayers) {
-          return baseLayers.some((layer) => {
-            return layer.visible;
-          });
-        }
-        function manageBasemapVisibility(baseLayers) {
-          // const orthoLayerTitles = ["Ortho 2012", "Ortho 2016", "Ortho 2019"];
-
-          // Filter out the layers that we're interested in
-          // let basemapLayers = baseLayers.filter((layer) =>
-          //   orthoLayerTitles.includes(layer.title)
-          // );
-
-          let basemapLayers = view.map.basemap.baseLayers;
-
-          // Find the newly visible layer
-          let newlyVisibleLayer = basemapLayers.find(
-            (layer) => layer.visible && !layer.wasVisible
+        function manageBasemapVisibility(baseLayers, visibilityTracker) {
+          let newlyVisibleLayer = baseLayers.find(
+            (layer) => layer.visible && !visibilityTracker[layer.id]
           );
 
-          // If a newly visible layer is found, turn off all other layers
           if (newlyVisibleLayer) {
-            basemapLayers.forEach((layer) => {
+            console.log(`Newly visible layer: ${newlyVisibleLayer.title}`);
+            baseLayers.forEach((layer) => {
               if (layer !== newlyVisibleLayer) {
                 layer.visible = false;
               }
@@ -493,10 +452,18 @@ require([
             }
           }
 
-          // Update wasVisible property
-          basemapLayers.forEach((layer) => {
-            layer.wasVisible = layer.visible;
+          // Update visibility tracker
+          baseLayers.forEach((layer) => {
+            visibilityTracker[layer.id] = layer.visible;
           });
+
+          console.log(
+            "Updated visibility tracker:",
+            baseLayers.map((layer) => ({
+              title: layer.title,
+              wasVisible: visibilityTracker[layer.id],
+            }))
+          );
         }
       });
 

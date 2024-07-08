@@ -19,6 +19,7 @@
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=washington",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Washington/Tax_Maps/TaxMap_",
   "useUniqueIdforParcelMap": "yes",
+  "includeFilter": "yes",
   "parcelMapUrl": "CT_Washington",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
   "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Washington_Housing_2022.pdf",
