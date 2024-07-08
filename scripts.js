@@ -1293,6 +1293,8 @@ require([
           overRideSelect(false);
         }
 
+        $("#scale-value").val("").html("Select Scale");
+
         // clickHandle = view.on("click", handleClick);
         //$("#lasso").removeClass("btn-warning");
         $("#select-button").removeClass("btn-warning");
@@ -2076,7 +2078,7 @@ require([
             }
 
             // will zoom to extent of adding and deselecting
-            // view.goTo(polygonGraphics);
+            view.goTo(polygonGraphics);
           } else {
             graphicsLayer.addMany(polygonGraphics2);
           }
@@ -5975,9 +5977,12 @@ require([
       document.querySelectorAll(".scale-select").forEach(function (button) {
         button.addEventListener("click", function (event) {
           var selectedScale = event.target.value;
+          var selectedText = event.target.innerHTML;
           if (selectedScale) {
             view.scale = selectedScale;
           }
+
+          $("#scale-value").val(selectedScale).html(selectedText);
         });
       });
       view.ui.add(scaleDropdown, {
