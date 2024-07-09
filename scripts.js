@@ -1891,11 +1891,12 @@ require([
         $("#WelcomeBox").hide();
         // $("#results-div").css("height", "200px");
 
-        if (uniqueArray.length <= 1) {
-          $("#exportSearch").hide();
-        } else {
-          $("#exportSearch").show();
-        }
+        // if (uniqueArray.length <= 1) {
+        //   $("#exportSearch").hide();
+        $("#csvExportResults").hide();
+        // } else {
+        $("#exportSearch").show();
+        // }
         $("#results-div").css("height", "300px");
         $("#exportButtons").show();
         $("#exportResults").hide();
