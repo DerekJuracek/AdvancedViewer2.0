@@ -679,18 +679,30 @@ ul {
   position: absolute;
   display: flex; /* Make this a flex container */
   flex-direction: column; /* This will align the items vertically */
-  justify-content: space-between;
+  /* justify-content: space-between; */
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   margin-top: 10px;
   top: 30%;
   left: 250px; /* the width of #sidebar */
-  height: 200px;
+  height: 250px;
   width: 55px;
   background-color: rgba(30, 30, 30, 0.9) !important;
   transition: left 0.5s;
   padding: 6px; /* Change this to the color you want */
 }
+
+.vertical-text {
+  display: inline-block;
+  writing-mode: vertical-rl; /* Makes the text vertical */
+  text-orientation: mixed; /* Keeps the text horizontal while in vertical mode */
+  transform: rotate(180deg); /* Rotates the text to read from top to bottom */
+  white-space: nowrap; /* Prevents text from wrapping */
+  padding: 10px;
+  border-radius: 0px 0px 0px 0px;
+  padding-bottom: 5px; /* Adjust padding as needed */
+}
+
 
 #left-div {
   position: absolute;

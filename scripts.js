@@ -158,13 +158,18 @@ require([
       // console.log("extent is", extent);
 
       view.when(() => {
-        $("#starterModal").modal("show");
+        if (sessionStorage.getItem("agreedToDisclaimer") == "yes") {
+          $("#starterModal").modal("hide");
+        } else {
+          $("#starterModal").modal("show");
+        }
 
         $(document).ready(function () {
           $("#agreeBtn").prop("disabled", true);
           $("#agreeCheck").change(function () {
             if ($(this).is(":checked")) {
               $("#agreeBtn").prop("disabled", false);
+              sessionStorage.setItem("agreedToDisclaimer", "yes");
               // Perform actions when checkbox is checked
             } else {
               $("#agreeBtn").prop("disabled", true);
@@ -1713,7 +1718,7 @@ require([
           $("#exportResults").hide();
           $("#csvExportResults").hide();
           $("#csvExportSearch").hide();
-          $("#results-div").css("height", "150px");
+          $("#results-div").css("height", "300px");
           $("#backButton-div").css("padding-top", "0px");
           $(".center-container").hide();
 
@@ -1886,12 +1891,12 @@ require([
         $("#WelcomeBox").hide();
         // $("#results-div").css("height", "200px");
 
-        if (uniqueArray.length < 1) {
+        if (uniqueArray.length <= 1) {
           $("#exportSearch").hide();
         } else {
           $("#exportSearch").show();
         }
-        $("#results-div").css("height", "200px");
+        $("#results-div").css("height", "300px");
         $("#exportButtons").show();
         $("#exportResults").hide();
         $("#csvExportSearch").show();
@@ -1945,7 +1950,7 @@ require([
           $("#exportResults").hide();
           $("#csvExportResults").hide();
           $("#csvExportSearch").hide();
-          $("#results-div").css("height", "150px");
+          $("#results-div").css("height", "300px");
           $("#backButton-div").css("padding-top", "0px");
           $(".center-container").hide();
           $("#abutters-attributes").prop("disabled", false);
@@ -2758,7 +2763,7 @@ require([
         $("#selected-feature").empty();
         $("#exportSearch").hide();
         $("#exportButtons").hide();
-        $("#results-div").css("height", "150px");
+        $("#results-div").css("height", "300px");
         $("#backButton-div").css("padding-top", "0px");
         $("#abutters-attributes").prop("disabled", false);
         $("#abutters-zoom").prop("disabled", false);
@@ -2799,7 +2804,7 @@ require([
               $("#selected-feature").empty();
               $("#exportSearch").hide();
               $("#exportButtons").hide();
-              $("#results-div").css("height", "150px");
+              $("#results-div").css("height", "300px");
               $("#backButton-div").css("padding-top", "0px");
               return;
             }
@@ -2840,7 +2845,7 @@ require([
               $("#selected-feature").empty();
               $("#exportSearch").hide();
               $("#exportButtons").hide();
-              $("#results-div").css("height", "150px");
+              $("#results-div").css("height", "300px");
               $("#backButton-div").css("padding-top", "0px");
 
               // alert("Error: please select parcel within town boundary");
@@ -2924,7 +2929,7 @@ require([
             $("#csvExportSearch").show();
             $("#exportButtons").show();
             $("#exportSearch").show();
-            $("#results-div").css("height", "200px");
+            $("#results-div").css("height", "300px");
             $(".center-container").show();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
@@ -3021,7 +3026,7 @@ require([
           $("#exportButtons").hide();
           $("#abutters-title").html(`Abutting Parcels (0)`);
           $("#backButton-div").css("padding-top", "0px");
-          $("#results-div").css("height", "150px");
+          $("#results-div").css("height", "300px");
           if (DetailsHandle) {
             DetailsHandle?.remove();
             DetailsHandle = null;
@@ -3048,7 +3053,7 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          $("#results-div").css("height", "200px");
+          $("#results-div").css("height", "300px");
           $("#exportButtons").show();
           $("#exportResults").show();
           $("#exportSearch").hide();
@@ -3087,7 +3092,7 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          $("#results-div").css("height", "200px");
+          $("#results-div").css("height", "300px");
           $("#exportButtons").show();
           $("#exportResults").show();
           $("#exportButtons").show();
@@ -3142,7 +3147,7 @@ require([
           $("#results-div").css("left", "350px");
           $("#left-arrow-2").show();
           $("#right-arrow-2").hide();
-          $("#results-div").css("height", "200px");
+          $("#results-div").css("height", "300px");
           $("#parcel-feature").empty();
           $("#backButton").show();
           $("#backButton-div").css("padding-top", "0px");
@@ -3179,7 +3184,7 @@ require([
           $("#results-div").css("left", "350px");
           $("#left-arrow-2").show();
           $("#right-arrow-2").hide();
-          $("#results-div").css("height", "200px");
+          $("#results-div").css("height", "300px");
           $("#layerListDiv").show();
           // $("#detailsButton").show();
           $("#parcel-feature").empty();
@@ -3608,7 +3613,7 @@ require([
           $("#abutters-spinner").hide();
           $("#abutters-title").html(`Abutting Parcels (${totalResults})`);
         });
-        $("#results-div").css("height", "200px");
+        $("#results-div").css("height", "300px");
         $("#exportResults").show();
         $("#csvExportResults").show();
       }
@@ -3766,7 +3771,7 @@ require([
             });
           });
         }
-        $("#results-div").css("height", "200px");
+        $("#results-div").css("height", "300px");
         $("#exportResults").show();
         $("#csvExportResults").show();
       }
@@ -4929,7 +4934,7 @@ require([
         $("#csvExportResults").hide();
         $("#csvExportSearch").hide();
         $(".center-container").hide();
-        $("#results-div").css("height", "150px");
+        $("#results-div").css("height", "300px");
         $("#backButton-div").css("padding-top", "0px");
         document.getElementById("total-results").style.display = "none";
         buildDetailsPanel(objectID, itemId);
@@ -5525,18 +5530,36 @@ require([
           maxVal = value[1];
 
           queryParameters.appraisedValueMin = minVal;
-          $("#app-val-min").val(minVal);
+          $("#app-val-min").val(minVal.toLocaleString());
+          // $("#app-val-min").val(minVal);
           queryParameters.appraisedValueMax = maxVal;
-          $("#app-val-max").val(maxVal);
+          // $("#app-val-max").val(maxVal);
+          $("#app-val-max").val(maxVal.toLocaleString());
           // console.log(`appraised value is: ${value}`);
         });
-
         $("#app-val-min, #app-val-max").on("input", function () {
-          var minVal = parseInt($("#app-val-min").val());
-          var maxVal = parseInt($("#app-val-max").val());
+          // Get the input values as strings
+          var minValStr = $("#app-val-min").val();
+          var maxValStr = $("#app-val-max").val();
 
-          const slider1 = document.querySelector("#app-val-slider");
-          slider1.value = [minVal, maxVal];
+          // Remove any commas before parsing
+          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
+          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+
+          // Check if the parsed values are valid numbers
+          if (!isNaN(minVal) && !isNaN(maxVal)) {
+            // Format the parsed values with commas for display
+            var formattedMinVal = minVal.toLocaleString();
+            var formattedMaxVal = maxVal.toLocaleString();
+
+            // Update the input fields with the formatted values
+            $("#app-val-min").val(formattedMinVal);
+            $("#app-val-max").val(formattedMaxVal);
+
+            // Update the slider values with the parsed integers
+            const slider1 = document.querySelector("#app-val-slider");
+            slider1.value = [minVal, maxVal];
+          }
         });
 
         $("#assess-val-slider").on("calciteSliderChange", function (e) {
@@ -5545,17 +5568,32 @@ require([
           maxVal = value[1];
 
           queryParameters.assessedValueMin = minVal;
-          $("#assess-val-min").val(minVal);
+          $("#assess-val-min").val(minVal.toLocaleString());
           queryParameters.assessedValueMax = maxVal;
-          $("#assess-val-max").val(maxVal);
+          $("#assess-val-max").val(maxVal.toLocaleString());
         });
 
         $("#assess-val-min, #assess-val-max").on("input", function () {
-          var minVal = parseInt($("#assess-val-min").val());
-          var maxVal = parseInt($("#assess-val-max").val());
+          var minValStr = $("#assess-val-min").val();
+          var maxValStr = $("#assess-val-max").val();
 
-          const slider2 = document.querySelector("#assess-val-slider");
-          slider2.value = [minVal, maxVal];
+          // Remove any commas before parsing
+          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
+          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+
+          // Check if the parsed values are valid numbers
+          if (!isNaN(minVal) && !isNaN(maxVal)) {
+            // Format the parsed values with commas for display
+            var formattedMinVal = minVal.toLocaleString();
+            var formattedMaxVal = maxVal.toLocaleString();
+
+            // Update the input fields with the formatted values
+            $("#assess-val-min").val(formattedMinVal);
+            $("#assess-val-max").val(formattedMaxVal);
+
+            const slider2 = document.querySelector("#assess-val-slider");
+            slider2.value = [minVal, maxVal];
+          }
         });
 
         $("#propertyFilter").on("calciteComboboxChange", function (e) {
@@ -5637,18 +5675,33 @@ require([
           maxVal = value[1];
 
           queryParameters.soldPMin = minVal;
-          $("#saleP-val-min").val(minVal);
+          $("#saleP-val-min").val(minVal.toLocaleString());
 
           queryParameters.soldPMax = maxVal;
-          $("#saleP-val-max").val(maxVal);
+          $("#saleP-val-max").val(maxVal.toLocaleString());
         });
 
         $("#saleP-val-min, #saleP-val-max").on("input", function () {
-          var minVal = parseInt($("#saleP-val-min").val());
-          var maxVal = parseInt($("#saleP-val-max").val());
+          var minValStr = $("#saleP-val-min").val();
+          var maxValStr = $("#saleP-val-max").val();
 
-          const slider5 = document.querySelector("#saleP-val-slider");
-          slider5.value = [minVal, maxVal];
+          // Remove any commas before parsing
+          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
+          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+
+          // Check if the parsed values are valid numbers
+          if (!isNaN(minVal) && !isNaN(maxVal)) {
+            // Format the parsed values with commas for display
+            var formattedMinVal = minVal.toLocaleString();
+            var formattedMaxVal = maxVal.toLocaleString();
+
+            // Update the input fields with the formatted values
+            $("#saleP-val-min").val(formattedMinVal);
+            $("#saleP-val-max").val(formattedMaxVal);
+
+            const slider5 = document.querySelector("#saleP-val-slider");
+            slider5.value = [minVal, maxVal];
+          }
         });
         function changeSliderValues(vals) {
           const sliderVals = [
@@ -5724,12 +5777,21 @@ require([
               // const sliderInputMin = document.getElementById(slider.minInput);
               // const sliderInputMax = document.getElementById(slider.maxInput);
             } else {
+              // gets slider and slider min / max values
               const sliderEl = document.getElementById(slider.slider);
               const sliderInputMin = document.getElementById(slider.minInput);
               const sliderInputMax = document.getElementById(slider.maxInput);
 
               sliderEl.minValue = vals[slider.index][slider.fieldName].min;
               sliderEl.maxValue = vals[slider.index][slider.fieldName].max;
+              console.log(sliderEl.minValue);
+              console.log(sliderEl.maxValue);
+
+              var formattedMinValue = sliderEl.minValue.toLocaleString();
+              var formattedMaxValue = sliderEl.maxValue.toLocaleString();
+
+              console.log(formattedMinValue); // Log the formatted value
+              console.log(formattedMaxValue); // Log the formatted value
 
               sliderEl.min = vals[slider.index][slider.fieldName].min;
               sliderEl.max = vals[slider.index][slider.fieldName].max;
@@ -6082,6 +6144,15 @@ require([
         });
       });
 
+      // Scale mapping
+      var scaleMapping = {
+        600: "1 inch = 50 feet",
+        1200: "1 inch = 100 feet",
+        2400: "1 inch = 200 feet",
+        12000: "1 inch = 1000 feet",
+        24000: "1 inch = 2000 feet",
+        60000: "1 inch = 5000 feet",
+      };
       // Add event listener for scale selection
       // const scaleDropdown2 = document.getElementsByClassName("scale-Select");
 
@@ -6103,6 +6174,40 @@ require([
       view.ui.add(scaleDropdown, {
         position: "bottom-left",
       });
+
+      // Watch for changes in the view's scale and update the dropdown
+      // Watch properties from multiple sources
+      const handle = reactiveUtils.watch(
+        () => [view.stationary, view.scale],
+        ([stationary, zoom]) => {
+          // Only print the new zoom value when the view is stationary
+          if (stationary) {
+            console.log(`Change in zoom level: ${zoom}`);
+          }
+          updateScaleDropdown(zoom);
+        }
+      );
+
+      function updateScaleDropdown(scale) {
+        var roundedScale = Math.round(scale);
+        var scaleText = getScaleText(roundedScale);
+
+        if (scaleText) {
+          $("#scale-value").val(roundedScale).html(scaleText);
+        }
+      }
+
+      function getScaleText(scale) {
+        // Find the closest scale in the mapping
+        var closestScale = Object.keys(scaleMapping).reduce(function (
+          prev,
+          curr
+        ) {
+          return Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev;
+        });
+
+        return scaleMapping[closestScale];
+      }
 
       // view.add(scaleDropdown, "bottom-right");
 
