@@ -4507,7 +4507,7 @@ require([
             view.graphics.addMany([polygonGraphic]);
             view.goTo({
               target: polygonGraphic,
-              zoom: oldZoom,
+              zoom: 17,
             });
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
@@ -4526,7 +4526,7 @@ require([
 
               view.goTo({
                 target: geometry,
-                zoom: oldZoom,
+                zoom: 17,
               });
 
               const fillSymbol = {
@@ -4563,7 +4563,7 @@ require([
 
               view.goTo({
                 target: detailsGeometry,
-                zoom: oldZoom,
+                zoom: 17,
               });
 
               const fillSymbol = {
@@ -4598,7 +4598,7 @@ require([
 
                 view.goTo({
                   target: geometry,
-                  zoom: oldZoom,
+                  zoom: 17,
                 });
 
                 const fillSymbol = {
