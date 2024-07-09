@@ -6149,7 +6149,9 @@ require([
       var scaleMapping = {
         600: "1 inch = 50 feet",
         1200: "1 inch = 100 feet",
+        1800: "1 inch = 150 feet",
         2400: "1 inch = 200 feet",
+        6000: "1 inch = 500 feet",
         12000: "1 inch = 1000 feet",
         24000: "1 inch = 2000 feet",
         60000: "1 inch = 5000 feet",

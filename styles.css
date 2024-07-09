@@ -368,11 +368,13 @@ main {
 .navbar .container {
   display: block;
   padding-right: 0;
+  padding-top: 0;
 }
 
 .navbar.bg-dark {
   background-color: var(--background-color) !important;
   margin-top: 3px; 
+  /* padding-top: 0px; */
 }
 
 .custom-navbar {
@@ -380,11 +382,12 @@ main {
   top: 0;
   left: 3px;
   z-index: 1000;
-  min-width: 380px;
+  width: 450px;
   border-radius: 15px 15px 15px 15px;
   overflow-y: visible;
   padding-right: 0px;
   padding-left: 20px;
+  height: 105px;
   /* This ensures the navbar is always on top */
 }
 

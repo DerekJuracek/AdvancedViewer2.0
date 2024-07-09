@@ -125,7 +125,6 @@
             >
               Close
             </button>
-            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
           </div>
         </div>
       </div>
@@ -147,26 +146,12 @@
     <nav
       class="navbar navbar-dark bg-dark justify-content-between custom-navbar"
     >
-      <!-- <span id="main-img">
-        <img
-          src="https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Washington_CT.png"
-          class="navbar-brand"
-        />
-      </span> -->
       <div class="col-md" id="search-title">
         <!-- <div class="row" style="padding-left: 50px;"> -->
         <div class="col-12">
           <span class="navbar-brand mb-0 h1" id="title"
             >Town of Washington, CT</span
           >
-          <!-- <span style="padding-left: 30px; margin-bottom: 5px;">
-            <button type="button" class="btn" id="popoverButton" data-toggle="popover" data-placement="right"  title="Popover title"data-content="This is a popover example.">
-              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-question-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
-                  </svg>
-            </button>
-         </span> -->
         </div>
         <div class="col-12">
           <form class="form-inline">
@@ -186,7 +171,7 @@
               Search
             </button>
             <!-- <div id="sketch" style="padding-left: 15px; color: white"> -->
-            <span style="padding-left: 5px; padding-right: 5px">
+            <span style="padding-left: 10px; padding-right: 10px">
               <button
                 type="button"
                 id="lasso"
@@ -211,7 +196,9 @@
                 </svg>
               </button>
             </span>
-            <span style="padding-right: 5px">
+       
+            
+            <span style="padding-left: 10px; padding-right: 10px">
               <button
                 type="button"
                 class="btn btn-sm bar-Buttons btn-info"
@@ -237,7 +224,7 @@
                 </svg>
               </button>
             </span>
-            <span style="padding-right: 2px">
+            <span style="padding-left: 10px; padding-right: 0px;">
               <button
                 type="button"
                 id="clear-btn1"
@@ -270,6 +257,17 @@
                 </svg>
               </button>
             </span>
+            <div class="row col-12" style="padding-left: 225px; color: white; font-size: 12px;">
+              <div style="width: 50px; text-align: center; font-size: 14px; font-weight: bolder;">
+              <p>Lasso</p>
+            </div>
+            <div style="width: 67px; text-align: center; font-size: 14px; font-weight: bolder;">
+              <p>Select</p>
+            </div>
+              <div style="width: 51px; text-align: center; font-size: 14px; font-weight: bolder;">
+              <p>Clear</p>
+            </div>
+            </div>
             <!-- </div> -->
             <!-- <div id="sketch-widget">
               <svg
@@ -1112,7 +1110,9 @@
             <div class="dropdown-menu dropdown-menu-sm dropp-2">
               <button value="600" class="dropdown-item btn-sm scale-select" type="button">1 inch = 50 feet</button>
               <button value="1200" class="dropdown-item btn-sm scale-select" type="button">1 inch = 100 feet</button>
+              <button value="1800" class="dropdown-item btn-sm scale-select" type="button">1 inch = 150 feet</button>
               <button value="2400" class="dropdown-item btn-sm scale-select" type="button">1 inch = 200 feet</button>
+              <button value="6000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 500 feet</button>
               <button value="12000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 1000 feet</button>
               <button value="24000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 2000 feet</button>
               <button value="60000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 5000 feet</button>
