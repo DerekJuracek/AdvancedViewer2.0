@@ -5531,11 +5531,11 @@ require([
           maxVal = value[1];
 
           queryParameters.appraisedValueMin = minVal;
-          $("#app-val-min").val(minVal.toLocaleString());
+          $("#app-val-min").val("$" + minVal.toLocaleString());
           // $("#app-val-min").val(minVal);
           queryParameters.appraisedValueMax = maxVal;
           // $("#app-val-max").val(maxVal);
-          $("#app-val-max").val(maxVal.toLocaleString());
+          $("#app-val-max").val("$" + maxVal.toLocaleString());
           // console.log(`appraised value is: ${value}`);
         });
         $("#app-val-min, #app-val-max").on("input", function () {
@@ -5554,8 +5554,8 @@ require([
             var formattedMaxVal = maxVal.toLocaleString();
 
             // Update the input fields with the formatted values
-            $("#app-val-min").val(formattedMinVal);
-            $("#app-val-max").val(formattedMaxVal);
+            $("#app-val-min").val("$" + formattedMinVal);
+            $("#app-val-max").val("$" + formattedMaxVal);
 
             // Update the slider values with the parsed integers
             const slider1 = document.querySelector("#app-val-slider");
@@ -5569,9 +5569,9 @@ require([
           maxVal = value[1];
 
           queryParameters.assessedValueMin = minVal;
-          $("#assess-val-min").val(minVal.toLocaleString());
+          $("#assess-val-min").val("$" + minVal.toLocaleString());
           queryParameters.assessedValueMax = maxVal;
-          $("#assess-val-max").val(maxVal.toLocaleString());
+          $("#assess-val-max").val("$" + maxVal.toLocaleString());
         });
 
         $("#assess-val-min, #assess-val-max").on("input", function () {
@@ -5589,8 +5589,8 @@ require([
             var formattedMaxVal = maxVal.toLocaleString();
 
             // Update the input fields with the formatted values
-            $("#assess-val-min").val(formattedMinVal);
-            $("#assess-val-max").val(formattedMaxVal);
+            $("#assess-val-min").val("$" + formattedMinVal);
+            $("#assess-val-max").val("$" + formattedMaxVal);
 
             const slider2 = document.querySelector("#assess-val-slider");
             slider2.value = [minVal, maxVal];
@@ -5676,10 +5676,10 @@ require([
           maxVal = value[1];
 
           queryParameters.soldPMin = minVal;
-          $("#saleP-val-min").val(minVal.toLocaleString());
+          $("#saleP-val-min").val("$" + minVal.toLocaleString());
 
           queryParameters.soldPMax = maxVal;
-          $("#saleP-val-max").val(maxVal.toLocaleString());
+          $("#saleP-val-max").val("$" + maxVal.toLocaleString());
         });
 
         $("#saleP-val-min, #saleP-val-max").on("input", function () {
@@ -5697,8 +5697,8 @@ require([
             var formattedMaxVal = maxVal.toLocaleString();
 
             // Update the input fields with the formatted values
-            $("#saleP-val-min").val(formattedMinVal);
-            $("#saleP-val-max").val(formattedMaxVal);
+            $("#saleP-val-min").val("$" + formattedMinVal);
+            $("#saleP-val-max").val("$" + formattedMaxVal);
 
             const slider5 = document.querySelector("#saleP-val-slider");
             slider5.value = [minVal, maxVal];
@@ -5785,20 +5785,31 @@ require([
 
               sliderEl.minValue = vals[slider.index][slider.fieldName].min;
               sliderEl.maxValue = vals[slider.index][slider.fieldName].max;
-              console.log(sliderEl.minValue);
-              console.log(sliderEl.maxValue);
 
               var formattedMinValue = sliderEl.minValue.toLocaleString();
               var formattedMaxValue = sliderEl.maxValue.toLocaleString();
 
-              console.log(formattedMinValue); // Log the formatted value
-              console.log(formattedMaxValue); // Log the formatted value
-
               sliderEl.min = vals[slider.index][slider.fieldName].min;
               sliderEl.max = vals[slider.index][slider.fieldName].max;
 
-              sliderInputMin.value = vals[slider.index][slider.fieldName].min;
-              sliderInputMax.value = vals[slider.index][slider.fieldName].max;
+              const minVal = (sliderInputMin.value =
+                vals[slider.index][slider.fieldName].min);
+              const maxVal = (sliderInputMax.value =
+                vals[slider.index][slider.fieldName].max);
+
+              let minStr;
+              let maxStr;
+
+              if (slider.fieldName !== "Total_Acres") {
+                minStr = "$" + minVal.toLocaleString();
+                maxStr = "$" + maxVal.toLocaleString();
+              } else {
+                minStr = minVal.toLocaleString();
+                maxStr = maxVal.toLocaleString();
+              }
+
+              sliderInputMin.value = minStr;
+              sliderInputMax.value = maxStr;
             }
           });
         }
