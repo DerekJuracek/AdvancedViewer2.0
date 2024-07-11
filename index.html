@@ -374,6 +374,7 @@
                 />
               </svg>
             </button>
+          
           </div>
 
           <div
@@ -383,6 +384,7 @@
             aria-label="Toolbar with button groups"
             style="display: none"
           >
+          <div style="padding-right: 10px;">
           <button
           type="button"
           class="btn btn-info mr-3"
@@ -405,6 +407,7 @@
             />
           </svg>
         </button>
+      </div>
             <!-- <button
               type="button"
               class="btn btn-info mr-3"
@@ -424,6 +427,7 @@
                 />
               </svg>
             </button> -->
+            <div style="padding-left: 20px;">
             <button
             type="button"
             class="btn btn-info mr-3 abutters-zoom"
@@ -435,7 +439,19 @@
           >
           <calcite-icon scale="s" icon="magnifying-glass-plus" />
           </button>
-          
+        </div>
+        
+        
+          </div>
+          <div id="abut-mail" style="display: none; color: white; text-align: center; height: 10px; padding-bottom: 15px;">
+            <span style="padding-left: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bolder;">Abutters</span>
+            <span style="padding-left: 25px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bolder;">Zoom To</span>
           </div>
           <div id="group-backButtons">
             <div id="backButton-div">
@@ -760,7 +776,7 @@
             </div>
           </div>
 
-          <div class="container" id="ResultDiv" style="display: none; padding-bottom: 15px; padding-top: 5px; padding-left: 0px; padding-right: 30px; position: absolute; z-index: 1001;">
+          <div class="container" id="ResultDiv" style="display: none; padding-bottom: 15px; padding-top: 5px; padding-left: 0px; padding-right: 30px; position: absolute; z-index: 1001; margin-bottom: 5px;">
             <div class="d-flex justify-content-between">
               <div id="total-results" style="display: none; background-color: rgba(127, 42, 145, 0.8); color:white;"></div>
               <div class="dropdown">
@@ -773,7 +789,9 @@
                 </div>
               </div>
             </div>
+            <div style="color: white; height: 20px; padding-top: 5px; text-align: center;">Click on search results for details.</div>
           </div>
+
         
           <div id="featureWid" class="content" style="display: none;"></div>
           <div
@@ -1040,11 +1058,12 @@
         </button>
       
           <div class="dropdown">
-            <button class="btn bg-light" id="exportButtons" type="button" data-toggle="dropdown" aria-expanded="false" style="display: none; border-radius: 0px 0px 5px 5px; width: 43px; border: solid;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <button class="btn bg-light vertical-text" id="exportButtons" type="button" data-toggle="dropdown" aria-expanded="false" style="display: none; width: 43px; border-radius: 5px 5px 0px 0px; font-weight: bolder; border: solid;">
+              Mailing
+              <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
                 <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"></path>
                 <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
-            </svg>
+            </svg> -->
             </button>
             <div class="dropdown-menu">
               <a class="dropdown-item" id="exportResults" title="Export to Mailing List">Export Results to Mailing List</a>
@@ -1107,15 +1126,20 @@
             <button type="button" id="scale-value" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               Select Scale
             </button>
+
             <div class="dropdown-menu dropdown-menu-sm dropp-2">
+              <button value="240" class="dropdown-item btn-sm scale-select" type="button">1 inch = 20 feet</button>
               <button value="600" class="dropdown-item btn-sm scale-select" type="button">1 inch = 50 feet</button>
               <button value="1200" class="dropdown-item btn-sm scale-select" type="button">1 inch = 100 feet</button>
               <button value="1800" class="dropdown-item btn-sm scale-select" type="button">1 inch = 150 feet</button>
               <button value="2400" class="dropdown-item btn-sm scale-select" type="button">1 inch = 200 feet</button>
               <button value="6000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 500 feet</button>
-              <button value="12000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 1000 feet</button>
-              <button value="24000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 2000 feet</button>
-              <button value="60000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 5000 feet</button>
+              <button value="9600" class="dropdown-item btn-sm scale-select" type="button">1 inch = 800 feet</button>
+              <button value="12000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 1200 feet</button>
+              <button value="18000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 1500 feet</button>
+              <button value="36000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 3000 feet</button>
+              <button value="72000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 6000 feet</button>
+              <button value="144000" class="dropdown-item btn-sm scale-select" type="button">1 inch = 12000 feet</button>
             </div>
           </div>
           <div id="PrintDiv" style="display: none; color: white">

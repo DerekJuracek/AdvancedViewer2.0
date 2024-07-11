@@ -499,51 +499,51 @@ ul {
 
 @media (min-height: 300px) {
   #featureWid {
-    height: 250px;
+    height: 220px;
   }
 }
 
 @media (min-height: 500px) {
   #featureWid {
-    height: 300px;
+    height: 270px;
   }
 }
 
 @media (min-height: 600px) {
   #featureWid {
-    height: 400px;
+    height: 360px;
   }
 }
 
 @media (min-height: 650px) {
   #featureWid {
-    height: 400px;
+    height: 370px;
   }
 }
 
 
 @media (min-height: 700px) {
   #featureWid {
-    height: 425px;
+    height: 395px;
   }
 }
 
 
 @media (min-height: 800px) {
   #featureWid {
-    height: 450px;
+    height: 420px;
   }
 }
 
 @media (min-height: 900px) {
   #featureWid {
-    height: 500px;
+    height: 440px;
   }
 }
 
 @media (min-height: 1000px) {
   #featureWid {
-    height: 550px;
+    height: 520px;
   }
 }
 
@@ -1040,7 +1040,7 @@ calcite-slider::part(tick) {
 #details-btns {
   padding-top: 20px;
   padding-left: 30px;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   align-items: center;
 }
 
@@ -1380,7 +1380,7 @@ calcite-slider::part(tick) {
 }
 
 .content {
-  margin-top: 40px;
+  margin-top: 65px;
   /* height: 400px; */
   overflow-y: auto;
 

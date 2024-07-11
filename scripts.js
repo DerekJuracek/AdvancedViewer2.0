@@ -637,9 +637,11 @@ require([
               }
             }
 
-            if (detailsHandleUsed == "detailClick") {
-              handleUsed = "details";
-            }
+            // if (handleUsed == "details") {
+            //   handleUsed = "details";
+            // } else {
+            //   handleUsed = "click";
+            // }
 
             // handleUsed = "none yet";
 
@@ -698,9 +700,11 @@ require([
               }
             }
 
-            if (detailsHandleUsed == "detailClick") {
-              handleUsed = "details";
-            }
+            // if (handleUsed == "details") {
+            //   handleUsed = "details";
+            // } else {
+            //   handleUsed = "click";
+            // }
 
             // handleUsed = "none yet";
 
@@ -1403,6 +1407,8 @@ require([
           }
         }
 
+        handleUsed = "";
+
         if (select) {
           overRideSelect(true);
         } else {
@@ -1441,6 +1447,7 @@ require([
         $("#areaButton").removeClass("active");
         $("#result-btns").hide();
         $("#details-btns").hide();
+        $("#abut-mail").hide();
         $("#dropdown").toggleClass("expanded");
         $("#dropdown").hide();
         $("#results-div").css("left", "0px");
@@ -1708,6 +1715,7 @@ require([
           $("#ResultDiv").hide();
           $("#abutters-content").hide();
           $("#details-btns").show();
+          $("#abut-mail").show();
           $("#detailBox").show();
           $("#backButton").show();
           $("#detailsButton").hide();
@@ -1877,6 +1885,7 @@ require([
         $("#layerListDiv").hide();
         $("#result-btns").hide();
         $("#details-btns").hide();
+        $("#abut-mail").hide();
         $("#featureWid").show();
         $("#detail-content").empty();
         $("#dropdown").toggleClass("expanded");
@@ -1941,6 +1950,7 @@ require([
           $("#ResultDiv").hide();
           $("#abutters-content").hide();
           $("#details-btns").show();
+          $("#abut-mail").show();
           $("#detailBox").show();
           $("#backButton").show();
           $("#detailsButton").hide();
@@ -2757,6 +2767,7 @@ require([
         $("#ResultDiv").hide();
         $("#abutters-content").hide();
         $("#details-btns").show();
+        $("#abut-mail").show();
         $("#detailBox").show();
         $("#backButton").show();
         $("#detailsButton").hide();
@@ -2794,6 +2805,7 @@ require([
               $("#ResultDiv").hide();
               $("#abutters-content").hide();
               $("#details-btns").show();
+              $("#abut-mail").show();
               $("#detailBox").show();
               $("#backButton").show();
               $("#detailsButton").hide();
@@ -2835,6 +2847,7 @@ require([
               $("#ResultDiv").hide();
               $("#abutters-content").hide();
               $("#details-btns").show();
+              $("#abut-mail").show();
               $("#detailBox").show();
               $("#backButton").show();
               $("#detailsButton").hide();
@@ -2919,6 +2932,7 @@ require([
             $("#total-results").show();
             $("#ResultDiv").show();
             $("#details-btns").hide();
+            $("#abut-mail").hide();
             $("#detail-content").empty();
             $("#backButton").hide();
             $("#detailsButton").hide();
@@ -3013,6 +3027,7 @@ require([
           $("#filterDiv").hide();
           $("#layerListDiv").hide();
           $("#details-btns").show();
+          $("#abut-mail").show();
           $("#detail-content").show();
           $("#detailBox").show();
           $("#backButton").show();
@@ -3067,6 +3082,7 @@ require([
           $("#total-results").hide();
           $("#ResultDiv").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#filterDiv").hide();
           $("#layerListDiv").hide();
           $("#abutters-content").show();
@@ -3107,6 +3123,7 @@ require([
           $("#total-results").hide();
           $("#ResultDiv").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#filterDiv").hide();
           $("#layerListDiv").hide();
           $("#abutters-content").show();
@@ -3133,6 +3150,7 @@ require([
           $("#total-results").hide();
           $("#ResultDiv").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#exportSearch").hide();
           $("#csvExportSearch").hide();
           $("#abutters-content").hide();
@@ -3168,6 +3186,7 @@ require([
           $("#total-results").hide();
           $("#ResultDiv").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#exportSearch").hide();
           $("#csvExportResults").hide();
           $("#csvExportSearch").hide();
@@ -4776,6 +4795,7 @@ require([
         } else {
           $("#dropdown").toggleClass("expanded");
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#result-btns").hide();
           $("#backButton").hide();
           $("#detailsButton").hide();
@@ -4924,6 +4944,7 @@ require([
         $("#result-btns").hide();
         $("#abutters-content").hide();
         $("#details-btns").show();
+        $("#abut-mail").show();
         $("#detailBox").show();
         $("#backButton").show();
         $("#detailsButton").hide();
@@ -5016,6 +5037,7 @@ require([
           $("#dropdown").hide();
           $("#result-btns").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
 
           var searchTerm = e.target.value.toUpperCase();
 
@@ -5051,6 +5073,7 @@ require([
           $("#dropdown").hide();
           $("#result-btns").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#right-arrow-2").show();
           $("#left-arrow-2").hide();
           $("#abutters-content").hide();
@@ -5215,6 +5238,7 @@ require([
         $("#detailBox").hide();
         $("#result-btns").hide();
         $("#details-btns").hide();
+        $("#abut-mail").hide();
         $("#abutters-title").html(`Abutting Parcels (0)`);
         polygonGraphics = [];
         view.graphics.removeAll();
@@ -5899,6 +5923,7 @@ require([
 
           $("#result-btns").hide();
           $("#details-btns").hide();
+          $("#abut-mail").hide();
           $("#dropdown").hide();
           $("#right-arrow-2").show();
           $("#left-arrow-2").hide();
@@ -6158,14 +6183,18 @@ require([
 
       // Scale mapping
       var scaleMapping = {
+        240: "1 inch = 20 feet",
         600: "1 inch = 50 feet",
         1200: "1 inch = 100 feet",
         1800: "1 inch = 150 feet",
         2400: "1 inch = 200 feet",
         6000: "1 inch = 500 feet",
-        12000: "1 inch = 1000 feet",
-        24000: "1 inch = 2000 feet",
-        60000: "1 inch = 5000 feet",
+        9600: "1 inch = 800 feet",
+        12000: "1 inch = 1200 feet",
+        18000: "1 inch = 1500 feet",
+        36000: "1 inch = 3000 feet",
+        72000: "1 inch = 6000 feet",
+        144000: "1 inch = 12000 feet",
       };
       // Add event listener for scale selection
       // const scaleDropdown2 = document.getElementsByClassName("scale-Select");
