@@ -321,6 +321,27 @@ require([
         });
       });
 
+      view.when(() => {
+        // Filter out layers belonging to the "hidden group" and layers with a specific title "Do Not Show"
+        const visibleLayers = webmap.layers.items.filter((layer) => {
+          return !(
+            (layer.type === "group" &&
+              layer.title &&
+              layer.title.toLowerCase() === "hidden group") ||
+            (layer.title && layer.title === `${configVars.parcelTitle}`)
+          );
+        });
+
+        // Create legend with filtered layers
+        const legend = new Legend({
+          view: view,
+          container: $("#LegendDiv")[0],
+          layerInfos: visibleLayers.map((layer) => {
+            return { layer: layer };
+          }),
+        });
+      });
+
       // let basemapDiv = $("#BookmarksDiv");
 
       view.when(() => {
@@ -1367,14 +1388,14 @@ require([
                   </div>
                   <div style="text-align: center;">
                    <p>Disclaimer: This map is intended for reference and general informational purposes
-only and is not a legally recorded map or survey. While reasonable effort has been
-made to ensure the accuracy, correctness, and timeliness of materials presented,
-the map vendor and the municipality disclaim any and all liability and responsibility for
-any errors, omissions, or inaccuracies in the data provided, including without limitation
-any liability for direct, indirect, incidental, consequential, special, exemplary,
-punitive, or any other type of damages. Users are hereby notified that the primary
-information source should be consulted for verification of the data contained herein.
-Continued use of this map acknowledges acceptance of these term
+                  only and is not a legally recorded map or survey. While reasonable effort has been
+                  made to ensure the accuracy, correctness, and timeliness of materials presented,
+                  the map vendor and the municipality disclaim any and all liability and responsibility for
+                  any errors, omissions, or inaccuracies in the data provided, including without limitation
+                  any liability for direct, indirect, incidental, consequential, special, exemplary,
+                  punitive, or any other type of damages. Users are hereby notified that the primary
+                  information source should be consulted for verification of the data contained herein.
+                  Continued use of this map acknowledges acceptance of these term
                     </p>
                   </div>
 
