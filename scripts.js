@@ -1322,7 +1322,7 @@ require([
                     align-items: center;
                     justify-content: space-between;
                     text-align: center;
-                    font-size: 24px;
+                    font-size: 14px;
                     margin: 20px 0;
                     width: 100%;
                     margin-left: 20px;
@@ -1366,8 +1366,15 @@ require([
                   <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
                   </div>
                   <div style="text-align: center;">
-                   <p>MAP DISCLAIMER - NOTICE OF LIABILITY
-                    This map is for assessment purposes only. It is not for legal description or conveyances. All information is subject to verification by any user. The Town of Burlington and its mapping contractors assume no legal responsibility for the information contained herein.
+                   <p>Disclaimer: This map is intended for reference and general informational purposes
+only and is not a legally recorded map or survey. While reasonable effort has been
+made to ensure the accuracy, correctness, and timeliness of materials presented,
+the map vendor and the municipality disclaim any and all liability and responsibility for
+any errors, omissions, or inaccuracies in the data provided, including without limitation
+any liability for direct, indirect, incidental, consequential, special, exemplary,
+punitive, or any other type of damages. Users are hereby notified that the primary
+information source should be consulted for verification of the data contained herein.
+Continued use of this map acknowledges acceptance of these term
                     </p>
                   </div>
 
