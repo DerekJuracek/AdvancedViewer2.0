@@ -514,16 +514,16 @@ require([
       let zoomToObjectID;
       let overRide;
 
-      scaleBar = new ScaleBar({
-        view: view,
-        style: "ruler",
-        unit: "imperial",
-        container: document.createElement("div"),
-      });
+      // scaleBar = new ScaleBar({
+      //   view: view,
+      //   style: "ruler",
+      //   unit: "imperial",
+      //   container: document.createElement("div"),
+      // });
 
-      view.ui.add(scaleBar, {
-        position: "bottom-right",
-      });
+      // view.ui.add(scaleBar, {
+      //   position: "bottom-right",
+      // });
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
