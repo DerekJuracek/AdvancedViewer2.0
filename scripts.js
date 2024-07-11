@@ -145,6 +145,10 @@ require([
         ui: {
           components: ["attribution"],
         },
+        constraints: {
+          minScale: 240, // sets the minimum zoom level
+          maxScale: 170000, // sets the maximum zoom level
+        },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
