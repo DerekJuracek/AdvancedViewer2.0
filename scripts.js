@@ -401,6 +401,18 @@ require([
           },
         };
 
+        let OG = {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            color: [255, 255, 255, 0.0],
+            outline: {
+              width: 1,
+              color: "#897044",
+            },
+          },
+        };
+
         view.map.allLayers.forEach((layer) => {
           if (layer.title === "Parcel Boundaries") {
             originalRenderer = layer.renderer;
@@ -463,17 +475,20 @@ require([
               }
             });
 
-            if (newlyVisibleLayer.title !== `${configVars.basemapTitle}`) {
+            if (
+              newlyVisibleLayer.title !== `${configVars.basemapTitle}` &&
+              newlyVisibleLayer.title !== "Washington Basemap"
+            ) {
               if (sessionStorage.getItem("condos") === "yes") {
                 CondosLayer.renderer = newRenderer;
               } else {
                 noCondosLayer.renderer = newRenderer;
               }
             } else {
-              // Revert to the original renderer
+              // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
               view.map.allLayers.forEach((layer) => {
                 if (layer.title === "Parcel Boundaries") {
-                  layer.renderer = originalRenderer;
+                  layer.renderer = OG;
                 }
               });
             }
