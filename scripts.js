@@ -372,7 +372,6 @@ require([
           ],
         });
       });
-
       view.when(() => {
         const basemaps = new BasemapLayerList({
           view: view,
@@ -390,12 +389,37 @@ require([
         };
 
         let originalRenderer;
+        let newRenderer = {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            color: [255, 255, 255, 0.0],
+            outline: {
+              width: 1,
+              color: `${configVars.parcelRenderer}`,
+            },
+          },
+        };
 
         view.map.allLayers.forEach((layer) => {
           if (layer.title === "Parcel Boundaries") {
             originalRenderer = layer.renderer;
           }
         });
+
+        // Check visibility of ortho layers at the start
+        const orthoLayers = ["Ortho 2019", "Ortho 2016", "Ortho 2012"];
+        let anyOrthoVisible = view.map.allLayers.some(
+          (layer) => orthoLayers.includes(layer.title) && layer.visible
+        );
+
+        if (anyOrthoVisible) {
+          view.map.allLayers.forEach((layer) => {
+            if (layer.title === "Parcel Boundaries") {
+              layer.renderer = newRenderer;
+            }
+          });
+        }
 
         if (sessionStorage.getItem("condos") === "yes") {
           originalRenderer = CondosLayer.renderer;
@@ -441,36 +465,17 @@ require([
 
             if (newlyVisibleLayer.title !== `${configVars.basemapTitle}`) {
               if (sessionStorage.getItem("condos") === "yes") {
-                CondosLayer.renderer = {
-                  type: "simple",
-                  symbol: {
-                    type: "simple-fill",
-                    color: [255, 255, 255, 0.0],
-                    outline: {
-                      width: 1,
-                      color: `${configVars.parcelRenderer}`,
-                    },
-                  },
-                };
+                CondosLayer.renderer = newRenderer;
               } else {
-                noCondosLayer.renderer = {
-                  type: "simple",
-                  symbol: {
-                    type: "simple-fill",
-                    color: [255, 255, 255, 0.0],
-                    outline: {
-                      width: 1,
-                      color: `${configVars.parcelRenderer}`,
-                    },
-                  },
-                };
+                noCondosLayer.renderer = newRenderer;
               }
             } else {
-              if (sessionStorage.getItem("condos") === "yes") {
-                CondosLayer.renderer = originalRenderer;
-              } else {
-                noCondosLayer.renderer = originalRenderer;
-              }
+              // Revert to the original renderer
+              view.map.allLayers.forEach((layer) => {
+                if (layer.title === "Parcel Boundaries") {
+                  layer.renderer = originalRenderer;
+                }
+              });
             }
           }
 
