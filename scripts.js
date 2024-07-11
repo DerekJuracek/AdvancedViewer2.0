@@ -1286,7 +1286,8 @@ require([
         view.takeScreenshot().then(function (screenshot) {
           const title = "Map Title"; // Set your dynamic title here
           const printWindow = window.open("", "_blank");
-          const scaleBarHTML = scaleBar.container.outerHTML;
+          const scaleBar1 = document.getElementById("scale-value");
+          const scaleBarHTML = scaleBar1.innerHTML;
           const currentDate = new Date().toLocaleString();
           // const currentScale = document.getElementById()
 
