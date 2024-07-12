@@ -142,7 +142,10 @@ require([
       // console.log("extent is", extent);
 
       view.when(() => {
-        if (sessionStorage.getItem("agreedToDisclaimer") == "yes") {
+        if (
+          sessionStorage.getItem("agreedToDisclaimer") == "yes" ||
+          urlSearch == true
+        ) {
           $("#starterModal").modal("hide");
         } else {
           $("#starterModal").modal("show");
@@ -1495,7 +1498,7 @@ require([
         firstList = [];
         secondList = [];
         zoomToObjectID = "";
-
+        $(".spinner-container").hide();
         $("#distanceButton").removeClass("active");
         $("#areaButton").removeClass("active");
         $("#result-btns").hide();
@@ -1868,6 +1871,11 @@ require([
 
         const featureWidDiv = document.getElementById("featureWid");
         const listGroup = document.createElement("ul");
+
+        // if (uniqueArray.length <= 0) {
+        //   clearContents();
+        //   alert("Parcel Selection did not return any results.");
+        // }
 
         uniqueArray.forEach(function (feature) {
           // console.log(feature);
@@ -2745,6 +2753,10 @@ require([
                 noCondosTable
                   .queryFeatures(firstQuery)
                   .then(function (result) {
+                    if (result.features.length <= 0) {
+                      clearContents();
+                      alert("Search resulted in an error, please try again.");
+                    }
                     GISLINK = result.features[0].attributes.GIS_LINK;
                   })
                   .then(function (result) {
@@ -2851,6 +2863,10 @@ require([
               zoomToDetail(objID, geom, item);
               clickDetailsPanel(totalResults);
             } else {
+              $("#results-div").css("height", "300px");
+              $("#backButton-div").css("padding-top", "0px");
+              $(".center-container").hide();
+              $("#layerListDiv").hide();
               $("#details-spinner").hide();
               $("#featureWid").hide();
               $("#result-btns").hide();
@@ -2865,13 +2881,13 @@ require([
               $("#detail-content").html(
                 `<h5 style="color: red;">Issue selecting Parcel. Please make another selection.</h5>`
               );
+
               $("#abutters-attributes").prop("disabled", true);
               $("#abutters-zoom").prop("disabled", true);
               $("#selected-feature").empty();
               $("#exportSearch").hide();
               $("#exportButtons").hide();
-              $("#results-div").css("height", "300px");
-              $("#backButton-div").css("padding-top", "0px");
+
               return;
             }
           });
@@ -4984,12 +5000,18 @@ require([
       function triggerListGroup(results, searchTerm) {
         let items = results;
 
+        if (items.length <= 0) {
+          clearContents();
+          alert("Search resulted in an error, please try again.");
+        }
+
         let parcel = items.filter(
           (item) => item.attributes.Uniqueid === searchTerm
         );
 
         let itemId = parcel[0].attributes.Uniqueid;
         let objectID = parcel[0].attributes.OBJECTID;
+
         zoomToFeature(objectID, polygonGraphics, itemId);
         $("#details-spinner").show();
         $("#WelcomeBox").hide();
@@ -5346,6 +5368,7 @@ require([
         };
 
         function updateQuery() {
+          console.log(queryParameters);
           let queryParts = [];
           if (
             queryParameters.streetName !== null &&
@@ -5602,27 +5625,28 @@ require([
           queryParameters.owner = e.target.value;
         });
 
-        $("#app-val-slider").on("calciteSliderChange", function (e) {
-          value = e.target.value;
-          minVal = value[0];
-          maxVal = value[1];
+        // $("#app-val-slider").on("calciteSliderChange", function (e) {
+        //   value = e.target.value;
+        //   minVal = value[0];
+        //   maxVal = value[1];
 
-          queryParameters.appraisedValueMin = minVal;
-          $("#app-val-min").val("$" + minVal.toLocaleString());
-          // $("#app-val-min").val(minVal);
-          queryParameters.appraisedValueMax = maxVal;
-          // $("#app-val-max").val(maxVal);
-          $("#app-val-max").val("$" + maxVal.toLocaleString());
-          // console.log(`appraised value is: ${value}`);
-        });
+        //   queryParameters.appraisedValueMin = minVal;
+        //   $("#app-val-min").val("$" + minVal.toLocaleString());
+        //   queryParameters.appraisedValueMax = maxVal;
+        //   $("#app-val-max").val("$" + maxVal.toLocaleString());
+        // });
         $("#app-val-min, #app-val-max").on("input", function () {
           // Get the input values as strings
           var minValStr = $("#app-val-min").val();
           var maxValStr = $("#app-val-max").val();
 
-          // Remove any commas before parsing
-          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
-          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+          // Remove the dollar sign and any commas
+          minValStr = minValStr.replace(/^\$/, "").replace(/,/g, "");
+          maxValStr = maxValStr.replace(/^\$/, "").replace(/,/g, "");
+
+          // Parse the values as integers
+          var minVal = parseInt(minValStr, 10);
+          var maxVal = parseInt(maxValStr, 10);
 
           // Check if the parsed values are valid numbers
           if (!isNaN(minVal) && !isNaN(maxVal)) {
@@ -5630,34 +5654,42 @@ require([
             var formattedMinVal = minVal.toLocaleString();
             var formattedMaxVal = maxVal.toLocaleString();
 
-            // Update the input fields with the formatted values
+            // Update the input fields with the formatted values and dollar signs
             $("#app-val-min").val("$" + formattedMinVal);
             $("#app-val-max").val("$" + formattedMaxVal);
 
-            // Update the slider values with the parsed integers
-            const slider1 = document.querySelector("#app-val-slider");
-            slider1.value = [minVal, maxVal];
+            // Update queryParameters with the numerical values
+            queryParameters.appraisedValueMin = minVal;
+            queryParameters.appraisedValueMax = maxVal;
+
+            // Optionally, update the slider values with the parsed integers
+            // const slider1 = document.querySelector("#app-val-slider");
+            // slider1.value = [minVal, maxVal];
           }
         });
 
-        $("#assess-val-slider").on("calciteSliderChange", function (e) {
-          value = e.target.value;
-          minVal = value[0];
-          maxVal = value[1];
+        // $("#assess-val-slider").on("calciteSliderChange", function (e) {
+        //   value = e.target.value;
+        //   minVal = value[0];
+        //   maxVal = value[1];
 
-          queryParameters.assessedValueMin = minVal;
-          $("#assess-val-min").val("$" + minVal.toLocaleString());
-          queryParameters.assessedValueMax = maxVal;
-          $("#assess-val-max").val("$" + maxVal.toLocaleString());
-        });
+        //   queryParameters.assessedValueMin = minVal;
+        //   $("#assess-val-min").val("$" + minVal.toLocaleString());
+        //   queryParameters.assessedValueMax = maxVal;
+        //   $("#assess-val-max").val("$" + maxVal.toLocaleString());
+        // });
 
         $("#assess-val-min, #assess-val-max").on("input", function () {
           var minValStr = $("#assess-val-min").val();
           var maxValStr = $("#assess-val-max").val();
 
-          // Remove any commas before parsing
-          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
-          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+          // Remove the dollar sign and any commas
+          minValStr = minValStr.replace(/^\$/, "").replace(/,/g, "");
+          maxValStr = maxValStr.replace(/^\$/, "").replace(/,/g, "");
+
+          // Parse the values as integers
+          var minVal = parseInt(minValStr, 10);
+          var maxVal = parseInt(maxValStr, 10);
 
           // Check if the parsed values are valid numbers
           if (!isNaN(minVal) && !isNaN(maxVal)) {
@@ -5665,12 +5697,19 @@ require([
             var formattedMinVal = minVal.toLocaleString();
             var formattedMaxVal = maxVal.toLocaleString();
 
-            // Update the input fields with the formatted values
+            // Update the input fields with the formatted values and dollar signs
             $("#assess-val-min").val("$" + formattedMinVal);
             $("#assess-val-max").val("$" + formattedMaxVal);
 
-            const slider2 = document.querySelector("#assess-val-slider");
-            slider2.value = [minVal, maxVal];
+            queryParameters.assessedValueMin = minVal;
+            queryParameters.assessedValueMax = maxVal;
+
+            // Optionally, update the slider values with the parsed integers
+            // const slider2 = document.querySelector("#assess-val-slider");
+            // slider2.value = [minVal, maxVal];
+          } else {
+            // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
+            console.log("Invalid input");
           }
         });
 
@@ -5698,23 +5737,26 @@ require([
           queryParameters.designType = e.target.value;
         });
 
-        $("#acres-val-slider").on("calciteSliderChange", function (e) {
-          value = e.target.value;
-          minVal = value[0];
-          maxVal = value[1];
+        // $("#acres-val-slider").on("calciteSliderChange", function (e) {
+        //   value = e.target.value;
+        //   minVal = value[0];
+        //   maxVal = value[1];
 
-          queryParameters.acresValueMin = minVal;
-          $("#acres-val-min").val(minVal);
-          queryParameters.acresValueMax = maxVal;
-          $("#acres-val-max").val(maxVal);
-        });
+        //   queryParameters.acresValueMin = minVal;
+        //   $("#acres-val-min").val(minVal);
+        //   queryParameters.acresValueMax = maxVal;
+        //   $("#acres-val-max").val(maxVal);
+        // });
 
         $("#acres-val-min, #acres-val-max").on("input", function () {
           var minVal = parseInt($("#acres-val-min").val());
           var maxVal = parseInt($("#acres-val-max").val());
 
-          const slider3 = document.querySelector("#acres-val-slider");
-          slider3.value = [minVal, maxVal];
+          queryParameters.acresValueMin = minVal;
+          queryParameters.acresValueMax = maxVal;
+
+          // const slider3 = document.querySelector("#acres-val-slider");
+          // slider3.value = [minVal, maxVal];
         });
 
         $("#sold_calendar_lowest").on("calciteDatePickerChange", function () {
@@ -5747,25 +5789,29 @@ require([
         //   slider4.value = [minVal, maxVal];
         // });
 
-        $("#saleP-val-slider").on("calciteSliderChange", function (e) {
-          value = e.target.value;
-          minVal = value[0];
-          maxVal = value[1];
+        // $("#saleP-val-slider").on("calciteSliderChange", function (e) {
+        //   value = e.target.value;
+        //   minVal = value[0];
+        //   maxVal = value[1];
 
-          queryParameters.soldPMin = minVal;
-          $("#saleP-val-min").val("$" + minVal.toLocaleString());
+        //   queryParameters.soldPMin = minVal;
+        //   $("#saleP-val-min").val("$" + minVal.toLocaleString());
 
-          queryParameters.soldPMax = maxVal;
-          $("#saleP-val-max").val("$" + maxVal.toLocaleString());
-        });
+        //   queryParameters.soldPMax = maxVal;
+        //   $("#saleP-val-max").val("$" + maxVal.toLocaleString());
+        // });
 
         $("#saleP-val-min, #saleP-val-max").on("input", function () {
           var minValStr = $("#saleP-val-min").val();
           var maxValStr = $("#saleP-val-max").val();
 
-          // Remove any commas before parsing
-          var minVal = parseInt(minValStr.replace(/,/g, ""), 10);
-          var maxVal = parseInt(maxValStr.replace(/,/g, ""), 10);
+          // Remove the dollar sign and any commas
+          minValStr = minValStr.replace(/^\$/, "").replace(/,/g, "");
+          maxValStr = maxValStr.replace(/^\$/, "").replace(/,/g, "");
+
+          // Parse the values as integers
+          var minVal = parseInt(minValStr, 10);
+          var maxVal = parseInt(maxValStr, 10);
 
           // Check if the parsed values are valid numbers
           if (!isNaN(minVal) && !isNaN(maxVal)) {
@@ -5773,26 +5819,34 @@ require([
             var formattedMinVal = minVal.toLocaleString();
             var formattedMaxVal = maxVal.toLocaleString();
 
-            // Update the input fields with the formatted values
+            // Update the input fields with the formatted values and dollar signs
             $("#saleP-val-min").val("$" + formattedMinVal);
             $("#saleP-val-max").val("$" + formattedMaxVal);
 
-            const slider5 = document.querySelector("#saleP-val-slider");
-            slider5.value = [minVal, maxVal];
+            queryParameters.soldPMin = minVal;
+            queryParameters.soldPMax = maxVal;
+
+            // Optionally, update the slider values with the parsed integers
+            // const slider2 = document.querySelector("#saleP-val-slider");
+            // slider2.value = [minVal, maxVal];
+          } else {
+            // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
+            console.log("Invalid input");
           }
         });
+
         function changeSliderValues(vals) {
           const sliderVals = [
             {
               fieldName: "Appraised_Total",
-              slider: "app-val-slider",
+              // slider: "app-val-slider",
               minInput: "app-val-min",
               maxInput: "app-val-max",
               index: 0,
             },
             {
               fieldName: "Assessed_Total",
-              slider: "assess-val-slider",
+              // slider: "assess-val-slider",
               minInput: "assess-val-min",
               maxInput: "assess-val-max",
               index: 1,
@@ -5800,7 +5854,7 @@ require([
 
             {
               fieldName: "Total_Acres",
-              slider: "acres-val-slider",
+              // slider: "acres-val-slider",
               minInput: "acres-val-min",
               maxInput: "acres-val-max",
               index: 2,
@@ -5813,7 +5867,7 @@ require([
             },
             {
               fieldName: "Sale_Price",
-              slider: "saleP-val-slider",
+              // slider: "saleP-val-slider",
               minInput: "saleP-val-min",
               maxInput: "saleP-val-max",
               index: 4,
@@ -5822,8 +5876,8 @@ require([
 
           sliderVals.forEach(function (slider) {
             if (slider.fieldName == "Sale_Date") {
-              const sliderElLow = document.getElementById(slider.minInput);
-              const sliderElMax = document.getElementById(slider.maxInput);
+              // const sliderElLow = document.getElementById(slider.minInput);
+              // const sliderElMax = document.getElementById(slider.maxInput);
 
               var minstr = vals[slider.index][slider.fieldName].min;
               var maxstr = vals[slider.index][slider.fieldName].max;
@@ -5846,8 +5900,8 @@ require([
               // Format the date as yyyy-MM-dd
               let formattedDateM = `${yearM}-${monthM}-${dayM}`;
 
-              sliderElLow.value = formattedDateL;
-              sliderElMax.value = formattedDateM;
+              // sliderElLow.value = formattedDateL;
+              // sliderElMax.value = formattedDateM;
 
               queryParameters.soldOnMin = formattedDateL;
               queryParameters.soldOnMax = formattedDateM;
@@ -5856,18 +5910,18 @@ require([
               // const sliderInputMax = document.getElementById(slider.maxInput);
             } else {
               // gets slider and slider min / max values
-              const sliderEl = document.getElementById(slider.slider);
+              // const sliderEl = document.getElementById(slider.slider);
               const sliderInputMin = document.getElementById(slider.minInput);
               const sliderInputMax = document.getElementById(slider.maxInput);
 
-              sliderEl.minValue = vals[slider.index][slider.fieldName].min;
-              sliderEl.maxValue = vals[slider.index][slider.fieldName].max;
+              // let minString = vals[slider.index][slider.fieldName].min;
+              // let maxString = vals[slider.index][slider.fieldName].max;
 
-              var formattedMinValue = sliderEl.minValue.toLocaleString();
-              var formattedMaxValue = sliderEl.maxValue.toLocaleString();
+              //   var formattedMinValue = minStr.minValue.toLocaleString();
+              //   var formattedMaxValue =maxStr.maxValue.toLocaleString();
 
-              sliderEl.min = vals[slider.index][slider.fieldName].min;
-              sliderEl.max = vals[slider.index][slider.fieldName].max;
+              // sliderEl.min = vals[slider.index][slider.fieldName].min;
+              // sliderEl.max = vals[slider.index][slider.fieldName].max;
 
               const minVal = (sliderInputMin.value =
                 vals[slider.index][slider.fieldName].min);
