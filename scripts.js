@@ -4,52 +4,32 @@ require([
   "esri/layers/FeatureLayer",
   "esri/layers/ImageryLayer",
   "esri/layers/MapImageLayer",
-  "esri/widgets/Search",
-  "esri/widgets/Features",
-  "esri/rest/support/Query",
-  "esri/popup/content/RelationshipContent",
   "esri/core/reactiveUtils",
   "esri/Graphic",
-  "esri/widgets/Zoom",
   "esri/geometry/geometryEngine",
   "esri/layers/GraphicsLayer",
-  "esri/widgets/Sketch",
   "esri/widgets/Sketch/SketchViewModel",
-  "esri/views/View",
   "esri/widgets/DistanceMeasurement2D",
   "esri/widgets/AreaMeasurement2D",
   "esri/widgets/BasemapLayerList",
   "esri/widgets/Bookmarks",
-  "esri/widgets/Print",
   "esri/widgets/Legend",
-  "esri/widgets/Expand",
-  "esri/widgets/ScaleBar",
 ], function (
   WebMap,
   MapView,
   FeatureLayer,
   ImageryLayer,
   MapImageLayer,
-  Search,
-  Features,
-  Query,
-  RelationshipContent,
   reactiveUtils,
   Graphic,
-  Zoom,
   geometryEngine,
   GraphicsLayer,
-  Sketch,
   SketchViewModel,
-  View,
   DistanceMeasurement2D,
   AreaMeasurement2D,
   BasemapLayerList,
   Bookmarks,
-  Print,
-  Legend,
-  Expand,
-  ScaleBar
+  Legend
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -353,25 +333,25 @@ require([
         });
       });
 
-      view.when(() => {
-        const print = new Print({
-          view: view,
-          container: $("#PrintDiv")[0],
-          templateOptions: {
-            scaleEnabled: false,
-          },
-          allowedLayouts: [
-            "letter-ansi-a-landscape",
-            "letter-ansi-a-portrait",
-            "tabloid-ansi-b-landscape",
-            "tabloid-ansi-b-portrait",
-            "a3-landscape",
-            "a3-portrait",
-            "a4-landscape",
-            "a4-portrait",
-          ],
-        });
-      });
+      // view.when(() => {
+      //   const print = new Print({
+      //     view: view,
+      //     container: $("#PrintDiv")[0],
+      //     templateOptions: {
+      //       scaleEnabled: false,
+      //     },
+      //     allowedLayouts: [
+      //       "letter-ansi-a-landscape",
+      //       "letter-ansi-a-portrait",
+      //       "tabloid-ansi-b-landscape",
+      //       "tabloid-ansi-b-portrait",
+      //       "a3-landscape",
+      //       "a3-portrait",
+      //       "a4-landscape",
+      //       "a4-portrait",
+      //     ],
+      //   });
+      // });
       view.when(() => {
         const basemaps = new BasemapLayerList({
           view: view,
