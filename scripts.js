@@ -5087,6 +5087,7 @@ require([
         const layerName = "Parcel Boundaries";
         const fieldName = "UniqueId";
         urlSearchUniqueId = true;
+        let urlSearch = true;
 
         queryRelatedRecords(uniqueId, urlSearch);
       }
