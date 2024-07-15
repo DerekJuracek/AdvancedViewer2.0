@@ -144,7 +144,7 @@ require([
       view.when(() => {
         if (
           sessionStorage.getItem("agreedToDisclaimer") == "yes" ||
-          urlSearch == true
+          urlSearchUniqueId == true
         ) {
           $("#starterModal").modal("hide");
         } else {
@@ -493,6 +493,7 @@ require([
       });
 
       webmap.add(sketchGL);
+      let urlSearchUniqueId;
       let scaleBar;
       let runQuerySearchTerm;
       let clickedToggle;
@@ -1394,7 +1395,7 @@ require([
                           <h1 id="title-text">${configVars.title}</h1>
                       </div>
                       <div class="print-map">
-                          <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: 1200px; height: 900;">
+                          <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: 1200px;height: 900; border: 1.5px #A9A9A9  solid; border-style: solid;">
                       </div>
                       <div class="print-scale">
                           <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
@@ -5085,7 +5086,7 @@ require([
         // Assuming the layer name and field name are known and static
         const layerName = "Parcel Boundaries";
         const fieldName = "UniqueId";
-        let urlSearch = true;
+        urlSearchUniqueId = true;
 
         queryRelatedRecords(uniqueId, urlSearch);
       }
@@ -6403,6 +6404,18 @@ require([
 
       $(document).ready(function () {
         $("#abutters-zoom").popover({
+          trigger: "hover",
+        });
+      });
+
+      $(document).ready(function () {
+        $("#distanceButton").popover({
+          trigger: "hover",
+        });
+      });
+
+      $(document).ready(function () {
+        $("#areaButton").popover({
           trigger: "hover",
         });
       });
