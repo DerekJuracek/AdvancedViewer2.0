@@ -6313,16 +6313,13 @@ require([
         72000: "1 inch = 6000 feet",
         144000: "1 inch = 12000 feet",
       };
-      // Add event listener for scale selection
-      // const scaleDropdown2 = document.getElementsByClassName("scale-Select");
-
-      scaleDropdown = document.getElementById("scale-dropdown");
 
       // Add event listener for scale selection
-      // Add event listener for scale selection
+      var scaleDropdown = document.getElementById("scale-dropdown");
+
       document.querySelectorAll(".scale-select").forEach(function (button) {
         button.addEventListener("click", function (event) {
-          var selectedScale = event.target.value;
+          var selectedScale = parseInt(event.target.value);
           var selectedText = event.target.innerHTML;
           if (selectedScale) {
             view.scale = selectedScale;
@@ -6331,20 +6328,20 @@ require([
           $("#scale-value").val(selectedScale).html(selectedText);
         });
       });
+
       view.ui.add(scaleDropdown, {
         position: "bottom-left",
       });
 
       // Watch for changes in the view's scale and update the dropdown
-      // Watch properties from multiple sources
       const handle = reactiveUtils.watch(
         () => [view.stationary, view.scale],
-        ([stationary, zoom]) => {
-          // Only print the new zoom value when the view is stationary
+        ([stationary, scale]) => {
+          // Only print the new scale value when the view is stationary
           if (stationary) {
-            console.log(`Change in zoom level: ${zoom}`);
+            console.log(`Change in scale level: ${scale}`);
+            updateScaleDropdown(scale);
           }
-          updateScaleDropdown(zoom);
         }
       );
 
