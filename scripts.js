@@ -475,6 +475,16 @@ require([
                 }
               });
             }
+          } else {
+            // Prevent all basemaps from being deselected
+            let visibleLayers = baseLayers.filter((layer) => layer.visible);
+            if (visibleLayers.length === 0) {
+              // If no layers are visible, revert the change
+              baseLayers.forEach((layer) => {
+                layer.visible = visibilityTracker[layer.id];
+              });
+              alert("At least one basemap must be visible.");
+            }
           }
 
           // Update visibility tracker
@@ -1471,7 +1481,7 @@ require([
           overRideSelect(false);
         }
 
-        $("#scale-value").val("").html("Select Scale");
+        // $("#scale-value").val("").html("Select Scale");
 
         // clickHandle = view.on("click", handleClick);
         //$("#lasso").removeClass("btn-warning");
@@ -1918,11 +1928,11 @@ require([
           }
 
           if (!locationCoOwner && locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a> </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a> </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
 
           // Append the new list item to the list
@@ -2796,7 +2806,7 @@ require([
               } else {
                 view.goTo({
                   target: result.features,
-                  // zoom: 15,
+                  zoom: 15,
                 });
               }
               addPolygons(result, view.graphics);
@@ -3409,7 +3419,9 @@ require([
             let mailingAddress2 = feature.mailingAddress2 || "";
             let Mailing_City = feature.Mailing_City || "";
             let Mail_State = feature.Mail_State || "";
-            let Mailing_Zip = feature.Mailing_Zip || "";
+            let Mailing_Zip = feature.Mailing_Zip
+              ? `'${feature.Mailing_Zip.toString().padStart(5, "0")}'`
+              : ""; // Ensure leading zeros are preserved
             let Location = feature.location || "";
             let uniqueid = feature.uniqueId || "";
 
@@ -5077,7 +5089,17 @@ require([
         urlSearchUniqueId = true;
         let urlSearch = true;
 
-        queryRelatedRecords(uniqueId, urlSearch);
+        view
+          .when(function () {
+            // This function runs when the view is fully ready
+            console.log("The view is ready.");
+
+            // Place your function call or code here
+            queryRelatedRecords(uniqueId, urlSearch);
+          })
+          .catch(function (error) {
+            console.error("Error occurred while the view was loading: ", error);
+          });
       }
       // });
 
