@@ -1309,7 +1309,6 @@ require([
       }
 
       generateFilters();
-
       document
         .getElementById("Print-selector")
         .addEventListener("click", function () {
@@ -1323,6 +1322,18 @@ require([
           const scaleBar1 = document.getElementById("scale-value");
           const scaleBarHTML = scaleBar1.innerHTML;
           const currentDate = new Date().toLocaleString();
+
+          // Define print DPI and scale conversion
+          const printDPI = 300;
+          const inchPerFoot = 1 / 12;
+          const scaleText = scaleBar1.innerHTML.match(/(\d+) feet/);
+          const scaleFeet = scaleText ? parseInt(scaleText[1]) : 1;
+
+          // Set width in inches for 1 inch = scaleFeet feet
+          const mapWidthInInches = 10; // Width of the printed map in inches
+          const mapHeightInInches = 8; // Height of the printed map in inches
+          const mapWidthInPixels = mapWidthInInches * printDPI;
+          const mapHeightInPixels = mapHeightInInches * printDPI;
 
           printWindow.document.write(`
                   <!DOCTYPE html>
