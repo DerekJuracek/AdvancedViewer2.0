@@ -1345,7 +1345,6 @@ require([
                               justify-content: space-between;
                               text-align: center;
                               font-size: 14px;
-                              margin: 20px 0;
                               width: 100%;
                               margin-left: 20px;
                               margin-right: 20px;
@@ -1395,7 +1394,7 @@ require([
                           <h1 id="title-text">${configVars.title}</h1>
                       </div>
                       <div class="print-map">
-                          <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: 1200px;height: 900; border: 1.5px #A9A9A9  solid; border-style: solid;">
+                          <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: calc(100% - 40px); height: auto; border: 1.5px solid #A9A9A9; margin: 0 20px;">
                       </div>
                       <div class="print-scale">
                           <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
@@ -4512,26 +4511,10 @@ require([
         view.graphics.addMany([polygonGraphic]);
         view.goTo({
           target: polygonGraphic,
-          zoom: oldZoom,
+          zoom: 15,
           // zoom: 15,
         });
-
-        // buildZoomToFeature(polygonGraphic);
-        // }
-        // } else {
-        // }
       }
-
-      // document
-      //   .getElementsByClassName("justZoom")
-      //   .addEventListener("click", function (e) {
-      //     let targetElement = event.target.closest("li");
-
-      //     let itemId = targetElement.getAttribute("data-id");
-      //     let objectID = targetElement.getAttribute("object-id");
-      //     // buildZoomToFeature(objectID, polygonGraphics, itemId);
-      //     zoomToParcel(objectID, polygonGraphics, itemId);
-      //   });
 
       function zoomToParcel(gisLink) {
         let whereClause = `GIS_LINK = '${gisLink}'`;
@@ -4602,7 +4585,7 @@ require([
             view.graphics.addMany([polygonGraphic]);
             view.goTo({
               target: polygonGraphic,
-              zoom: 17,
+              zoom: 14,
             });
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
@@ -4621,7 +4604,7 @@ require([
 
               view.goTo({
                 target: geometry,
-                zoom: 17,
+                zoom: 14,
               });
 
               const fillSymbol = {
@@ -4658,7 +4641,7 @@ require([
 
               view.goTo({
                 target: detailsGeometry,
-                zoom: 17,
+                zoom: 15,
               });
 
               const fillSymbol = {
@@ -4693,7 +4676,7 @@ require([
 
                 view.goTo({
                   target: geometry,
-                  zoom: 17,
+                  zoom: 15,
                 });
 
                 const fillSymbol = {
@@ -5012,6 +4995,7 @@ require([
 
         let itemId = parcel[0].attributes.Uniqueid;
         let objectID = parcel[0].attributes.OBJECTID;
+        let geometry = parcel[0].attributes.geometry;
 
         zoomToFeature(objectID, polygonGraphics, itemId);
         $("#details-spinner").show();
@@ -5038,6 +5022,10 @@ require([
         buildDetailsPanel(objectID, itemId);
         $("#total-results").hide();
         $("#ResultDiv").hide();
+
+        // view.goTo({
+        //   target: results,
+        // });
       }
 
       // Helper function to parse and modify URL query parameters
