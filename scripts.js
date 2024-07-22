@@ -3411,6 +3411,9 @@ require([
           $.ajax({
             url: tokenUrl,
             type: "POST",
+            headers: {
+              dataType: "jsonp",
+            },
             data: data,
             success: function (response) {
               const accessToken = response.access_token;
