@@ -403,7 +403,11 @@ require([
         });
 
         // Check visibility of ortho layers at the start
-        const orthoLayers = ["Ortho 2019", "Ortho 2016", "Ortho 2012"];
+        const orthoLayers = [
+          "Aerial-Ortho 2019",
+          "Aerial-Ortho 2016",
+          "Aerial-Ortho 2012",
+        ];
         let anyOrthoVisible = view.map.allLayers.some(
           (layer) => orthoLayers.includes(layer.title) && layer.visible
         );
@@ -1320,7 +1324,7 @@ require([
         const pageWidthInInches = 8.5; // Width of the paper in inches
         const pageHeightInInches = 11; // Height of the paper in inches
         const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 8; // Slightly reduced height of the map on paper in inches
+        const mapHeightInInches = 6.5; // Slightly reduced height of the map on paper in inches
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
@@ -1364,12 +1368,12 @@ require([
                     .print-scale {
                         display: flex;
                         align-items: center;
-                        justify-content: space-between;
+                        justify-content: space-around;
                         text-align: center;
                         font-size: 14px;
                         width: 100%;
-                        margin-left: 20px;
-                        margin-right: 20px;
+                        margin-left: 40px;
+                        margin-right: 40px;
                     }
                     .print-title img {
                         margin-right: 20px;
@@ -1433,17 +1437,6 @@ require([
                     punitive, or any other type of damages. Users are hereby notified that the primary
                     information source should be consulted for verification of the data contained herein.
                     Continued use of this map acknowledges acceptance of these terms.</p>
-                </div>
-                <div class="info-writing-container">
-                    <div class="info-text">
-                        <p>Additional Information:</p>
-                    </div>
-                    <div class="writing-lines">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
                 </div>
                 <script>
                     window.onload = function() {
@@ -1940,11 +1933,11 @@ require([
           }
 
           if (!locationCoOwner && locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a> </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a> </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>Parcel PDF Map</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
 
           // Append the new list item to the list
@@ -1999,7 +1992,8 @@ require([
         listGroup.addEventListener("click", function (event) {
           if (
             event.target.closest(".justZoom") ||
-            event.target.closest(".justZoomBtn")
+            event.target.closest(".justZoomBtn") ||
+            event.target.closest(".pdf-links")
           ) {
             return; // Exit the handler early if a button was clicked
           }
@@ -3329,12 +3323,12 @@ require([
             let Mail_State = feature.Mail_State;
             let Mailing_Zip = feature.Mailing_Zip;
             let Location = feature.location;
-            let uniqueid = feature.uniqueId;
+            let MBL = feature.MBL;
             const listItem = document.createElement("li");
             listItem.classList.add("export-search-list");
             let listItemHTML;
 
-            listItemHTML = ` ${owner} ${coOwner} <br> UniqueID: ${uniqueid} <br> ${mailingAddress} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
+            listItemHTML = ` ${owner} ${coOwner} <br> MBL: ${MBL} <br> ${mailingAddress} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
 
             listItem.innerHTML += listItemHTML;
             listItem.setAttribute("object-id", objectID);
@@ -3363,7 +3357,7 @@ require([
             "Mailing City",
             "Mailing State",
             "Mailing Zip",
-            "Uniqueid",
+            "MBL",
             "Location",
           ];
 
@@ -3380,10 +3374,10 @@ require([
             let Mail_State = feature.attributes["Mail_State"] || "";
             let Mailing_Zip = feature.attributes["Mailing_Zip"] || "";
             let Location = feature.attributes["Location"] || "";
-            let uniqueid = feature.attributes["Uniqueid"] || "";
+            let MBL = feature.attributes["MBL"] || "";
 
             // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${uniqueid}","${Location}"\n`;
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
           });
 
           // Create blob
@@ -3417,7 +3411,7 @@ require([
             "Mailing City",
             "Mailing State",
             "Mailing Zip",
-            "Uniqueid",
+            "MBL",
             "Location",
           ];
 
@@ -3435,10 +3429,10 @@ require([
               ? `'${feature.Mailing_Zip.toString().padStart(5, "0")}'`
               : ""; // Ensure leading zeros are preserved
             let Location = feature.location || "";
-            let uniqueid = feature.uniqueId || "";
+            let MBL = feature.MBL || "";
 
             // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${uniqueid}","${Location}"\n`;
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
           });
 
           // Create blob
@@ -3484,14 +3478,14 @@ require([
             let Mail_State = feature.attributes.Mail_State;
             let Mailing_Zip = feature.attributes.Mailing_Zip;
             let Location = feature.location;
-            let uniqueid = feature.attributes.Uniqueid;
+            let MBL = feature.attributes.MBL;
 
             const listItem = document.createElement("li");
             listItem.classList.add("abutters-group-list");
 
             let listItemHTML;
 
-            listItemHTML = ` ${owner} ${coOwner} <br> UniqueID: ${uniqueid} <br> ${mailingAddress} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
+            listItemHTML = ` ${owner} ${coOwner} <br> MBL: ${MBL} <br> ${mailingAddress} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
 
             listItem.innerHTML += listItemHTML;
             listItem.setAttribute("object-id", objectID);
