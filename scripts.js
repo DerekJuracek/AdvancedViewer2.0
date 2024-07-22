@@ -3385,18 +3385,87 @@ require([
             type: "text/csv;charset=utf-8;",
           });
 
-          // Create anchor element to download CSV
-          const link = document.createElement("a");
-          if (link.download !== undefined) {
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "export.csv");
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
+          // Convert blob to ArrayBuffer for upload
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const arrayBuffer = event.target.result;
+            getAccessTokenAndUpload(arrayBuffer);
+          };
+          reader.readAsArrayBuffer(blob);
         });
+
+        function getAccessTokenAndUpload(arrayBuffer) {
+          const clientId = "954e0858-9833-4b11-9d83-0bbef240a66c";
+          const clientSecret = "0f3b00f2-24f7-47c2-ade7-5949d89f218c";
+          const tenant = "5c577df5-09c2-4bb7-a1f3-241a6685b4aa";
+          const siteUrl = "https://qualitydataservice.sharepoint.com";
+
+          const tokenUrl = `https://accounts.accesscontrol.windows.net/${tenant}/tokens/OAuth/2`;
+          const data = {
+            grant_type: "client_credentials",
+            client_id: `${clientId}@${tenant}`,
+            client_secret: clientSecret,
+            resource: siteUrl,
+          };
+
+          $.ajax({
+            url: tokenUrl,
+            type: "POST",
+            data: data,
+            success: function (response) {
+              const accessToken = response.access_token;
+              uploadCsvToSharePoint(arrayBuffer, accessToken);
+            },
+            error: function (error) {
+              console.error("Error getting access token:", error);
+            },
+          });
+        }
+
+        function uploadCsvToSharePoint(arrayBuffer, accessToken) {
+          const siteUrl = "https://qualitydataservice.sharepoint.com";
+          const libraryName = "Shared Documents";
+          const fileName = "export.csv";
+
+          $.ajax({
+            url: `${siteUrl}/_api/contextinfo`,
+            type: "POST",
+            headers: {
+              Accept: "application/json; odata=verbose",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            success: function (data) {
+              const formDigestValue =
+                data.d.GetContextWebInformation.FormDigestValue;
+
+              $.ajax({
+                url: `${siteUrl}/_api/web/GetFolderByServerRelativeUrl('${libraryName}')/Files/add(url='${fileName}',overwrite=true)`,
+                type: "POST",
+                data: arrayBuffer,
+                processData: false,
+                headers: {
+                  Accept: "application/json; odata=verbose",
+                  "X-RequestDigest": formDigestValue,
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/octet-stream",
+                },
+                success: function (data) {
+                  const fileUrl = data.d.ServerRelativeUrl;
+                  const embedUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
+                    siteUrl + fileUrl
+                  )}`;
+                  window.open(embedUrl, "_blank");
+                },
+                error: function (error) {
+                  console.error("Error uploading CSV to SharePoint:", error);
+                },
+              });
+            },
+            error: function (error) {
+              console.error("Error getting form digest value:", error);
+            },
+          });
+        }
       });
 
       $(document).ready(function () {
