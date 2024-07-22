@@ -3433,6 +3433,7 @@ require([
             headers: {
               Accept: "application/json; odata=verbose",
               Authorization: `Bearer ${accessToken}`,
+              dataType: "jsonp",
             },
             success: function (data) {
               const formDigestValue =
@@ -3448,6 +3449,7 @@ require([
                   "X-RequestDigest": formDigestValue,
                   Authorization: `Bearer ${accessToken}`,
                   "Content-Type": "application/octet-stream",
+                  dataType: "jsonp",
                 },
                 success: function (data) {
                   const fileUrl = data.d.ServerRelativeUrl;
