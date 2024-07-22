@@ -3395,9 +3395,9 @@ require([
         });
 
         function getAccessTokenAndUpload(arrayBuffer) {
-          const clientId = "954e0858-9833-4b11-9d83-0bbef240a66c";
-          const clientSecret = "0f3b00f2-24f7-47c2-ade7-5949d89f218c";
-          const tenant = "5c577df5-09c2-4bb7-a1f3-241a6685b4aa";
+          const clientId = "CLIENT";
+          const clientSecret = "SECRET";
+          const tenant = "TENANT";
           const siteUrl = "https://qualitydataservice.sharepoint.com";
 
           const tokenUrl = `https://accounts.accesscontrol.windows.net/${tenant}/tokens/OAuth/2`;
