@@ -72,7 +72,7 @@
               Disclaimer
             </h5>
           </div>
-          <div class="modal-body" style="text-align: center; font-size: 12px">
+          <div class="modal-body" id="disclaimer-text" style="text-align: center; font-size: 12px">
             <strong
               >By searching or selecting any links on this page, you accept the
               following disclaimer.</strong
@@ -795,7 +795,7 @@
               <div style="text-align: center" id="welcomeImage">
                 <img class="image" id="imageContainer" style="height: 90px; width: 90px;" alt="Loaded Image">
               </div>
-              <p>
+              <p id="welcomeMessage">
                 Welcome to our GIS Parcel Viewer! As your Assessor, I'm pleased
                 to offer you an innovative tool designed to enhance your
                 understanding of our community's parcels and properties. This
@@ -1364,6 +1364,28 @@
               />
             </svg>
           </button>
+            <button
+            class="esri-icon-measure-line btn bar-Buttons bg-light"
+            id="distanceButton"
+            type="button"
+            size="l"
+            style="width: 43px; height: 38px; color: black"
+            data-toggle="popover"
+            data-placement="left"
+            data-html="true"
+            data-content="Measure distance between two or more points, start by clicking on map and double click to end your line."
+          ></button>
+          <button
+          class="esri-icon-measure-area btn bg-light bar-Buttons"
+          id="areaButton"
+          type="button"
+          style="width: 43px; height: 38px; color: black"
+          data-toggle="popover"
+          data-placement="left"
+          data-html="true"
+          data-content="Measure an area, start by clicking on map and double click to close the polygon."
+        ></button>
+          
           <button
             type="button"
             id="clear-btn2"
@@ -1389,7 +1411,7 @@
           </button>
         </div>
         <!-- <div id="sidebar" class="esri-widget"> -->
-        <div id="topbar">
+        <!-- <div id="topbar">
           <button
             class="action-button esri-icon-measure-line btn bg-info"
             id="distanceButton"
@@ -1411,7 +1433,7 @@
             data-html="true"
             data-content="Measure an area, start by clicking on map and double click to close the polygon."
           ></button>
-        </div>
+        </div> -->
         <!-- </div> -->
       </div>
     </div>

@@ -81,6 +81,20 @@ require([
       configVars.useUniqueIdforParcelMap = config.useUniqueIdforParcelMap;
       configVars.helpUrl = config.helpUrl;
       configVars.includeFilter = config.includeFilter;
+      configVars.customWelcomePage = config.customWelcomePage;
+      configVars.customWelcomeMessage = config.customWelcomeMessage;
+      configVars.customDisclaimerPage = config.customDisclaimerPage;
+      configVars.customDisclaimerMessage = config.customDisclaimerMessage;
+
+      if (configVars.customWelcomePage === "yes") {
+        document.getElementById("welcomeMessage").innerHTML =
+          configVars.customWelcomeMessage;
+      }
+      if (configVars.customDisclaimerPage === "yes") {
+        document.getElementById("disclaimer-text").innerHTML =
+          configVars.customDisclaimerMessage;
+      }
+
       document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
       // configVars.homeExtent = config.homeExtent;
@@ -796,7 +810,7 @@ require([
         for (let i = 0; i < elements.length; i++) {
           elements[i].classList.remove("active", "btn-warning");
           // elements[i].classList.remove("btn-warning");
-          elements[i].classList.add("bg-info");
+          // elements[i].classList.add("bg-info");
         }
         if (selectedButton) {
           selectedButton.classList.add("active", "btn-warning");
@@ -1420,7 +1434,7 @@ require([
                     <h1 id="title-text">${configVars.title}</h1>
                 </div>
                 <div class="print-map">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 1.5px solid #A9A9A9; margin: 0 0.75in;">
+                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 3px solid #A9A9A9; margin: 0 0.75in;">
                 </div>
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
@@ -1550,9 +1564,9 @@ require([
         suggestionsContainer.innerHTML = "";
 
         $("#distanceButton").removeClass("btn-warning");
-        $("#distanceButton").addClass("bg-info");
+        // $("#distanceButton").addClass("bg-info");
         $("#areaButton").removeClass("btn-warning");
-        $("#distanceButton").addClass("bg-info");
+        // $("#distanceButton").addClass("bg-info");
         $("#featureWid").empty();
 
         view.ui.remove(activeWidget1);
@@ -3347,7 +3361,6 @@ require([
       $(document).ready(function () {
         $("#csvExportResults").on("click", function (e) {
           e.stopPropagation();
-
           // Initialize headers for CSV
           const headers = [
             "Owner",
@@ -3360,10 +3373,8 @@ require([
             "MBL",
             "Location",
           ];
-
           // Create CSV content with row headers
           let csvContent = headers.join(",") + "\n";
-
           // Loop through each feature in foundLocs array
           exportCsv.forEach(function (feature) {
             let owner = feature.attributes["Owner"] || "";
@@ -3375,102 +3386,26 @@ require([
             let Mailing_Zip = feature.attributes["Mailing_Zip"] || "";
             let Location = feature.attributes["Location"] || "";
             let MBL = feature.attributes["MBL"] || "";
-
             // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","'${Mailing_Zip}'","${MBL}","${Location}"\n`;
           });
-
           // Create blob
           const blob = new Blob([csvContent], {
             type: "text/csv;charset=utf-8;",
           });
 
-          // Convert blob to ArrayBuffer for upload
-          const reader = new FileReader();
-          reader.onload = function (event) {
-            const arrayBuffer = event.target.result;
-            getAccessTokenAndUpload(arrayBuffer);
-          };
-          reader.readAsArrayBuffer(blob);
+          // Create anchor element to download CSV
+          const link = document.createElement("a");
+          if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "export.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
         });
-
-        function getAccessTokenAndUpload(arrayBuffer) {
-          const clientId = "CLIENT";
-          const clientSecret = "SECRET";
-          const tenant = "TENANT";
-          const siteUrl = "https://qualitydataservice.sharepoint.com";
-
-          const tokenUrl = `https://accounts.accesscontrol.windows.net/${tenant}/tokens/OAuth/2`;
-          const data = {
-            grant_type: "client_credentials",
-            client_id: `${clientId}@${tenant}`,
-            client_secret: clientSecret,
-            resource: siteUrl,
-          };
-
-          $.ajax({
-            url: tokenUrl,
-            type: "POST",
-            headers: {
-              dataType: "jsonp",
-            },
-            data: data,
-            success: function (response) {
-              const accessToken = response.access_token;
-              uploadCsvToSharePoint(arrayBuffer, accessToken);
-            },
-            error: function (error) {
-              console.error("Error getting access token:", error);
-            },
-          });
-        }
-
-        function uploadCsvToSharePoint(arrayBuffer, accessToken) {
-          const siteUrl = "https://qualitydataservice.sharepoint.com";
-          const libraryName = "Shared Documents";
-          const fileName = "export.csv";
-
-          $.ajax({
-            url: `${siteUrl}/_api/contextinfo`,
-            type: "POST",
-            headers: {
-              Accept: "application/json; odata=verbose",
-              Authorization: `Bearer ${accessToken}`,
-              dataType: "jsonp",
-            },
-            success: function (data) {
-              const formDigestValue =
-                data.d.GetContextWebInformation.FormDigestValue;
-
-              $.ajax({
-                url: `${siteUrl}/_api/web/GetFolderByServerRelativeUrl('${libraryName}')/Files/add(url='${fileName}',overwrite=true)`,
-                type: "POST",
-                data: arrayBuffer,
-                processData: false,
-                headers: {
-                  Accept: "application/json; odata=verbose",
-                  "X-RequestDigest": formDigestValue,
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/octet-stream",
-                  dataType: "jsonp",
-                },
-                success: function (data) {
-                  const fileUrl = data.d.ServerRelativeUrl;
-                  const embedUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-                    siteUrl + fileUrl
-                  )}`;
-                  window.open(embedUrl, "_blank");
-                },
-                error: function (error) {
-                  console.error("Error uploading CSV to SharePoint:", error);
-                },
-              });
-            },
-            error: function (error) {
-              console.error("Error getting form digest value:", error);
-            },
-          });
-        }
       });
 
       $(document).ready(function () {
@@ -4677,7 +4612,7 @@ require([
             view.graphics.addMany([polygonGraphic]);
             view.goTo({
               target: polygonGraphic,
-              zoom: 14,
+              // zoom: 14,
             });
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
@@ -4696,7 +4631,7 @@ require([
 
               view.goTo({
                 target: geometry,
-                zoom: 14,
+                // zoom: 14,
               });
 
               const fillSymbol = {
@@ -4733,7 +4668,7 @@ require([
 
               view.goTo({
                 target: detailsGeometry,
-                zoom: 15,
+                // zoom: 15,
               });
 
               const fillSymbol = {
@@ -4768,7 +4703,7 @@ require([
 
                 view.goTo({
                   target: geometry,
-                  zoom: 15,
+                  // zoom: 15,
                 });
 
                 const fillSymbol = {
