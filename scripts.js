@@ -487,7 +487,7 @@ require([
               baseLayers.forEach((layer) => {
                 layer.visible = visibilityTracker[layer.id];
               });
-              alert("At least one basemap must be visible.");
+              // alert("At least one basemap must be visible.");
             }
           }
 
