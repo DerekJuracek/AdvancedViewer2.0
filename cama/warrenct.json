@@ -15,7 +15,7 @@
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Warren_CT.png",
-  "customWelcomePage": "yes",
+  "customWelcomePage": "no",
   "customWelcomeMessage": "We want something different.",
   "accessorName": "- Linda Bertaccini | Assessor  <br>    - Jamie Hatch | Assistant Assessor",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=149",
