@@ -1335,10 +1335,8 @@ require([
 
       function captureMap() {
         const printDPI = 300; // Standard print DPI
-        const mapWidthInInches = 7; // Width of the map on paper in inches
-        const mapHeightInInches = 5; // Height of the map on paper in inches
-        const mapWidthInPixels = mapWidthInInches * printDPI;
-        const mapHeightInPixels = mapHeightInInches * printDPI;
+        const mapWidthInInches = 6; // Width of the map on paper in inches
+        const mapHeightInInches = 6; // Height of the map on paper in inches
         const scaleValue = 1200; // Scale value representing 1 inch = 100 feet
 
         const viewCenter = view.center;
@@ -1358,8 +1356,8 @@ require([
         view.goTo(extent).then(function () {
           view
             .takeScreenshot({
-              width: mapWidthInPixels,
-              height: mapHeightInPixels,
+              width: 576,
+              height: 576,
             })
             .then(function (screenshot) {
               const title = "Map Title"; // Set your dynamic title here
@@ -1448,7 +1446,7 @@ require([
                       <h1 id="title-text">${configVars.title}</h1>
                   </div>
                   <div class="print-map">
-                      <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 3px solid #A9A9A9; margin: 0;">
+                      <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: ${mapHeightInInches}in; border: 3px solid #A9A9A9; margin: 0;">
                   </div>
                   <div class="print-scale">
                       <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
