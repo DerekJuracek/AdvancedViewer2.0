@@ -1338,7 +1338,7 @@ require([
         const pageWidthInInches = 8.5; // Width of the paper in inches
         const pageHeightInInches = 11; // Height of the paper in inches
         const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 6.5; // Slightly reduced height of the map on paper in inches
+        const mapHeightInInches = 6.56; // Slightly reduced height of the map on paper in inches
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
@@ -1434,7 +1434,7 @@ require([
                     <h1 id="title-text">${configVars.title}</h1>
                 </div>
                 <div class="print-map">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: ${mapHeightInInches}in; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: ${mapHeightInInches}; border: 3px solid #A9A9A9; margin: 0 0.75in;">
                 </div>
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
