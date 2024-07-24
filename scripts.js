@@ -1335,19 +1335,21 @@ require([
 
       function captureMap() {
         const printDPI = 300; // Standard print DPI
-        const pageWidthInInches = 8.5; // Width of the paper in inches
-        const pageHeightInInches = 11; // Height of the paper in inches
-        const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 6.56; // Slightly reduced height of the map on paper in inches
+        // const pageWidthInInches = 8.5; // Width of the paper in inches
+        // const pageHeightInInches = 11; // Height of the paper in inches
+        // const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
+        // const mapHeightInInches = 6.56; // Slightly reduced height of the map on paper in inches
         // const mapWidthInPixels = mapWidthInInches * printDPI;
         // const mapHeightInPixels = mapHeightInInches * printDPI;
-        const mapWidthInPixels = 850;
-        const mapHeightInPixels = 850;
+        // const mapWidthInPixels = 850;
+        // const mapHeightInPixels = 850;
 
         view
           .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
+            // width: mapWidthInPixels,
+            // height: mapHeightInPixels,
+            format: "png",
+            ignorePadding: true,
           })
           .then(function (screenshot) {
             const title = "Map Title"; // Set your dynamic title here
@@ -1436,8 +1438,8 @@ require([
                     <img id="town-logo" src="${configVars.welcomeImage}" alt="Town Logo">
                     <h1 id="title-text">${configVars.title}</h1>
                 </div>
-                <div class="print-map" style="width: ${mapWidthInPixels}px; height: ${mapHeightInPixels}px;">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInPixels}px; height: ${mapHeightInPixels}px;">
+                <div class="print-map" style="">
+                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image">
                 </div>
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
