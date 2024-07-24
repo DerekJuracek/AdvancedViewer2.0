@@ -1338,7 +1338,7 @@ require([
         const pageWidthInInches = 8.5; // Width of the paper in inches
         const pageHeightInInches = 11; // Height of the paper in inches
         const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 7; // Slightly reduced height of the map on paper in inches
+        const mapHeightInInches = 6.5; // Slightly reduced height of the map on paper in inches
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
