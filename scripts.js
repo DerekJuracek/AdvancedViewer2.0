@@ -1338,7 +1338,7 @@ require([
         const pageWidthInInches = 8.5; // Width of the paper in inches
         const pageHeightInInches = 11; // Height of the paper in inches
         const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 8; // Slightly reduced height of the map on paper in inches
+        const mapHeightInInches = 7; // Slightly reduced height of the map on paper in inches
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
@@ -1376,7 +1376,7 @@ require([
                         align-items: center;
                         justify-content: center;
                         text-align: center;
-                        font-size: 24px;
+                        font-size: 19px;
                         margin: 20px 0;
                     }
                     .print-scale {
@@ -1384,7 +1384,7 @@ require([
                         align-items: center;
                         justify-content: space-around;
                         text-align: center;
-                        font-size: 14px;
+                        font-size: 12px;
                         width: 100%;
                         margin-left: 20px;
                         margin-right: 20px;
@@ -1434,14 +1434,14 @@ require([
                     <h1 id="title-text">${configVars.title}</h1>
                 </div>
                 <div class="print-map">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: ${mapHeightInInches}; border: 3px solid #A9A9A9; margin: 0 0.75in;">
                 </div>
                 <div class="print-scale">
-                    <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
+                    <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
                     <div id="to-scale" class="scale-bar-container"></div>
                     <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
                 </div>
-                <div style="text-align: center;">
+                <div style="text-align: center; font-size: 12px;">
                     <p>Disclaimer: This map is intended for reference and general informational purposes
                     only and is not a legally recorded map or survey. While reasonable effort has been
                     made to ensure the accuracy, correctness, and timeliness of materials presented,
