@@ -2826,7 +2826,6 @@ require([
               } else {
                 view.goTo({
                   target: result.features,
-                  zoom: 15,
                 });
               }
               addPolygons(result, view.graphics);
@@ -3922,7 +3921,6 @@ require([
         view.graphics.add(newBufferGraphic);
         view.goTo({
           target: newBufferGraphic,
-          zoom: oldZoom,
         });
       }
 
@@ -4538,8 +4536,6 @@ require([
         view.graphics.addMany([polygonGraphic]);
         view.goTo({
           target: polygonGraphic,
-          zoom: 15,
-          // zoom: 15,
         });
       }
 
@@ -4559,7 +4555,6 @@ require([
 
           view.goTo({
             target: geometry,
-            zoom: oldZoom,
           });
         });
       }
@@ -4612,7 +4607,6 @@ require([
             view.graphics.addMany([polygonGraphic]);
             view.goTo({
               target: polygonGraphic,
-              // zoom: 14,
             });
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
@@ -4631,7 +4625,6 @@ require([
 
               view.goTo({
                 target: geometry,
-                // zoom: 14,
               });
 
               const fillSymbol = {
@@ -4668,7 +4661,6 @@ require([
 
               view.goTo({
                 target: detailsGeometry,
-                // zoom: 15,
               });
 
               const fillSymbol = {
@@ -4703,7 +4695,6 @@ require([
 
                 view.goTo({
                   target: geometry,
-                  // zoom: 15,
                 });
 
                 const fillSymbol = {
