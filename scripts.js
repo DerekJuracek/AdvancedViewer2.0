@@ -1335,21 +1335,19 @@ require([
 
       function captureMap() {
         const printDPI = 300; // Standard print DPI
-        // const pageWidthInInches = 8.5; // Width of the paper in inches
-        // const pageHeightInInches = 11; // Height of the paper in inches
-        // const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
-        // const mapHeightInInches = 6.56; // Slightly reduced height of the map on paper in inches
-        // const mapWidthInPixels = mapWidthInInches * printDPI;
-        // const mapHeightInPixels = mapHeightInInches * printDPI;
-        // const mapWidthInPixels = 850;
-        // const mapHeightInPixels = 850;
+        const pageWidthInInches = 8.5; // Width of the paper in inches
+        const pageHeightInInches = 11; // Height of the paper in inches
+        const mapWidthInInches = 8; // Slightly reduced width of the map on paper in inches
+        const mapHeightInInches = 6; // Slightly reduced height of the map on paper in inches
+        const mapWidthInPixels = mapWidthInInches * printDPI;
+        const mapHeightInPixels = mapHeightInInches * printDPI;
+
+        console.log(mapWidthInPixels);
 
         view
           .takeScreenshot({
-            // width: mapWidthInPixels,
-            // height: mapHeightInPixels,
-            format: "png",
-            ignorePadding: true,
+            width: 700,
+            height: 500,
           })
           .then(function (screenshot) {
             const title = "Map Title"; // Set your dynamic title here
@@ -1357,114 +1355,112 @@ require([
             const scaleBar1 = document.getElementById("scale-value");
             const scaleBarHTML = scaleBar1.innerHTML;
             const currentDate = new Date().toLocaleString();
-
             printWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Print Map</title>
-                <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
-                <style>
-                    body {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    .print-title {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        text-align: center;
-                        font-size: 19px;
-                        margin: 20px 0;
-                    }
-                    .print-scale {
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-around;
-                        text-align: center;
-                        font-size: 12px;
-                        width: 100%;
-                        margin-left: 20px;
-                        margin-right: 20px;
-                    }
-                    .print-title img {
-                        margin-right: 20px;
-                    }
-                    .scale-bar-container {
-                        transform: scale(1.5);
-                        margin-right: 50px;
-                    }
-                    .print-scale-bar {
-                        width: 300px;
-                        height: 30px;
-                    }
-                      
-                    .info-writing-container {
-                        display: flex;
-                        justify-content: center;
-                        align-items: flex-start;
-                        width: 80%;
-                        margin: 20px auto;
-                    }
-                    .info-text {
-                        width: 20%;
-                        text-align: left;
-                        margin-right: 20px;
-                    }
-                    .writing-lines {
-                        width: 80%;
-                        text-align: center;
-                    }
-                    .writing-lines div {
-                        border-bottom: 1px solid black;
-                        margin: 10px 0;
-                        height: 20px;
-                    }
-                    @media print {
-                        body * {
-                            visibility: visible;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="print-title" id="print-title">
-                    <img id="town-logo" src="${configVars.welcomeImage}" alt="Town Logo">
-                    <h1 id="title-text">${configVars.title}</h1>
-                </div>
-                <div class="print-map" style="">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image">
-                </div>
-                <div class="print-scale">
-                    <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
-                    <div id="to-scale" class="scale-bar-container"></div>
-                    <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
-                </div>
-                <div style="text-align: center; font-size: 12px;">
-                    <p>Disclaimer: This map is intended for reference and general informational purposes
-                    only and is not a legally recorded map or survey. While reasonable effort has been
-                    made to ensure the accuracy, correctness, and timeliness of materials presented,
-                    the map vendor and the municipality disclaim any and all liability and responsibility for
-                    any errors, omissions, or inaccuracies in the data provided, including without limitation
-                    any liability for direct, indirect, incidental, consequential, special, exemplary,
-                    punitive, or any other type of damages. Users are hereby notified that the primary
-                    information source should be consulted for verification of the data contained herein.
-                    Continued use of this map acknowledges acceptance of these terms.</p>
-                </div>
-                <script>
-                    window.onload = function() {
-                        window.print();
-                    };
-                </script>
-            </body>
-            </html>
-          `);
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Print Map</title>
+                  <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+                  <style>
+                      body {
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                          margin: 0;
+                          padding: 0;
+                      }
+                      .print-title {
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          text-align: center;
+                          font-size: 24px;
+                          margin: 20px 0;
+                      }
+                      .print-scale {
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-around;
+                          text-align: center;
+                          font-size: 14px;
+                          width: 100%;
+                          margin-left: 20px;
+                          margin-right: 20px;
+                      }
+                      .print-title img {
+                          margin-right: 20px;
+                      }
+                      .scale-bar-container {
+                          transform: scale(1.5);
+                          margin-right: 50px;
+                      }
+                      .print-scale-bar {
+                          width: 300px;
+                          height: 30px;
+                      }
+                      .info-writing-container {
+                          display: flex;
+                          justify-content: center;
+                          align-items: flex-start;
+                          width: 80%;
+                          margin: 20px auto;
+                      }
+                      .info-text {
+                          width: 20%;
+                          text-align: left;
+                          margin-right: 20px;
+                      }
+                      .writing-lines {
+                          width: 80%;
+                          text-align: center;
+                      }
+                      .writing-lines div {
+                          border-bottom: 1px solid black;
+                          margin: 10px 0;
+                          height: 20px;
+                      }
+                      @media print {
+                          body * {
+                              visibility: visible;
+                          }
+                      }
+                  </style>
+              </head>
+              <body>
+                  <div class="print-title" id="print-title">
+                      <img id="town-logo" src="${configVars.welcomeImage}" alt="Town Logo">
+                      <h1 id="title-text">${configVars.title}</h1>
+                  </div>
+                  <div class="print-map">
+                      <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: 700px; height: 500px; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+                  </div>
+                  <div class="print-scale">
+                      <div class="print-date" style="font-size: 14px;">Date Printed: ${currentDate}</div>
+                      <div id="to-scale" class="scale-bar-container"></div>
+                      <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
+                  </div>
+                  <div style="text-align: center;">
+                      <p>Disclaimer: This map is intended for reference and general informational purposes
+                      only and is not a legally recorded map or survey. While reasonable effort has been
+                      made to ensure the accuracy, correctness, and timeliness of materials presented,
+                      the map vendor and the municipality disclaim any and all liability and responsibility for
+                      any errors, omissions, or inaccuracies in the data provided, including without limitation
+                      any liability for direct, indirect, incidental, consequential, special, exemplary,
+                      punitive, or any other type of damages. Users are hereby notified that the primary
+                      information source should be consulted for verification of the data contained herein.
+                      Continued use of this map acknowledges acceptance of these terms.</p>
+                  </div>
+                  <script>
+                      window.onload = function() {
+                          window.print();
+                      };
+                  </script>
+              </body>
+              </html>
+            `);
             printWindow.document.close();
           });
       }
