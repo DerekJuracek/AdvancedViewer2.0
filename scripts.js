@@ -86,6 +86,9 @@ require([
       configVars.showDisclaimer = config.showDisclaimer;
       configVars.customDisclaimerPage = config.customDisclaimerPage;
       configVars.customDisclaimerMessage = config.customDisclaimerMessage;
+      configVars.DetailLinks = config.DetailLinks;
+
+      configVars.DetailLinksToInclude = config.DetailLinksToInclude;
 
       if (configVars.showDisclaimer === "no") {
         sessionStorage.setItem("agreedToDisclaimer", "yes");
@@ -1447,7 +1450,7 @@ require([
                   <div id="to-scale" class="scale-bar-container"></div>
                   <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
               </div>
-              <div style="text-align: center; font-size: 12px;">
+              <div style="text-align: center; font-size: 12px; padding-left: 30px; padding-right: 30px;">
                   <p>Disclaimer: This map is intended for reference and general informational purposes
                   only and is not a legally recorded map or survey. While reasonable effort has been
                   made to ensure the accuracy, correctness, and timeliness of materials presented,
@@ -4088,43 +4091,49 @@ require([
         details.innerHTML = "";
         details.classList.add("details");
 
+        let cards = configVars.DetailLinksToInclude;
+        let allCards = configVars.DetailLinks;
+        let panels = [];
+
+        allCards.forEach((item) => {
+          let panel = item;
+          if (cards.includes(item)) {
+            let obj = {
+              [panel]: { show: "show" },
+            };
+            panels.push(obj);
+          } else {
+            let obj = {
+              [panel]: { show: "none" },
+            };
+            panels.push(obj);
+          }
+        });
+
         details.innerHTML = `
-        <p>
-        <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
-        </p>
+      <p>
+      <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
+      </p>
 
-        <div>
-        <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125"><br>
-        </div>
-        <p>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
-
-        </p>
-        <p>
-        <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
-
-        </p>
-        <p>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
-
-        </p>
-        <p>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
-        <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;"></span>
-        </p>
-        <p>   
+      <div>
+      <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+      </div>
+      <p>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
+  </p>
+  <div id="accordion">
+    <div class="card" id="links" style="display:${panels[0].links.show}">
+      <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Property Links
+          </button>
+        </h5>
+    </div>
+    <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
+      <div class="card-body">
         <a target="_blank" rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
         <a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span><br>
         <a target="_blank" rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
@@ -4133,8 +4142,71 @@ require([
         <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
         <a target="_blank" rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>View in Google Maps</strong></span></a><br>
         <a target="_blank" rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>View in Bing Maps</strong></span></a><br>
-              
-        `;
+          </div>
+        </div>
+      </div>
+        <div class="card " id="ids" style="display:${panels[1].ids.show}">
+            <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Property Ids & Uses
+                </button>
+            </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                  <p>
+                  <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
+                  </p>
+                </div>
+            </div>
+        </div>
+    <div class="card" id="sales" style="display:${panels[3].sales.show}" >
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Latest Sale / Transfer
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+        <p>
+        <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="vals" style="display:${panels[2].vals.show}">
+    <div class="card-header" id="headingFour">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            Valuations
+          </button>
+        </h5>
+      </div>
+      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+        <div class="card-body">
+            <p>
+            <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
+            <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;"></span>
+            </p>
+        </div>
+    </div>
+  </div>
+</div>
+    `;
+
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
       }
@@ -4357,19 +4429,6 @@ require([
           zoomToItemId = locationGIS_LINK;
           Id = locationGIS_LINK;
         }
-        console.log(Parcel_Type);
-
-        // if (
-        //   !locationGeom ||
-        //   locationGeom == "" ||
-        //   (locationGeom == undefined && Total_Acres === 0)
-        // ) {
-        //   $("#abutters-attributes").prop("disabled", true);
-        //   $("#abutters-zoom").prop("disabled", true);
-        // } else {
-        //   $("#abutters-attributes").prop("disabled", false);
-        //   $("#abutters-zoom").prop("disabled", false);
-        // }
 
         // zoomToItemId = locationUniqueId;
         zoomToObjectID = objectID2;
@@ -4381,132 +4440,126 @@ require([
         details.innerHTML = "";
         details.classList.add("details");
 
+        let cards = configVars.DetailLinksToInclude;
+        let allCards = configVars.DetailLinks;
+        let panels = [];
+
+        allCards.forEach((item) => {
+          let panel = item;
+          if (cards.includes(item)) {
+            let obj = {
+              [panel]: { show: "show" },
+            };
+            panels.push(obj);
+          } else {
+            let obj = {
+              [panel]: { show: "none" },
+            };
+            panels.push(obj);
+          }
+        });
+
+        console.log(panels);
+
         details.innerHTML = `
-    <p>
-    <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
-    </p>
+      <p>
+      <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
+      </p>
 
-    <div>
-    <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125"><br>
+      <div>
+      <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+      </div>
+      <p>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
+      <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
+  </p>
+  <div id="accordion">
+    <div class="card" id="links" style="display:${panels[0].links.show}">
+      <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Property Links
+          </button>
+        </h5>
     </div>
-    <p>
-    <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
-
-    </p>
-    <p>
-    <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
-
-    </p>
-    <p>
-    <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
-
-    </p>
-    <p>
-    <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
-    <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
-    <span style="font-family:Tahoma;font-size:12px;"></span>
-    </p>
-    <p>
-    <a target="_blank" rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span><br>
-    <a target="_blank" rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>View in Google Maps</strong></span></a><br>
-    <a target="_blank" rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>View in Bing Maps</strong></span></a><br>
-          
+    <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
+      <div class="card-body">
+        <a target="_blank" rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span><br>
+        <a target="_blank" rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>View in Google Maps</strong></span></a><br>
+        <a target="_blank" rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>View in Bing Maps</strong></span></a><br>
+          </div>
+        </div>
+      </div>
+        <div class="card " id="ids" style="display:${panels[1].ids.show}">
+            <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Property Ids & Uses
+                </button>
+            </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                  <p>
+                  <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
+                  <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
+                  </p>
+                </div>
+            </div>
+        </div>
+    <div class="card" id="sales" style="display:${panels[3].sales.show}" >
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Latest Sale / Transfer
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+        <p>
+        <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="vals" style="display:${panels[2].vals.show}">
+    <div class="card-header" id="headingFour">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            Valuations
+          </button>
+        </h5>
+      </div>
+      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+        <div class="card-body">
+            <p>
+            <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
+            <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
+            <span style="font-family:Tahoma;font-size:12px;"></span>
+            </p>
+        </div>
+    </div>
+  </div>
+</div>
     `;
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
-
-        // $(document).ready(function () {
-        //   // Add click event listener to the dynamically generated buttons with class 'justZoom'
-        //   $(document).on("click", ".abutters-zoom", function (event) {
-        //     event.stopPropagation();
-        //     event.preventDefault();
-
-        //     // let targetElement = event.target.closest("li");
-        //     let itemId = locationUniqueId;
-        //     let objectID = objectID2;
-
-        //     console.log(itemId);
-        //     console.log(objectID);
-
-        //     if (sessionStorage.getItem(key) === "no") {
-        //       // If the key doesn't exist, set it to "none"
-        //       let whereClause = `OBJECTID = ${objectID}`;
-        //       let query = noCondosLayer.createQuery();
-        //       query.where = whereClause;
-        //       query.returnGeometry = true;
-        //       query.returnHiddenFields = true; // Adjust based on your needs
-        //       query.outFields = ["*"];
-
-        //       noCondosLayer.queryFeatures(query).then((response) => {
-        //         let feature = response;
-        //         let geometry = feature.features[0].geometry;
-
-        //         // Get the extent of the geometry
-        //         const geometryExtent = geometry.extent;
-
-        //         // Calculate the center of the geometry
-        //         const center = geometryExtent.center;
-
-        //         // Calculate a new extent with a slightly zoomed-out level
-        //         const zoomOutFactor = 3.0; // Adjust as needed
-        //         const newExtent = geometryExtent.expand(zoomOutFactor);
-
-        //         // Set the view to the new extent
-        //         view.goTo({
-        //           target: center, // Center the view on the center of the geometry
-        //           extent: newExtent, // Set the extent to the new adjusted extent
-        //         });
-        //       });
-        //     } else {
-        //       let whereClause = `OBJECTID = ${objectID}`;
-        //       // let whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
-        //       let query = CondosLayer.createQuery();
-        //       query.where = whereClause;
-        //       query.returnGeometry = true;
-        //       query.returnHiddenFields = true; // Adjust based on your needs
-        //       query.outFields = ["*"];
-
-        //       CondosLayer.queryFeatures(query).then((response) => {
-        //         let feature = response;
-        //         let geometry = feature.features[0].geometry;
-
-        //         // Get the extent of the geometry
-        //         const geometryExtent = geometry.extent;
-
-        //         // Calculate the center of the geometry
-        //         const center = geometryExtent.center;
-
-        //         // Calculate a new extent with a slightly zoomed-out level
-        //         const zoomOutFactor = 3.0; // Adjust as needed
-        //         const newExtent = geometryExtent.expand(zoomOutFactor);
-
-        //         // Set the view to the new extent
-        //         view.goTo({
-        //           target: center, // Center the view on the center of the geometry
-        //           extent: newExtent, // Set the extent to the new adjusted extent
-        //         });
-        //       });
-        //       // You can perform any actions you want here, such as zooming to a location
-        //     }
-        //   });
-        // });
       }
 
       function zoomToDetail(objectid, geom, item) {

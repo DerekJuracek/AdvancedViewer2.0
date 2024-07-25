@@ -18,6 +18,8 @@
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Columbia_CT.png",
   "customWelcomePage": "yes",
   "customWelcomeMessage": "We want something different.",
+  "DetailLinks": ["links", "ids", "vals", "sales"],
+  "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Mary Hawley – Assessor <br>    - Marcy Littlefield - Assistant Assessor",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=030",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Columbia",

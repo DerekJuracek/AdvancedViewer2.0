@@ -18,6 +18,8 @@
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Warren_CT.png",
   "customWelcomePage": "no",
   "customWelcomeMessage": "We want something different.",
+  "DetailLinks": ["links", "ids", "vals", "sales"],
+  "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Linda Bertaccini | Assessor  <br>    - Jamie Hatch | Assistant Assessor",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=149",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Warren",

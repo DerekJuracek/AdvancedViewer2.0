@@ -18,6 +18,8 @@
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/North_Canaan_CT.png",
   "customWelcomePage": "no",
   "customWelcomeMessage": "We want something different.",
+  "DetailLinks": ["links", "ids", "vals", "sales"],
+  "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Jennifer Dubray | Assessor",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=100",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_North_Canaan",
