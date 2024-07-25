@@ -1447,7 +1447,7 @@ require([
                   <div id="to-scale" class="scale-bar-container"></div>
                   <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
               </div>
-              <div style="text-align: center; font-size: 12px;">
+              <div style="text-align: center; font-size: 12px; padding-left: 30px; padding-right: 30px;">
                   <p>Disclaimer: This map is intended for reference and general informational purposes
                   only and is not a legally recorded map or survey. While reasonable effort has been
                   made to ensure the accuracy, correctness, and timeliness of materials presented,
