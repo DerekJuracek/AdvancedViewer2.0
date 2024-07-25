@@ -12,6 +12,7 @@
   "parcelRenderer": "#91C73D",
   "condos": "no",
   "imageUrl": "https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Roxbury_CT/",
+  "showDisclaimer": "yes",
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Roxbury_CT.png",

@@ -83,8 +83,14 @@ require([
       configVars.includeFilter = config.includeFilter;
       configVars.customWelcomePage = config.customWelcomePage;
       configVars.customWelcomeMessage = config.customWelcomeMessage;
+      configVars.showDisclaimer = config.showDisclaimer;
       configVars.customDisclaimerPage = config.customDisclaimerPage;
       configVars.customDisclaimerMessage = config.customDisclaimerMessage;
+
+      if (configVars.showDisclaimer === "no") {
+        sessionStorage.setItem("agreedToDisclaimer", "yes");
+        $("#starterModal").modal("hide");
+      }
 
       if (configVars.customWelcomePage === "yes") {
         document.getElementById("welcomeMessage").innerHTML =
@@ -1564,9 +1570,9 @@ require([
         suggestionsContainer.innerHTML = "";
 
         $("#distanceButton").removeClass("btn-warning");
-        // $("#distanceButton").addClass("bg-info");
+        $("#distanceButton").addClass("bg-info");
         $("#areaButton").removeClass("btn-warning");
-        // $("#distanceButton").addClass("bg-info");
+        $("#distanceButton").addClass("bg-info");
         $("#featureWid").empty();
 
         view.ui.remove(activeWidget1);

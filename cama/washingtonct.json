@@ -11,6 +11,7 @@
   "parcelRenderer": "#91C73D",
   "condos": "yes",
   "imageUrl": "https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Washington_CT/",
+  "showDisclaimer": "yes",
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Washington_CT.png",
