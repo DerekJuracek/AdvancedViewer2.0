@@ -273,6 +273,22 @@ esri-ui-corner esri-component {
   background-color: rgba(127, 42, 145, 1) !important;
 }
 
+a.bg-info:focus, a.bg-info:hover, button.bg-info:focus, button.bg-info:hover {
+  background-color: rgba(127, 42, 145, 1) !important;
+}
+
+#scale-value:hover, #scale-value.show,#scale-value:active  {
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
+  border-color: rgba(145, 199, 61,1) !important;
+  background-color: rgba(127, 42, 145, 1) !important;
+  outline-color: var(--third);
+}
+
+div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
+  background-color: rgba(127, 42, 145, 1) !important;
+}
+
 /* .clear-btn:hover {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
   border-color: transparent;
