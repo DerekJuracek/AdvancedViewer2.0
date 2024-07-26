@@ -204,6 +204,41 @@ esri-ui-corner esri-component {
       
   }
 
+  #accordion {
+color: black !important;
+width: 250px !important;
+  }
+
+  .card {
+    border-right: white 1px solid !important;
+    border-left: white 1px solid !important;
+    border-top: 0px;
+    border-bottom: 0px;
+  }
+
+  .card-header {
+    word-wrap: normal !important;
+    background-color: rgb(91, 29, 104) !important;
+    color: white !important;
+    border: 0.5px white solid;
+  }
+  .card-body {
+   background-color: rgba(30, 30, 30, 0.9) !important;
+   color: white;
+  }
+
+  .collapse {
+    width: 248px;
+  }
+
+  .card-header {
+    padding: 0  0 0 0 !important;
+  }
+
+  .btn-link {
+    color: white !important;
+  }
+
 
 
 
@@ -327,6 +362,11 @@ div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
 
 } 
 
+
+.btn.focus, .btn:focus {
+  outline: 0;
+  box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .0) !important;
+}
 .active {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
 
