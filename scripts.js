@@ -150,7 +150,7 @@ require([
         },
         constraints: {
           minScale: 240, // sets the minimum zoom level
-          maxScale: 170000, // sets the maximum zoom level
+          maxScale: 134000, // sets the maximum zoom level
         },
       });
       view.when(() => {
@@ -1757,13 +1757,12 @@ require([
           let displayNoGeometry = sessionStorage.getItem("condos") === "yes";
 
           if (!locationCoOwner && locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId} &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId} &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId} &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
-
           listItem.innerHTML += listItemHTML;
           listItem.setAttribute("object-id", objectID);
           listItem.setAttribute("data-id", locationGISLINK);

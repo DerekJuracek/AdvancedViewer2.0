@@ -218,8 +218,9 @@ width: 250px !important;
 
   .card-header {
     word-wrap: normal !important;
-    background-color: rgba(127, 42, 145, 1) !important;
+    background-color: rgb(91, 29, 104) !important;
     color: white !important;
+    border: 0.5px white solid;
   }
   .card-body {
    background-color: rgba(30, 30, 30, 0.9) !important;
@@ -228,10 +229,6 @@ width: 250px !important;
 
   .collapse {
     width: 248px;
-    /* border-right: white 1px solid !important;
-    border-left: white 1px solid !important;
-    border-top: 0px;
-    border-bottom: 0px; */
   }
 
   .card-header {
