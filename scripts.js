@@ -14,6 +14,7 @@ require([
   "esri/widgets/BasemapLayerList",
   "esri/widgets/Bookmarks",
   "esri/widgets/Legend",
+  "esri/layers/support/TileInfo",
 ], function (
   WebMap,
   MapView,
@@ -29,7 +30,8 @@ require([
   AreaMeasurement2D,
   BasemapLayerList,
   Bookmarks,
-  Legend
+  Legend,
+  TileInfo
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -139,6 +141,13 @@ require([
         layers: [searchGraphicsLayers],
       });
 
+      // Create LODs from level 0 to 31
+      const tileInfo = TileInfo.create({
+        numLODs: 30,
+      });
+
+      const lods = tileInfo.lods;
+      console.log(lods);
       var view = new MapView({
         container: "viewDiv",
         map: webmap,
@@ -149,11 +158,13 @@ require([
           components: ["attribution"],
         },
         constraints: {
-          minScale: 240, // sets the minimum zoom level
-          maxScale: 134000, // sets the maximum zoom level
+          lods: lods,
+          minScale: 240,
+          maxScale: 170000,
         },
       });
       view.when(() => {
+        console.log(view.spatialReference);
         configVars.homeExtent = view.extent;
       });
 
