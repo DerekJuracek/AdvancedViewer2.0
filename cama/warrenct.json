@@ -17,7 +17,7 @@
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Warren_CT.png",
   "customWelcomePage": "yes",
-  "customWelcomeMessage": "<strong>Physical Address:</strong><br> 50 Cemetery Road, Warren, CT 06754 <br><br> <strong>Hours of Operation:<br></strong> Wednesday <br>9 am to noon<strong><br>Please be aware: online property record data is working grand list year data, and is subject to change at any time.</strong>",
+  "customWelcomeMessage": "<strong>Physical Address:</strong><br> 50 Cemetery Road, Warren, CT 06754 <br><br> <strong>Hours of Operation:<br></strong> Wednesday <br>9 am to noon<br><strong><br>Please be aware: online property record data is working grand list year data, and is subject to change at any time.</strong>",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "sales"],
   "accessorName": "- Linda Bertaccini | Assessor  <br>    - Jamie Hatch | Assistant Assessor",
