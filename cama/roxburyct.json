@@ -17,7 +17,7 @@
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Roxbury_CT.png",
   "customWelcomePage": "yes",
-  "customWelcomeMessage": "<bol>Physical Address:</bol><br> 29 North Street Roxbury, CT 06783",
+  "customWelcomeMessage": "<strong>Physical Address:</strong><br> 29 North Street Roxbury, CT 06783 <br><br> <strong>Mailing Address:</strong> PO Box 203 Roxbury, CT 06783 <br><br> <strong>Hours of Operation</strong> Tuesday and Thursday <br>9 am to noon<br>1 am to 4 pm<br><br>Friday<br>9 am to noon",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "sales"],
   "accessorName": "-Linda Bertaccini – Assessor <br>    -Jamie Hatch - Assistant Assessor",
