@@ -17,7 +17,7 @@
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Roxbury_CT.png",
   "customWelcomePage": "no",
-  "customWelcomeMessage": "We want something different.",
+  "customWelcomeMessage": "<bol>Physical Address:</bol><br> 29 North Street Roxbury, CT 06783",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "sales"],
   "accessorName": "-Linda Bertaccini – Assessor <br>    -Jamie Hatch - Assistant Assessor",
