@@ -868,12 +868,12 @@ require([
       webmap.add(noCondosLayer);
       webmap.add(CondosLayer);
 
-      CondosTable.load().then(() => {
-        webmap.tables.add(CondosTable);
-      });
-      noCondosTable.load().then(() => {
-        webmap.tables.add(noCondosTable);
-      });
+      // CondosTable.load().then(() => {
+      //   webmap.tables.add(CondosTable);
+      // });
+      // noCondosTable.load().then(() => {
+      //   webmap.tables.add(noCondosTable);
+      // });
 
       view.when(function () {
         let watchLayer;
@@ -1278,7 +1278,7 @@ require([
           // Log the inputs for debugging
           console.log(`Querying ${fieldName} between ${value} and ${value2}`);
 
-          let query = noCondosTable.createQuery();
+          let query = CondosTable.createQuery();
 
           if (Array.isArray(value) && value.length > 0 && !value2) {
             // Construct the WHERE clause for multiple values
@@ -1301,7 +1301,7 @@ require([
             query.orderByFields = [`${outField} ASC`];
           }
 
-          let response = await noCondosTable.createQuery();
+          let response = await CondosTable.queryFeatures(query);
           var features = response.features;
           let values = features.map((feature) => feature.attributes[outField]);
 
@@ -1442,7 +1442,7 @@ require([
         var comboBox = $(comboBoxSelector);
         comboBox.empty();
 
-        let query = noCondosTable.createQuery();
+        let query = CondosTable.createQuery();
 
         if (Array.isArray(value) && value.length > 0 && !value2) {
           // Construct the WHERE clause for multiple values
@@ -1462,7 +1462,7 @@ require([
           query.orderByFields = [`${outField} ASC`];
         }
 
-        noCondosTable.queryFeatures(query).then(function (response) {
+        CondosTable.queryFeatures(query).then(function (response) {
           var features = response.features;
           var comboBox = $(comboBoxSelector);
           comboBox.empty();
@@ -1485,7 +1485,7 @@ require([
         comboBoxSelector,
         orderByField = null
       ) {
-        let query = noCondosTable.createQuery();
+        let query = CondosTable.createQuery();
         query.where = `1=1 AND ${fieldName} IS NOT NULL`;
         query.returnDistinctValues = true;
         query.returnGeometry = false;
@@ -1494,7 +1494,7 @@ require([
         }
         query.outFields = [fieldName];
 
-        noCondosTable.queryFeatures(query).then(function (response) {
+        CondosTable.queryFeatures(query).then(function (response) {
           var features = response.features;
           var comboBox = $(comboBoxSelector);
 
@@ -2363,7 +2363,7 @@ require([
           });
         }
 
-        if (e) {
+        if (e && e != undefined) {
           pointGraphic = features[0].attributes.OBJECTID;
           pointLocation = features[0].attributes.Location;
           pointGisLink = features[0].attributes.GIS_LINK;
@@ -2907,7 +2907,7 @@ require([
           runQuerySearchTerm = e.target.value.toUpperCase();
         });
 
-      function queryRelatedRecords(searchTerm, urlSearch) {
+      function queryRelatedRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
         } else {
@@ -2916,7 +2916,13 @@ require([
 
         $(".spinner-container").show();
         const tableSearch = true;
-        let whereClause = `
+
+        let whereClause;
+
+        // if (filterQuery) {
+        //   whereClause = filterQuery;
+        // } else {
+        whereClause = `
           Street_Name LIKE '%${searchTerm}%' OR 
           MBL LIKE '%${searchTerm}%' OR 
           Location LIKE '%${searchTerm}%' OR 
@@ -2925,23 +2931,36 @@ require([
           Owner LIKE '%${searchTerm}%' OR 
           GIS_LINK LIKE '%${searchTerm}%'
       `;
+        // }
+
+        let query;
+
+        if (filterQuery) {
+          query = filterQuery;
+        } else {
+          query = CondosTable.createQuery();
+          query.where = whereClause;
+          query.returnGeometry = false;
+          query.returnHiddenFields = true; // Adjust based on your needs
+          query.outFields = ["*"];
+        }
 
         let GISLINK;
 
-        let query = noCondosLayer.createQuery();
-        query.where = whereClause;
-        query.returnGeometry = true; // Adjust based on your needs
-        query.outFields = ["*"];
+        // let query = noCondosLayer.createQuery();
+        // query.where = whereClause;
+        // query.returnGeometry = true; // Adjust based on your needs
+        // query.outFields = ["*"];
 
-        let query2 = CondosLayer.createQuery();
-        query2.where = whereClause;
-        query2.returnGeometry = true; // Adjust based on your needs
-        query2.outFields = ["*"];
+        // let query2 = CondosLayer.createQuery();
+        // query2.where = whereClause;
+        // query2.returnGeometry = true; // Adjust based on your needs
+        // query2.outFields = ["*"];
 
         let triggerUrl;
 
         if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer.queryFeatures(query).then(function (result) {
+          noCondosLayer.queryFeatures(filterQuery).then(function (result) {
             triggerUrl = result.features;
             if (result.features.length >= 1) {
               triggerUrl = result.features;
@@ -5089,7 +5108,7 @@ require([
 
       // LOGIC FOR SEARCH OF FEATURE LAYERS AND RELATED RECORDS
 
-      const runQuery = (e) => {
+      const runQuery = (e, filterQuery) => {
         firstList = [];
 
         // Check if the key exists in sessionStorage
@@ -5112,7 +5131,10 @@ require([
 
         let searchTerm = runQuerySearchTerm;
 
-        if (searchTerm.length < 3 || !searchTerm) {
+        if (
+          (searchTerm?.length < 3 && !filterQuery) ||
+          (!searchTerm && !filterQuery)
+        ) {
           clearContents();
           return;
         } else {
@@ -5127,24 +5149,45 @@ require([
           $("#csvExportResults").hide();
           $("#exportButtons").hide();
 
-          let whereClause = `
-              Street_Name LIKE '%${searchTerm}%' OR 
-              MBL LIKE '%${searchTerm}%' OR 
-              Location LIKE '%${searchTerm}%' OR 
-              Co_Owner LIKE '%${searchTerm}%' OR 
-              Uniqueid LIKE '%${searchTerm}%' OR 
-              Owner LIKE '%${searchTerm}%' OR
-              GIS_LINK LIKE '%${searchTerm}%'
-          `;
+          let whereClause;
 
-          let query = noCondosTable.createQuery();
-          query.where = whereClause;
-          query.returnGeometry = false;
-          query.returnHiddenFields = true; // Adjust based on your needs
-          query.outFields = ["*"];
+          // if (filterQuery) {
+          //   whereClause = filterQuery;
+          // } else {
 
-          noCondosTable
-            .queryFeatures(query)
+          whereClause = `
+          Street_Name LIKE '%${searchTerm}%' OR 
+          MBL LIKE '%${searchTerm}%' OR 
+          Location LIKE '%${searchTerm}%' OR 
+          Co_Owner LIKE '%${searchTerm}%' OR 
+          Uniqueid LIKE '%${searchTerm}%' OR 
+          Owner LIKE '%${searchTerm}%' OR 
+          GIS_LINK LIKE '%${searchTerm}%'
+      `;
+
+          // let whereClause = `
+          //     Street_Name LIKE '%${searchTerm}%' OR
+          //     MBL LIKE '%${searchTerm}%' OR
+          //     Location LIKE '%${searchTerm}%' OR
+          //     Co_Owner LIKE '%${searchTerm}%' OR
+          //     Uniqueid LIKE '%${searchTerm}%' OR
+          //     Owner LIKE '%${searchTerm}%' OR
+          //     GIS_LINK LIKE '%${searchTerm}%'
+          // `;
+
+          let query;
+
+          if (filterQuery) {
+            query = filterQuery;
+          } else {
+            query = CondosTable.createQuery();
+            query.where = whereClause;
+            query.returnGeometry = false;
+            query.returnHiddenFields = true; // Adjust based on your needs
+            query.outFields = ["*"];
+          }
+
+          CondosTable.queryFeatures(query)
             .then((response) => {
               if (response.features.length > 0) {
                 features = response.features;
@@ -5242,7 +5285,21 @@ require([
                     );
                   }
                 });
-                queryRelatedRecords(runQuerySearchTerm);
+
+                let query2 = noCondosLayer.createQuery();
+                query2.where = query.where;
+                query2.returnDistinctValues = false;
+                query2.returnGeometry = true;
+                query2.outFields = ["*"];
+
+                // if ('yes') {
+                //   let query = noCondosTable.createQuery();
+                //   query.where = queryString;
+                //   query.returnDistinctValues = false;
+                //   query.returnGeometry = true;
+                //   query.outFields = ["*"];
+                // }
+                queryRelatedRecords(runQuerySearchTerm, null, query2);
               }
             })
             .catch((error) => {
@@ -5833,7 +5890,7 @@ require([
           let queryString = queryParts.join(" AND ");
 
           if (sessionStorage.getItem("condos") === "no") {
-            let query = noCondosLayer.createQuery();
+            let query = noCondosTable.createQuery();
             query.where = queryString;
             query.returnDistinctValues = false;
             query.returnGeometry = true;
@@ -5841,41 +5898,45 @@ require([
 
             console.log(query.where);
 
-            noCondosLayer.queryFeatures(query).then(function (response) {
-              clearContents();
-              addPolygons(response, view.graphics);
-              processFeatures(response.features);
-              if (clickHandle) {
-                clickHandle?.remove();
-                clickHandle = null;
-              }
-              if (DetailsHandle) {
-                DetailsHandle?.remove();
-                DetailsHandle = null;
-              }
-              DetailsHandle = view.on("click", handleDetailsClick);
-            });
+            // noCondosTable.queryFeatures(query).then(function (response) {
+            // clearContents();
+            runQuery(null, query);
+            // addPolygons(response, view.graphics);
+            // queryRelatedRecords("", "", query.where);
+            // addPolygons(response, view.graphics);
+            // processFeatures(response.features);
+            // if (clickHandle) {
+            //   clickHandle?.remove();
+            //   clickHandle = null;
+            // }
+            // if (DetailsHandle) {
+            //   DetailsHandle?.remove();
+            //   DetailsHandle = null;
+            // }
+            // DetailsHandle = view.on("click", handleDetailsClick);
+            // });
           } else {
-            let query = CondosLayer.createQuery();
+            let query = noCondosTable.createQuery();
             query.where = queryString;
             query.returnDistinctValues = false;
             query.returnGeometry = true;
             query.outFields = ["*"];
 
-            CondosLayer.queryFeatures(query).then(function (response) {
-              clearContents();
-              addPolygons(response, view.graphics);
-              processFeatures(response.features);
-              if (clickHandle) {
-                clickHandle?.remove();
-                clickHandle = null;
-              }
-              if (DetailsHandle) {
-                DetailsHandle?.remove();
-                DetailsHandle = null;
-              }
-              DetailsHandle = view.on("click", handleDetailsClick);
-            });
+            // noCondosTable.queryFeatures(query).then(function (response) {
+            //   clearContents();
+            runQuery(null, query);
+            // addPolygons(response, view.graphics);
+            // queryRelatedRecords("", "", query.where);
+            // if (clickHandle) {
+            //   clickHandle?.remove();
+            //   clickHandle = null;
+            // }
+            // if (DetailsHandle) {
+            //   DetailsHandle?.remove();
+            //   DetailsHandle = null;
+            // }
+            // DetailsHandle = view.on("click", handleDetailsClick);
+            // });
           }
 
           // Here, you can use this query string to fetch data from your feature service
