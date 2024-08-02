@@ -1164,15 +1164,34 @@ require([
 
       function showWaiting(id) {
         const Filter = $(id);
-        Filter[0].open = false;
-        Filter[0].disabled = true;
-        Filter[0].placeholder = "Loading...";
+
+        if (Filter[0].tagName === "CALCITE-COMBOBOX") {
+          Filter[0].open = false;
+          Filter[0].disabled = true;
+          Filter[0].placeholder = "Loading...";
+        } else if (Filter[0].tagName === "CALCITE-INPUT-TEXT") {
+          // Filter[0].open = false;
+          Filter[0].loading = true;
+          Filter[0].disabled = true;
+          Filter[0].placeholder = "Loading...";
+        } else if (Filter[0].tagName === "CALCITE-DATE-PICKER") {
+          Filter[0].disabled = true;
+        }
       }
 
       function hideWaiting(id, message) {
         const Filter = $(id);
-        Filter[0].disabled = false;
-        Filter[0].placeholder = `${message}`;
+
+        if (Filter[0].tagName === "CALCITE-COMBOBOX") {
+          Filter[0].disabled = false;
+          Filter[0].placeholder = `${message}`;
+        } else if (Filter[0].tagName === "CALCITE-INPUT-TEXT") {
+          Filter[0].disabled = false;
+          Filter[0].loading = false;
+          Filter[0].placeholder = `${message}`;
+        } else if (Filter[0].tagName === "CALCITE-DATE-PICKER") {
+          Filter[0].disabled = false;
+        }
       }
 
       let queryMultiVals = {
@@ -6319,15 +6338,15 @@ require([
         }
 
         function onStateChange(newState) {
-          console.log("State changed to:", newState);
+          // console.log("State changed to:", newState);
           // Add your code to handle the state change here
           if (newState) {
             // Perform actions when all values are empty
-            console.log("All values are empty.");
+            // console.log("All values are empty.");
             triggerReset();
           } else {
             // Perform actions when there is at least one non-empty value
-            console.log("There are some non-empty values.");
+            // console.log("There are some non-empty values.");
           }
         }
 
