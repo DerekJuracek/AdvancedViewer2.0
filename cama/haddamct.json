@@ -12,7 +12,7 @@
   "parcelRenderer": "#91C73D",
   "condos": "yes",
   "imageUrl": "https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Haddam_CT/",
-  "showDisclaimer": "yes",
+  "showDisclaimer": "no",
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Haddam_CT.png",

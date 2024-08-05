@@ -37,15 +37,31 @@ require([
   let currentURL = window.location.href;
   let configUrl = urlParams.get("viewer");
 
-  // Updated regex pattern to allow additional query parameters
-  let urlPattern = /\?viewer=cama\/\w+(&\w+=\w+)*$/;
+  const configFiles = [
+    "columbiact",
+    "haddamct",
+    "northcanaanct",
+    "roxbury",
+    "scotlandct",
+    "warrenct",
+    "washingtonct",
+    "wiltonct",
+    "wiltoncttest",
+  ];
+
+  // Create a regex pattern to match allowed config file names
+  let allowedNamesPattern = configFiles.join("|");
+  let urlPattern = new RegExp(
+    `\\?viewer=cama\\/(${allowedNamesPattern})(\\&\\w+=\\w+)*$`
+  );
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
     $("#whole-app").show();
   } else {
-    window.location.href = "https://www.qds.biz/gis-service";
+    window.location.href = "./onload.html";
   }
+
   const configVars = {
     mapId: "",
     condoLayer: "",
@@ -7110,9 +7126,7 @@ require([
         });
       });
 
-      view.ui.add(scaleDropdown, {
-        position: "bottom-left",
-      });
+      view.ui.add(scaleDropdown);
 
       // Watch for changes in the view's scale and update the dropdown
       const handle = reactiveUtils.watch(

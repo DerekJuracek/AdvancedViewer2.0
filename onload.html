@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Image with Button</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        a {
+            margin-top: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #7D2A90; /* Updated background color */
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold; /* Make text bold */
+        }
+        a:hover {
+            background-color: #5c1e6b; /* Slightly darker shade for hover */
+        }
+    </style>
+</head>
+<body>
+    <img src="https://publicweb-gis.s3.amazonaws.com/Images/Company_Logos/Terreno_640x200-min.png" alt="Terreno Logo">
+    <a href="https://terrenogis.com/" role="button">Back to Terreno Home Page</a>
+</body>
+</html>
