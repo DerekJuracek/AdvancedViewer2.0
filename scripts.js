@@ -2955,6 +2955,80 @@ require([
           runQuerySearchTerm = e.target.value.toUpperCase();
         });
 
+      function queryUrlUniqueId(uniqueId, urlSearch) {
+        let query;
+        if (sessionStorage.getItem("condos") === "no") {
+          noCondosLayer.visible = true;
+          query = noCondosLayer.createQuery();
+          query.where = `UniqueId = '${uniqueId}'`;
+          query.returnGeometry = true; // Adjust based on your needs
+          query.outFields = ["*"];
+        } else {
+          CondosLayer.visible = true;
+          query = CondosLayer.createQuery();
+          query.where = `UniqueId = '${uniqueId}'`;
+          query.returnGeometry = true; // Adjust based on your needs
+          query.outFields = ["*"];
+        }
+
+        if (sessionStorage.getItem("condos") === "no") {
+          noCondosLayer
+            .queryFeatures(query)
+            .then(function (result) {
+              triggerUrl = result.features;
+
+              if (triggerUrl.length <= 0) {
+                clearContents();
+                alert("Search resulted in an error, please try again.");
+              }
+              if (result.features.length >= 1) {
+                triggerUrl = result.features;
+                noCondosParcelGeom = result.features;
+                addPolygons(result, view.graphics);
+                processFeatures(result.features);
+                if (urlSearch) {
+                  triggerListGroup(triggerUrl, searchTerm);
+                }
+
+                if (result.features.length >= 0) {
+                  view.goTo({
+                    target: result.features,
+                  });
+                }
+              }
+            })
+            .catch(function (error) {
+              if (items.length <= 0) {
+                clearContents();
+                alert("Search resulted in an error, please try again.");
+              }
+            });
+        } else {
+          CondosLayer.queryFeatures(query).then(function (result) {
+            triggerUrl = result.features;
+            if (triggerUrl.length <= 0) {
+              clearContents();
+              alert("Search resulted in an error, please try again.");
+            }
+            if (result.features.length >= 1) {
+              triggerUrl = result.features;
+              noCondosParcelGeom = result.features;
+              addPolygons(result, view.graphics);
+              processFeatures(result.features);
+              if (urlSearch) {
+                triggerListGroup(triggerUrl, searchTerm);
+              }
+
+              if (result.features.length >= 0) {
+                view.goTo({
+                  target: result.features,
+                });
+              }
+            }
+          });
+        }
+      }
+
       function queryRelatedRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
@@ -5468,7 +5542,7 @@ require([
             console.log("The view is ready.");
 
             // Place your function call or code here
-            queryRelatedRecords(uniqueId, urlSearch);
+            queryUrlUniqueId(uniqueId, urlSearch);
           })
           .catch(function (error) {
             console.error("Error occurred while the view was loading: ", error);
