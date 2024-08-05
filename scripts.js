@@ -163,7 +163,7 @@ require([
       });
 
       const lods = tileInfo.lods;
-      console.log(lods);
+      // console.log(lods);
       var view = new MapView({
         container: "viewDiv",
         map: webmap,
@@ -180,7 +180,7 @@ require([
         },
       });
       view.when(() => {
-        console.log(view.spatialReference);
+        // console.log(view.spatialReference);
         configVars.homeExtent = view.extent;
       });
 
@@ -602,17 +602,11 @@ require([
       let zoomToItemId;
       let zoomToObjectID;
       let overRide;
-
-      // scaleBar = new ScaleBar({
-      //   view: view,
-      //   style: "ruler",
-      //   unit: "imperial",
-      //   container: document.createElement("div"),
-      // });
-
-      // view.ui.add(scaleBar, {
-      //   position: "bottom-right",
-      // });
+      let dontTriggerMultiQuery;
+      let queryParameters;
+      let filterConfigurations;
+      let multiFilterConfigurations;
+      let filterConfigs;
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -855,12 +849,6 @@ require([
         }
       }
 
-      // // Check if the key exists in sessionStorage
-      // if (sessionStorage.getItem(key) === null) {
-      //   // If the key doesn't exist, set it to "none"
-      //   sessionStorage.setItem(key, configVars.isCondosLayer);
-      // }
-
       let noCondosLayer = new FeatureLayer({
         url: `${configVars.noCondoLayer}`,
         visible: false,
@@ -869,18 +857,6 @@ require([
         id: "noCondoLayer",
       });
 
-      // noCondosLayer.renderer = {
-      //   type: "simple",
-      //   symbol: {
-      //     type: "simple-fill",
-      //     color: [255, 255, 255, 0],
-      //     outline: {
-      //       width: 1,
-      //       color: [169, 169, 169, 1],
-      //     },
-      //   },
-      // };
-
       let CondosLayer = new FeatureLayer({
         url: `${configVars.condoLayer}`,
         visible: false,
@@ -888,19 +864,6 @@ require([
         title: "Parcel Boundaries",
         id: "condoLayer",
       });
-
-      // CondosLayer.renderer = {
-      //   type: "simple", // autocasts as new SimpleRenderer()
-      //   symbol: {
-      //     type: "simple-fill", // autocasts as new SimpleMarkerSymbol()
-      //     color: [255, 255, 255, 0],
-      //     outline: {
-      //       // autocasts as new SimpleLineSymbol()
-      //       width: 1,
-      //       color: [169, 169, 169, 1],
-      //     },
-      //   },
-      // };
 
       const CondosTable = new FeatureLayer({
         url: `${configVars.masterTable}`,
@@ -913,12 +876,151 @@ require([
       webmap.add(noCondosLayer);
       webmap.add(CondosLayer);
 
-      CondosTable.load().then(() => {
-        webmap.tables.add(CondosTable);
-      });
-      noCondosTable.load().then(() => {
-        webmap.tables.add(noCondosTable);
-      });
+      multiFilterConfigurations = [
+        {
+          layer: CondosLayer,
+          field: "Appraised_Total",
+          filterSelector: "#app-val-min",
+          filterSelector2: "#app-val-max",
+        },
+        {
+          layer: CondosLayer,
+          field: "Assessed_Total",
+          filterSelector: "#assess-val-min",
+          filterSelector2: "#assess-val-max",
+        },
+        {
+          layer: CondosLayer,
+          field: "Total_Acres",
+          filterSelector: "#acres-val-min",
+          filterSelector2: "#acres-val-max",
+        },
+        {
+          layer: CondosLayer,
+          field: "Sale_Date",
+          filterSelector: "#sold_calendar_lowest",
+          filterSelector2: "#sold_calendar_highest",
+        },
+        {
+          layer: CondosLayer,
+          field: "Sale_Price",
+          filterSelector: "#saleP-val-min",
+          filterSelector2: "#saleP-val-max",
+        },
+      ];
+
+      filterConfigurations = [
+        {
+          layer: CondosLayer,
+          field: "Street_Name",
+          filterSelector: "#streetFilter",
+          alias: "Street_Name",
+          message: "Select a Street Name",
+        },
+        {
+          layer: CondosLayer,
+          field: "Owner",
+          filterSelector: "#ownerFilter",
+          message: "Select a Owner",
+        },
+        {
+          layer: CondosLayer,
+          field: "Parcel_Type",
+          filterSelector: "#propertyFilter",
+          alias: "Parcel_Type",
+          message: "Select a Property Type",
+        },
+        {
+          layer: CondosLayer,
+          field: "Building_Type",
+          filterSelector: "#buildingFilter",
+          message: "Select a Building Type",
+        },
+        {
+          layer: CondosLayer,
+          field: "Building_Use_Code",
+          filterSelector: "#buildingUseFilter",
+          message: "Select a Building Use Type",
+        },
+        {
+          layer: CondosLayer,
+          field: "Design_Type",
+          filterSelector: "#designTypeFilter",
+          message: "Select a Design Type",
+        },
+        {
+          layer: CondosLayer,
+          field: "Zoning",
+          filterSelector: "#zoningFilter",
+          message: "Select a Zone",
+        },
+        {
+          layer: CondosLayer,
+          field: "Neighborhood",
+          filterSelector: "#neighborhoodFilter",
+          message: "Select a Neighborhood",
+        },
+      ];
+
+      filterConfigs = [
+        {
+          layer: CondosLayer,
+          field: "Appraised_Total",
+          filterSelector: "#streetFilter",
+          minInput: "app-val-min",
+          maxInput: "app-val-max",
+          minValField: "appraisedValueMin",
+          maxValueField: "appraisedValueMax",
+          index: 0,
+        },
+        {
+          layer: CondosLayer,
+          field: "Assessed_Total",
+          filterSelector: "#ownerFilter",
+          minInput: "assess-val-min",
+          maxInput: "assess-val-max",
+          minValField: "assessedValueMin",
+          maxValueField: "assessedValueMax",
+          index: 1,
+        },
+        {
+          layer: CondosLayer,
+          field: "Total_Acres",
+          filterSelector: "#propertyFilter",
+          minInput: "acres-val-min",
+          maxInput: "acres-val-max",
+          minValField: "acresValueMin",
+          maxValueField: "acresValueMax",
+          index: 2,
+        },
+        {
+          layer: CondosLayer,
+          field: "Sale_Date",
+          filterSelector: "#buildingFilter",
+          minInput: "sold_calendar_lowest",
+          maxInput: "sold_calendar_highest",
+          minValField: "soldOnMin",
+          maxValueField: "soldOnMax",
+          index: 3,
+        },
+        {
+          layer: CondosLayer,
+          field: "Sale_Price",
+          filterSelector: "#buildingUseFilter",
+          minInput: "saleP-val-min",
+          maxInput: "saleP-val-max",
+          minValField: "soldPMin",
+          maxValueField: "soldPMax",
+          index: 4,
+        },
+      ];
+
+      // CondosTable.load().then(() => {
+      //   webmap.tables.add(CondosTable);
+      // });
+      // noCondosTable.load().then(() => {
+      //   webmap.tables.add(noCondosTable);
+      // });
 
       view.when(function () {
         let watchLayer;
@@ -935,8 +1037,6 @@ require([
           (layer) => layer.id === watchLayer
         );
 
-        // Check if the specific layer was found
-        // if (specificLayer) {
         reactiveUtils.watch(
           () => specificLayer.visible,
           () => {
@@ -944,14 +1044,6 @@ require([
             updateLayerUI(specificLayer.id, isVisible);
           }
         );
-        // Watch for visibility changes on the specific layer
-        // reactiveUtils.watch(specificLayer, "visible", function (isVisible) {
-        //   // Update UI based on the layer's visibility
-        //   updateLayerUI(specificLayer.id, isVisible);
-        // });
-        // } else {
-        //   console.error("Layer not found.");
-        // }
       });
 
       function updateLayerUI(layerId, isVisible) {
@@ -1001,17 +1093,6 @@ require([
 
           // Append the item to the specified container
           container.append(item);
-
-          // Add click event listener for the action
-          // $(`#action-${layer.id}`).on("click", function () {
-          //   // Toggle visibility
-          //   layer.visible = !layer.visible;
-
-          //   // Swap the icon based on the new visibility state
-          //   var newIcon = layer.visible ? "minus" : "plus";
-          //   $(this).attr("icon", newIcon);
-
-          // });
         }
       }
 
@@ -1097,272 +1178,411 @@ require([
         overRide = bool;
       }
 
-      function generateFilters() {
-        let query = noCondosLayer.createQuery();
-        query.where = `1=1 AND Street_Name IS NOT NULL`;
-        query.returnDistinctValues = true;
-        query.returnGeometry = false;
-        query.orderByFields = ["Street_Name ASC"]; // Adjust based on your needs
-        query.outFields = ["Street_Name"];
+      function showWaiting(id) {
+        const Filter = $(id);
 
-        CondosLayer.queryFeatures(query).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#streetFilter");
+        if (Filter[0].tagName === "CALCITE-COMBOBOX") {
+          Filter[0].open = false;
+          Filter[0].disabled = true;
+          Filter[0].placeholder = "Loading...";
+        } else if (Filter[0].tagName === "CALCITE-INPUT-TEXT") {
+          // Filter[0].open = false;
+          Filter[0].loading = true;
+          Filter[0].disabled = true;
+          Filter[0].placeholder = "Loading...";
+        } else if (Filter[0].tagName === "CALCITE-DATE-PICKER") {
+          Filter[0].disabled = true;
+        }
+      }
 
-          // let streetFilteEle = $("#streetFilter");
-          features.forEach(function (feature) {
-            var name = feature.attributes.Street_Name; // Assuming 'Name' is the field you want to display
-            // var id = feature.attributes.OBJECTID; // Assuming 'Id' is the value you want to use
+      function hideWaiting(id, message) {
+        const Filter = $(id);
 
-            // Create a new Calcite ComboBox item
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
+        if (Filter[0].tagName === "CALCITE-COMBOBOX") {
+          Filter[0].disabled = false;
+          Filter[0].placeholder = `${message}`;
+        } else if (Filter[0].tagName === "CALCITE-INPUT-TEXT") {
+          Filter[0].disabled = false;
+          Filter[0].loading = false;
+          Filter[0].placeholder = `${message}`;
+        } else if (Filter[0].tagName === "CALCITE-DATE-PICKER") {
+          Filter[0].disabled = false;
+        }
+      }
 
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
+      let queryMultiVals = {
+        // streetName: null,
+        // owner: null,
+        appraisedValueMin: null,
+        appraisedValueMax: null,
+        assessedValueMin: null,
+        assessedValueMax: null,
+        // zoningType: null,
+        // neighborhoodType: null,
+        // propertyType: null,
+        // buildingType: null,
+        // buildingUseType: null,
+        // designType: null,
+        acresValueMin: null,
+        acresValueMax: null,
+        soldOnMin: null,
+        soldOnMax: null,
+        soldPMin: null,
+        soldPMax: null,
+      };
+
+      // function checkQueryValues() {
+      //   for (const key in queryParameters) {
+      //     // Check if the object has this key (not from the prototype chain)
+      //     if (queryParameters.hasOwnProperty(key)) {
+      //       // Check if the value is not empty
+      //       if (
+      //         queryParameters[key] !== null &&
+      //         queryParameters[key] !== undefined &&
+      //         queryParameters[key] !== "" &&
+      //         queryParameters[key] !== 0
+      //       ) {
+      //         return false; // If any value is not empty, return false
+      //       }
+      //     }
+      //   }
+      //   return true;
+      // }
+
+      let debounceTimer4;
+
+      function triggerMultiFilter(queryField, val, val2) {
+        function runMultiFilter() {
+          const indexVal = filterConfigurations.findIndex(
+            (item) => item.field == queryField
+          );
+          filterConfigurations.splice(indexVal, 1);
+
+          filterConfigurations.forEach((config) => {
+            generateMultiFilter(
+              config.layer,
+              queryField,
+              config.filterSelector,
+              val,
+              config.field,
+              val2,
+              config.message
+            );
           });
-        });
+        }
 
-        let query2 = noCondosLayer.createQuery();
-        query2.where = `1=1 AND Owner IS NOT NULL`;
-        query2.returnDistinctValues = true;
-        query2.returnGeometry = false; // Adjust based on your needs
-        query2.outFields = ["Owner"];
+        function throttleQuery() {
+          clearTimeout(debounceTimer4);
+          debounceTimer4 = setTimeout(() => {
+            runMultiFilter();
+          }, 600);
+        }
+        throttleQuery();
+      }
 
-        CondosLayer.queryFeatures(query2).then(function (response) {
+      let debounceTimer3;
+
+      async function generateDateFilter(
+        queryLayer,
+        fieldName,
+        comboBoxSelector,
+        value,
+        outField,
+        value2
+      ) {
+        try {
+          // Log the inputs for debugging
+          // console.log(`Querying ${fieldName} between ${value} and ${value2}`);
+
+          let query = CondosTable.createQuery();
+
+          if (Array.isArray(value) && value.length > 0 && !value2) {
+            // Construct the WHERE clause for multiple values
+            let whereClauses = value.map((val) => `${fieldName} = '${val}'`);
+            query.where = whereClauses.join(" OR ");
+          } else if (value && value2) {
+            query.where = `${fieldName} BETWEEN '${value}' AND '${value2}'`;
+          } else {
+            // Construct the WHERE clause for a single value
+            query.where = `${fieldName} = '${value}'`;
+          }
+
+          // query.where = `${fieldName} BETWEEN '${value}' AND '${value2}'`;
+          // console.log(`Query where clause: ${query.where}`);
+
+          query.returnDistinctValues = true;
+          query.returnGeometry = false;
+          query.outFields = [outField];
+          if (outField) {
+            query.orderByFields = [`${outField} ASC`];
+          }
+
+          let response = await CondosTable.queryFeatures(query);
           var features = response.features;
-          var comboBox = $("#ownerFilter");
+          let values = features.map((feature) => feature.attributes[outField]);
 
-          // let streetFilteEle = $("#streetFilter");
-          features.forEach(function (feature) {
-            var name = feature.attributes.Owner; // Assuming 'Name' is the field you want to display
-            // var id = feature.attributes.OBJECTID; // Assuming 'Id' is the value you want to use
+          // Log the values for debugging
+          // console.log(`Queried values: ${values}`);
 
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
+          // Find the max and min values
+          let maxValue = Math.max(...values);
+          let minValue = Math.min(...values);
 
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
+          switch (outField) {
+            case "Sale_Date":
+              let dateL = new Date(minValue);
+              let dateM = new Date(maxValue);
 
-        let query3 = noCondosLayer.createQuery();
-        query3.where = `1=1 AND Parcel_Type IS NOT NULL`;
-        query3.returnDistinctValues = true;
-        query3.returnGeometry = false;
-        query3.orderByFields = ["Parcel_Type ASC"]; // Adjust based on your needs
-        query3.outFields = ["Parcel_Type"];
+              // Extract the components
+              let yearL = dateL.getFullYear();
+              let monthL = ("0" + (dateL.getMonth() + 1)).slice(-2); // Months are zero-indexed
+              let dayL = ("0" + dateL.getDate()).slice(-2);
 
-        CondosLayer.queryFeatures(query3).then(function (response) {
-          // console.log(response);
+              let yearM = dateM.getFullYear();
+              let monthM = ("0" + (dateM.getMonth() + 1)).slice(-2); // Months are zero-indexed
+              let dayM = ("0" + dateM.getDate()).slice(-2);
 
-          var features = response.features;
-          var comboBox = $("#propertyFilter");
+              // Format the date as yyyy-MM-dd
+              let formattedDateL = `${yearL}-${monthL}-${dayL}`;
+              let formattedDateM = `${yearM}-${monthM}-${dayM}`;
 
-          features.forEach(function (feature) {
-            var name = feature.attributes.Parcel_Type; // Assuming 'Name' is the field you want to display
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
+              queryMultiVals.soldOnMin = formattedDateL;
+              queryMultiVals.soldOnMax = formattedDateM;
+              break;
+            case "Appraised_Total":
+              queryMultiVals.appraisedValueMin = minValue;
+              queryMultiVals.appraisedValueMax = maxValue;
+              break;
+            case "Assessed_Total":
+              queryMultiVals.assessedValueMin = minValue;
+              queryMultiVals.assessedValueMax = maxValue;
+              break;
+            case "Sale_Price":
+              queryMultiVals.soldPMin = minValue;
+              queryMultiVals.soldPMax = maxValue;
+              break;
+            case "Total_Acres":
+              queryMultiVals.acresValueMin = minValue;
+              queryMultiVals.acresValueMax = maxValue;
+              break;
+            default:
+              console.log(`Sorry, no field found.`);
+          }
 
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
+          // console.log(queryMultiVals);
 
-        let query4 = noCondosLayer.createQuery();
-        query4.where = `1=1 AND Building_Type IS NOT NULL`;
-        query4.returnDistinctValues = true;
-        query4.returnGeometry = false; // Adjust based on your needs
-        query4.outFields = ["Building_Type"];
+          function throttleQuery() {
+            clearTimeout(debounceTimer3);
+            debounceTimer3 = setTimeout(() => {
+              updateSliderInputs(fieldName);
+            }, 600);
+          }
+          throttleQuery();
+        } catch (error) {
+          console.error("Error querying features:", error);
+        }
+      }
 
-        CondosLayer.queryFeatures(query4).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#buildingFilter");
+      async function runSequentialQueries(queryItems, queryField, val, val2) {
+        for (const fields of queryItems) {
+          await generateDateFilter(
+            fields.layer,
+            queryField,
+            fields.filterSelector,
+            val,
+            fields.field,
+            val2
+          );
+        }
+      }
 
-          features.forEach(function (feature) {
-            var name = feature.attributes.Building_Type; // Assuming 'Name' is the field you want to display
-            // Create a new Calcite ComboBox item
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
+      function triggerMultiDates(queryField, val, val2) {
+        const indexVal = multiFilterConfigurations.findIndex(
+          (item) => item.field == queryField
+        );
+        multiFilterConfigurations.splice(indexVal, 1);
+        // ADD FILTER IF FIELD IS SELECTED
+        // var queryItems = multiFilterConfigurations.filter(
+        //   (item) => item.field != queryField
+        // );
+        runSequentialQueries(multiFilterConfigurations, queryField, val, val2);
+      }
 
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
+      function updateSliderInputs(queryField) {
+        // Filter the filterConfigs array based on your criteria
+        // var relevantFilters = filterConfigs.filter(
+        //   (slider) => slider.field !== queryField
+        // );
 
-        let query5 = noCondosLayer.createQuery();
-        query5.where = `1=1 AND Building_Use_Code IS NOT NULL`;
-        query5.returnDistinctValues = true;
-        query5.returnGeometry = false; // Adjust based on your needs
-        query5.outFields = ["Building_Use_Code"];
+        const indexVal = filterConfigs.findIndex(
+          (item) => item.field == queryField
+        );
+        filterConfigs.splice(indexVal, 1);
 
-        CondosLayer.queryFeatures(query5).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#buildingUseFilter");
+        filterConfigs.forEach((slider) => {
+          const sliderInputMin = document.getElementById(slider.minInput);
+          const sliderInputMax = document.getElementById(slider.maxInput);
 
-          features.forEach(function (feature) {
-            var name = feature.attributes.Building_Use_Code; // Assuming 'Name' is the field you want to display
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
+          let minVal = queryMultiVals[slider.minValField];
+          const maxVal = queryMultiVals[slider.maxValueField];
 
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
+          if (minVal === maxVal) {
+            minVal = 0;
+          }
 
-        let query6 = noCondosLayer.createQuery();
-        query6.where = `1=1 AND Design_Type IS NOT NULL`;
-        query6.returnDistinctValues = true;
-        query6.returnGeometry = false; // Adjust based on your needs
-        query6.outFields = ["Design_Type"];
+          let minStr;
+          let maxStr;
 
-        CondosLayer.queryFeatures(query6).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#designTypeFilter");
-
-          // let streetFilteEle = $("#streetFilter");
-          features.forEach(function (feature) {
-            var name = feature.attributes.Design_Type; // Assuming 'Name' is the field you want to display
-            // var id = feature.attributes.OBJECTID; // Assuming 'Id' is the value you want to use
-
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
-
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
-
-        let query7 = noCondosLayer.createQuery();
-        query7.where = `1=1 AND Zoning IS NOT NULL`;
-        query7.returnDistinctValues = true;
-        query7.returnGeometry = false; // Adjust based on your needs
-        query7.outFields = ["Zoning"];
-
-        CondosLayer.queryFeatures(query7).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#zoningFilter");
-
-          features.forEach(function (feature) {
-            var name = feature.attributes.Zoning; // Assuming 'Name' is the field you want to display
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
-
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
-        });
-
-        let query8 = noCondosLayer.createQuery();
-        query8.where = `1=1 AND Neighborhood IS NOT NULL`;
-        query8.returnDistinctValues = true;
-        query8.returnGeometry = false; // Adjust based on your needs
-        query8.outFields = ["Neighborhood"];
-
-        CondosLayer.queryFeatures(query8).then(function (response) {
-          var features = response.features;
-          var comboBox = $("#neighborhoodFilter");
-
-          features.forEach(function (feature) {
-            var name = feature.attributes.Neighborhood; // Assuming 'Name' is the field you want to display
-            var newItem;
-            if (name == "" || null || undefined) {
-              return;
-            } else {
-              // Create a new Calcite ComboBox item
-              newItem = $(
-                '<calcite-combobox-item value="' +
-                  name +
-                  '" text-label="' +
-                  name +
-                  '"></calcite-combobox-item>'
-              );
-            }
-
-            // Append the new item to the ComboBox
-            comboBox.append(newItem);
-          });
+          if (
+            slider.field === "Appraised_Total" ||
+            slider.field === "Assessed_Total" ||
+            slider.field === "Sale_Price"
+          ) {
+            minStr =
+              "$" + (minVal !== undefined ? minVal.toLocaleString() : "");
+            maxStr =
+              "$" + (maxVal !== undefined ? maxVal.toLocaleString() : "");
+            sliderInputMin.value = minStr;
+            sliderInputMax.value = maxStr;
+          } else if (slider.field === "Sale_Date") {
+            sliderInputMin.value = minVal !== undefined ? minVal : "";
+            sliderInputMax.value = maxVal !== undefined ? maxVal : "";
+          } else if (slider.field === "Total_Acres") {
+            minStr = minVal !== undefined ? minVal.toLocaleString() : "";
+            maxStr = maxVal !== undefined ? maxVal.toLocaleString() : "";
+            sliderInputMin.value = minStr;
+            sliderInputMax.value = maxStr;
+          }
         });
       }
 
-      generateFilters();
+      function generateMultiFilter(
+        queryLayer,
+        fieldName,
+        comboBoxSelector,
+        value,
+        outField,
+        value2,
+        message
+      ) {
+        showWaiting(comboBoxSelector);
+        var comboBox = $(comboBoxSelector);
+        comboBox.empty();
+
+        let query = CondosTable.createQuery();
+
+        if (Array.isArray(value) && value.length > 0 && !value2) {
+          // Construct the WHERE clause for multiple values
+          let whereClauses = value.map((val) => `${fieldName} = '${val}'`);
+          query.where = whereClauses.join(" OR ");
+        } else if (value && value2) {
+          query.where = `${fieldName} BETWEEN '${value}' AND '${value2}'`;
+        } else {
+          // Construct the WHERE clause for a single value
+          query.where = `${fieldName} = '${value}'`;
+        }
+
+        query.returnDistinctValues = true;
+        query.returnGeometry = false;
+        query.outFields = [outField];
+        if (outField) {
+          query.orderByFields = [`${outField} ASC`];
+        }
+
+        CondosTable.queryFeatures(query).then(function (response) {
+          var features = response.features;
+          var comboBox = $(comboBoxSelector);
+          comboBox.empty();
+
+          features.forEach(function (feature) {
+            var name = feature.attributes[outField];
+            if (name && name.trim()) {
+              var newItem = $(
+                `<calcite-combobox-item value="${name}" text-label="${name}"></calcite-combobox-item>`
+              );
+              comboBox.append(newItem);
+            }
+          });
+
+          hideWaiting(comboBoxSelector, message);
+        });
+      }
+
+      function generateFilter(
+        queryLayer,
+        fieldName,
+        comboBoxSelector,
+        message
+      ) {
+        showWaiting(comboBoxSelector);
+        var comboBox = $(comboBoxSelector);
+        comboBox.empty();
+
+        let query = CondosTable.createQuery();
+        query.where = `1=1 AND ${fieldName} IS NOT NULL`;
+        query.returnDistinctValues = true;
+        query.returnGeometry = false;
+        if (fieldName) {
+          query.orderByFields = [`${fieldName} ASC`];
+        }
+        query.outFields = [fieldName];
+
+        CondosTable.queryFeatures(query).then(function (response) {
+          var features = response.features;
+          var comboBox = $(comboBoxSelector);
+
+          features.forEach(function (feature) {
+            var name = feature.attributes[fieldName];
+            if (name && name.trim()) {
+              var newItem = $(
+                `<calcite-combobox-item value="${name}" text-label="${name}"></calcite-combobox-item>`
+              );
+              comboBox.append(newItem);
+            }
+          });
+        });
+        hideWaiting(comboBoxSelector, message);
+      }
+
+      generateFilter(
+        CondosLayer,
+        "Street_Name",
+        "#streetFilter",
+        "Select a Street Name"
+      );
+      generateFilter(CondosLayer, "Owner", "#ownerFilter", "Select a Owner");
+      generateFilter(
+        CondosLayer,
+        "Parcel_Type",
+        "#propertyFilter",
+        "Select a Property Type"
+      );
+      generateFilter(
+        CondosLayer,
+        "Building_Type",
+        "#buildingFilter",
+        "Select a Building Type"
+      );
+      generateFilter(
+        CondosLayer,
+        "Building_Use_Code",
+        "#buildingUseFilter",
+        "Select a Building Use"
+      );
+      generateFilter(
+        CondosLayer,
+        "Design_Type",
+        "#designTypeFilter",
+        "Select a Design Type"
+      );
+      generateFilter(CondosLayer, "Zoning", "#zoningFilter", "Select a Zone");
+      generateFilter(
+        CondosLayer,
+        "Neighborhood",
+        "#neighborhoodFilter",
+        "Select a Neighborhood"
+      );
+
       document
         .getElementById("Print-selector")
         .addEventListener("click", function () {
@@ -2196,7 +2416,7 @@ require([
           });
         }
 
-        if (e) {
+        if (e && e != undefined) {
           pointGraphic = features[0].attributes.OBJECTID;
           pointLocation = features[0].attributes.Location;
           pointGisLink = features[0].attributes.GIS_LINK;
@@ -2308,16 +2528,11 @@ require([
               (g) => g.id === bufferGraphicId
             );
 
-            // const graphicIndex2 = polygonGraphics2.findIndex(
-            //   (g) => g.id === bufferGraphicId
-            // );
             if (polygonGraphics.length === 1) {
               polygonGraphics.splice(0, 1);
             } else {
               polygonGraphics.splice(graphicIndex, 1);
             }
-
-            // polygonGraphics2.splice(graphicIndex, 1);
 
             if (polygonGraphics.length === 0) {
               if (!DetailsHandle) {
@@ -2740,7 +2955,7 @@ require([
           runQuerySearchTerm = e.target.value.toUpperCase();
         });
 
-      function queryRelatedRecords(searchTerm, urlSearch) {
+      function queryRelatedRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
         } else {
@@ -2749,7 +2964,13 @@ require([
 
         $(".spinner-container").show();
         const tableSearch = true;
-        let whereClause = `
+
+        let whereClause;
+
+        // if (filterQuery) {
+        //   whereClause = filterQuery;
+        // } else {
+        whereClause = `
           Street_Name LIKE '%${searchTerm}%' OR 
           MBL LIKE '%${searchTerm}%' OR 
           Location LIKE '%${searchTerm}%' OR 
@@ -2758,23 +2979,36 @@ require([
           Owner LIKE '%${searchTerm}%' OR 
           GIS_LINK LIKE '%${searchTerm}%'
       `;
+        // }
+
+        let query;
+
+        if (filterQuery) {
+          query = filterQuery;
+        } else {
+          query = CondosTable.createQuery();
+          query.where = whereClause;
+          query.returnGeometry = false;
+          query.returnHiddenFields = true; // Adjust based on your needs
+          query.outFields = ["*"];
+        }
 
         let GISLINK;
 
-        let query = noCondosLayer.createQuery();
-        query.where = whereClause;
-        query.returnGeometry = true; // Adjust based on your needs
-        query.outFields = ["*"];
+        // let query = noCondosLayer.createQuery();
+        // query.where = whereClause;
+        // query.returnGeometry = true; // Adjust based on your needs
+        // query.outFields = ["*"];
 
-        let query2 = CondosLayer.createQuery();
-        query2.where = whereClause;
-        query2.returnGeometry = true; // Adjust based on your needs
-        query2.outFields = ["*"];
+        // let query2 = CondosLayer.createQuery();
+        // query2.where = whereClause;
+        // query2.returnGeometry = true; // Adjust based on your needs
+        // query2.outFields = ["*"];
 
         let triggerUrl;
 
         if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer.queryFeatures(query).then(function (result) {
+          noCondosLayer.queryFeatures(filterQuery).then(function (result) {
             triggerUrl = result.features;
             if (result.features.length >= 1) {
               triggerUrl = result.features;
@@ -2852,7 +3086,7 @@ require([
             }
           });
         } else {
-          CondosLayer.queryFeatures(query2).then(function (result) {
+          CondosLayer.queryFeatures(query).then(function (result) {
             triggerUrl = result.features;
             if (result.features) {
               // console.log(`condos result: ${result}`);
@@ -4922,7 +5156,7 @@ require([
 
       // LOGIC FOR SEARCH OF FEATURE LAYERS AND RELATED RECORDS
 
-      const runQuery = (e) => {
+      const runQuery = (e, filterQuery) => {
         firstList = [];
 
         // Check if the key exists in sessionStorage
@@ -4945,7 +5179,10 @@ require([
 
         let searchTerm = runQuerySearchTerm;
 
-        if (searchTerm.length < 3 || !searchTerm) {
+        if (
+          (searchTerm?.length < 3 && !filterQuery) ||
+          (!searchTerm && !filterQuery)
+        ) {
           clearContents();
           return;
         } else {
@@ -4960,24 +5197,45 @@ require([
           $("#csvExportResults").hide();
           $("#exportButtons").hide();
 
-          let whereClause = `
-              Street_Name LIKE '%${searchTerm}%' OR 
-              MBL LIKE '%${searchTerm}%' OR 
-              Location LIKE '%${searchTerm}%' OR 
-              Co_Owner LIKE '%${searchTerm}%' OR 
-              Uniqueid LIKE '%${searchTerm}%' OR 
-              Owner LIKE '%${searchTerm}%' OR
-              GIS_LINK LIKE '%${searchTerm}%'
-          `;
+          let whereClause;
 
-          let query = noCondosTable.createQuery();
-          query.where = whereClause;
-          query.returnGeometry = false;
-          query.returnHiddenFields = true; // Adjust based on your needs
-          query.outFields = ["*"];
+          // if (filterQuery) {
+          //   whereClause = filterQuery;
+          // } else {
 
-          noCondosTable
-            .queryFeatures(query)
+          whereClause = `
+          Street_Name LIKE '%${searchTerm}%' OR 
+          MBL LIKE '%${searchTerm}%' OR 
+          Location LIKE '%${searchTerm}%' OR 
+          Co_Owner LIKE '%${searchTerm}%' OR 
+          Uniqueid LIKE '%${searchTerm}%' OR 
+          Owner LIKE '%${searchTerm}%' OR 
+          GIS_LINK LIKE '%${searchTerm}%'
+      `;
+
+          // let whereClause = `
+          //     Street_Name LIKE '%${searchTerm}%' OR
+          //     MBL LIKE '%${searchTerm}%' OR
+          //     Location LIKE '%${searchTerm}%' OR
+          //     Co_Owner LIKE '%${searchTerm}%' OR
+          //     Uniqueid LIKE '%${searchTerm}%' OR
+          //     Owner LIKE '%${searchTerm}%' OR
+          //     GIS_LINK LIKE '%${searchTerm}%'
+          // `;
+
+          let query;
+
+          if (filterQuery) {
+            query = filterQuery;
+          } else {
+            query = CondosTable.createQuery();
+            query.where = whereClause;
+            query.returnGeometry = false;
+            query.returnHiddenFields = true; // Adjust based on your needs
+            query.outFields = ["*"];
+          }
+
+          CondosTable.queryFeatures(query)
             .then((response) => {
               if (response.features.length > 0) {
                 features = response.features;
@@ -5075,7 +5333,31 @@ require([
                     );
                   }
                 });
-                queryRelatedRecords(runQuerySearchTerm);
+
+                let query2;
+
+                if (sessionStorage.getItem("condos") === "no") {
+                  query2 = noCondosLayer.createQuery();
+                  query2.where = query.where;
+                  query2.returnDistinctValues = false;
+                  query2.returnGeometry = true;
+                  query2.outFields = ["*"];
+                } else {
+                  query2 = CondosLayer.createQuery();
+                  query2.where = query.where;
+                  query2.returnDistinctValues = false;
+                  query2.returnGeometry = true;
+                  query2.outFields = ["*"];
+                }
+
+                // if ('yes') {
+                //   let query = noCondosTable.createQuery();
+                //   query.where = queryString;
+                //   query.returnDistinctValues = false;
+                //   query.returnGeometry = true;
+                //   query.outFields = ["*"];
+                // }
+                queryRelatedRecords(runQuerySearchTerm, null, query2);
               }
             })
             .catch((error) => {
@@ -5192,17 +5474,6 @@ require([
             console.error("Error occurred while the view was loading: ", error);
           });
       }
-      // });
-
-      // document
-      //   .getElementById("searchInput")
-      //   .addEventListener("change", function (e) {
-      //     var searchTerm = e.target.value.toUpperCase();
-
-      //     if (searchTerm.length === 0) {
-      //       alert("you are a fool");
-      //     }
-      //   });
 
       document
         .getElementById("searchInput")
@@ -5449,7 +5720,7 @@ require([
         });
 
       $(document).ready(function () {
-        let queryParameters = {
+        queryParameters = {
           streetName: null,
           owner: null,
           appraisedValueMin: null,
@@ -5471,7 +5742,7 @@ require([
         };
 
         function updateQuery() {
-          console.log(queryParameters);
+          // console.log(queryParameters);
           let queryParts = [];
           if (
             queryParameters.streetName !== null &&
@@ -5666,78 +5937,101 @@ require([
           let queryString = queryParts.join(" AND ");
 
           if (sessionStorage.getItem("condos") === "no") {
-            let query = noCondosLayer.createQuery();
+            let query = noCondosTable.createQuery();
             query.where = queryString;
             query.returnDistinctValues = false;
             query.returnGeometry = true;
             query.outFields = ["*"];
 
-            noCondosLayer.queryFeatures(query).then(function (response) {
-              clearContents();
-              addPolygons(response, view.graphics);
-              processFeatures(response.features);
-              if (clickHandle) {
-                clickHandle?.remove();
-                clickHandle = null;
-              }
-              if (DetailsHandle) {
-                DetailsHandle?.remove();
-                DetailsHandle = null;
-              }
-              DetailsHandle = view.on("click", handleDetailsClick);
-            });
+            // console.log(query.where);
+
+            // noCondosTable.queryFeatures(query).then(function (response) {
+            clearContents();
+            runQuery(null, query);
+            // addPolygons(response, view.graphics);
+            // queryRelatedRecords("", "", query.where);
+            // addPolygons(response, view.graphics);
+            // processFeatures(response.features);
+            // if (clickHandle) {
+            //   clickHandle?.remove();
+            //   clickHandle = null;
+            // }
+            // if (DetailsHandle) {
+            //   DetailsHandle?.remove();
+            //   DetailsHandle = null;
+            // }
+            // DetailsHandle = view.on("click", handleDetailsClick);
+            // });
           } else {
-            let query = CondosLayer.createQuery();
+            let query = noCondosTable.createQuery();
             query.where = queryString;
             query.returnDistinctValues = false;
             query.returnGeometry = true;
             query.outFields = ["*"];
 
-            CondosLayer.queryFeatures(query).then(function (response) {
-              clearContents();
-              addPolygons(response, view.graphics);
-              processFeatures(response.features);
-              if (clickHandle) {
-                clickHandle?.remove();
-                clickHandle = null;
-              }
-              if (DetailsHandle) {
-                DetailsHandle?.remove();
-                DetailsHandle = null;
-              }
-              DetailsHandle = view.on("click", handleDetailsClick);
-            });
+            // noCondosTable.queryFeatures(query).then(function (response) {
+            clearContents();
+            runQuery(null, query);
+            // addPolygons(response, view.graphics);
+            // queryRelatedRecords("", "", query.where);
+            // if (clickHandle) {
+            //   clickHandle?.remove();
+            //   clickHandle = null;
+            // }
+            // if (DetailsHandle) {
+            //   DetailsHandle?.remove();
+            //   DetailsHandle = null;
+            // }
+            // DetailsHandle = view.on("click", handleDetailsClick);
+            // });
           }
 
           // Here, you can use this query string to fetch data from your feature service
         }
 
         $("#streetFilter").on("calciteComboboxChange", function (e) {
-          // value = e.target.value;
           queryParameters.streetName = e.target.value;
-          let itemsList = $("#streetFilter");
-          let selectedItems = itemsList[0].selectedItems;
-          // selectedItems.forEach((item) => {
-          //   console.log(item.value); // Assuming each item has a value attribute
-          // });
+          let debounceTimer5;
 
-          // console.log(`street filter is: ${value}`);
+          if (
+            queryParameters.streetName !== "" &&
+            queryParameters.streetName !== undefined &&
+            queryParameters.streetName !== null
+          ) {
+            triggerMultiFilter("Street_Name", e.target.value);
+            triggerMultiDates("Street_Name", e.target.value);
+          } else {
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#ownerFilter").on("calciteComboboxChange", function (e) {
           queryParameters.owner = e.target.value;
+          if (
+            queryParameters.owner !== "" &&
+            queryParameters.owner !== undefined &&
+            queryParameters.owner !== null
+          ) {
+            triggerMultiFilter("Owner", e.target.value);
+            triggerMultiDates("Owner", e.target.value);
+          } else {
+            let debounceTimer5;
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
-        // $("#app-val-slider").on("calciteSliderChange", function (e) {
-        //   value = e.target.value;
-        //   minVal = value[0];
-        //   maxVal = value[1];
-
-        //   queryParameters.appraisedValueMin = minVal;
-        //   $("#app-val-min").val("$" + minVal.toLocaleString());
-        //   queryParameters.appraisedValueMax = maxVal;
-        //   $("#app-val-max").val("$" + maxVal.toLocaleString());
-        // });
         $("#app-val-min, #app-val-max").on("input", function () {
           // Get the input values as strings
           var minValStr = $("#app-val-min").val();
@@ -5764,23 +6058,27 @@ require([
             // Update queryParameters with the numerical values
             queryParameters.appraisedValueMin = minVal;
             queryParameters.appraisedValueMax = maxVal;
+          }
 
-            // Optionally, update the slider values with the parsed integers
-            // const slider1 = document.querySelector("#app-val-slider");
-            // slider1.value = [minVal, maxVal];
+          // Check if the values are valid numbers, minVal is less than or equal to maxVal, and the lengths are at least 1
+          if (
+            !isNaN(minVal) &&
+            !isNaN(maxVal) &&
+            minVal <= maxVal &&
+            minValStr.length >= 6 &&
+            maxValStr.length >= 6
+          ) {
+            // Update query parameters
+            queryParameters.appraisedValueMin = minVal;
+            queryParameters.appraisedValueMax = maxVal;
+
+            // Trigger the functions
+            triggerMultiFilter("Appraised_Total", minVal, maxVal);
+            triggerMultiDates("Appraised_Total", minVal, maxVal);
+          } else {
+            // console.log("Invalid input values: ", minVal, maxVal);
           }
         });
-
-        // $("#assess-val-slider").on("calciteSliderChange", function (e) {
-        //   value = e.target.value;
-        //   minVal = value[0];
-        //   maxVal = value[1];
-
-        //   queryParameters.assessedValueMin = minVal;
-        //   $("#assess-val-min").val("$" + minVal.toLocaleString());
-        //   queryParameters.assessedValueMax = maxVal;
-        //   $("#assess-val-max").val("$" + maxVal.toLocaleString());
-        // });
 
         $("#assess-val-min, #assess-val-max").on("input", function () {
           var minValStr = $("#assess-val-min").val();
@@ -5806,103 +6104,300 @@ require([
 
             queryParameters.assessedValueMin = minVal;
             queryParameters.assessedValueMax = maxVal;
-
-            // Optionally, update the slider values with the parsed integers
-            // const slider2 = document.querySelector("#assess-val-slider");
-            // slider2.value = [minVal, maxVal];
           } else {
             // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
-            console.log("Invalid input");
+            // console.log("Invalid input");
+          }
+
+          // Check if the values are valid numbers, minVal is less than or equal to maxVal, and the lengths are at least 1
+          if (
+            !isNaN(minVal) &&
+            !isNaN(maxVal) &&
+            minVal <= maxVal &&
+            minValStr.length >= 6 &&
+            maxValStr.length >= 6
+          ) {
+            // Update query parameters
+            queryParameters.assessedValueMin = minVal;
+            queryParameters.assessedValueMax = maxVal;
+
+            // Trigger the functions
+            triggerMultiFilter("Assessed_Total", minVal, maxVal);
+            triggerMultiDates("Assessed_Total", minVal, maxVal);
+          } else {
+            console.log("Invalid input values: ", minVal, maxVal);
           }
         });
 
         $("#propertyFilter").on("calciteComboboxChange", function (e) {
           queryParameters.propertyType = e.target.value;
+          if (
+            e.target.value !== "" &&
+            e.target.value !== undefined &&
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Parcel_Type", e.target.value);
+            triggerMultiDates("Parcel_Type", e.target.value);
+          } else {
+            function throttleQuery() {
+              let debounceTimer5;
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#zoningFilter").on("calciteComboboxChange", function (e) {
           queryParameters.zoningType = e.target.value;
+          if (
+            e.target.value !== "" &&
+            e.target.value !== undefined &&
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Zoning", e.target.value);
+            triggerMultiDates("Zoning", e.target.value);
+          } else {
+            let debounceTimer5;
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#neighborhoodFilter").on("calciteComboboxChange", function (e) {
           queryParameters.neighborhoodType = e.target.value;
+          if (
+            e.target.value !== "" ||
+            e.target.value !== undefined ||
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Neighborhood", e.target.value);
+            triggerMultiDates("Neighborhood", e.target.value);
+          } else {
+            let debounceTimer5;
+
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#buildingFilter").on("calciteComboboxChange", function (e) {
           queryParameters.buildingType = e.target.value;
+          if (
+            e.target.value !== "" &&
+            e.target.value !== undefined &&
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Building_Type", e.target.value);
+            triggerMultiDates("Building_Type", e.target.value);
+          } else {
+            let debounceTimer5;
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#buildingUseFilter").on("calciteComboboxChange", function (e) {
           queryParameters.buildingUseType = e.target.value;
+          if (
+            e.target.value !== "" &&
+            e.target.value !== undefined &&
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Building_Use_Code", e.target.value);
+            triggerMultiDates("Building_Use_Code", e.target.value);
+          } else {
+            let debounceTimer5;
+
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
         $("#designTypeFilter").on("calciteComboboxChange", function (e) {
           queryParameters.designType = e.target.value;
+          if (
+            e.target.value !== "" &&
+            e.target.value !== undefined &&
+            e.target.value !== null
+          ) {
+            triggerMultiFilter("Design_Type", e.target.value);
+            triggerMultiDates("Design_Type", e.target.value);
+          } else {
+            let debounceTimer5;
+
+            function throttleQuery() {
+              clearTimeout(debounceTimer5);
+              debounceTimer5 = setTimeout(() => {
+                checkVals();
+              }, 600);
+            }
+            throttleQuery();
+          }
         });
 
-        // $("#acres-val-slider").on("calciteSliderChange", function (e) {
-        //   value = e.target.value;
-        //   minVal = value[0];
-        //   maxVal = value[1];
-
-        //   queryParameters.acresValueMin = minVal;
-        //   $("#acres-val-min").val(minVal);
-        //   queryParameters.acresValueMax = maxVal;
-        //   $("#acres-val-max").val(maxVal);
-        // });
-
         $("#acres-val-min, #acres-val-max").on("input", function () {
-          var minVal = parseInt($("#acres-val-min").val());
-          var maxVal = parseInt($("#acres-val-max").val());
+          // Get and parse the input values
+          var minVal = parseInt($("#acres-val-min").val(), 10);
+          var maxVal = parseInt($("#acres-val-max").val(), 10);
 
-          queryParameters.acresValueMin = minVal;
-          queryParameters.acresValueMax = maxVal;
+          // Convert values to strings and check their lengths
+          var minValStr = $("#acres-val-min").val().trim();
+          var maxValStr = $("#acres-val-max").val().trim();
 
-          // const slider3 = document.querySelector("#acres-val-slider");
-          // slider3.value = [minVal, maxVal];
+          // Check if the values are valid numbers, minVal is less than or equal to maxVal, and the lengths are at least 1
+          if (
+            !isNaN(minVal) &&
+            !isNaN(maxVal) &&
+            minVal <= maxVal &&
+            minValStr.length >= 0 &&
+            maxValStr.length >= 0
+          ) {
+            // Update query parameters
+            queryParameters.acresValueMin = minVal;
+            queryParameters.acresValueMax = maxVal;
+
+            // Trigger the functions
+            triggerMultiFilter("Total_Acres", minVal, maxVal);
+            triggerMultiDates("Total_Acres", minVal, maxVal);
+          } else {
+            console.log("Invalid input values: ", minVal, maxVal);
+          }
         });
 
         $("#sold_calendar_lowest").on("calciteDatePickerChange", function () {
-          var dateValue = $("#sold_calendar_lowest").val();
-          queryParameters.soldOnMin = dateValue;
+          var dateValueMin = $("#sold_calendar_lowest").val();
+          var dateValueMax = $("#sold_calendar_highest").val();
+          queryParameters.soldOnMin = dateValueMin;
+          queryParameters.soldOnMax = dateValueMax;
+          triggerMultiFilter("Sale_Date", dateValueMin, dateValueMax);
+          triggerMultiDates("Sale_Date", dateValueMin, dateValueMax);
         });
 
         $("#sold_calendar_highest").on("calciteDatePickerChange", function () {
-          var dateValue = $("#sold_calendar_highest").val();
-          queryParameters.soldOnMax = dateValue;
+          var dateValueMin = new Date($("#sold_calendar_lowest").val());
+          var dateValueMax = new Date($("#sold_calendar_highest").val());
+
+          // Add one day to both dates
+          dateValueMin.setDate(dateValueMin.getDate() + 1);
+          dateValueMax.setDate(dateValueMax.getDate() + 1);
+
+          // Format dates to 'YYYY-MM-DD' string
+          var formattedDateValueMin = dateValueMin.toISOString().split("T")[0];
+          var formattedDateValueMax = dateValueMax.toISOString().split("T")[0];
+
+          queryParameters.soldOnMin = formattedDateValueMin;
+          queryParameters.soldOnMax = formattedDateValueMax;
+
+          triggerMultiFilter(
+            "Sale_Date",
+            formattedDateValueMin,
+            formattedDateValueMax
+          );
+          triggerMultiDates(
+            "Sale_Date",
+            formattedDateValueMin,
+            formattedDateValueMax
+          );
+          // checkVals();
         });
 
-        // $("#soldon-val-slider").on("calciteSliderChange", function (e) {
-        //   value = e.target.value;
-        //   minVal = value[0];
-        //   maxVal = value[1];
-
-        //   queryParameters.soldOnMin = minVal;
-        //   $("#sold-val-min").val(minVal);
-
-        //   queryParameters.soldOnMax = maxVal;
-        //   $("#sold-val-max").val(maxVal);
+        // $("#sold_calendar_highest").on("calciteDatePickerChange", function () {
+        //   var dateValueMin = $("#sold_calendar_lowest").val();
+        //   var dateValueMax = $("#sold_calendar_highest").val();
+        //   queryParameters.soldOnMin = dateValueMin;
+        //   queryParameters.soldOnMax = dateValueMax;
+        //   triggerMultiFilter("Sale_Date", dateValueMin, dateValueMax);
+        //   triggerMultiDates("Sale_Date", dateValueMin, dateValueMax);
+        //   // checkVals();
         // });
+        let previousState = null;
 
-        // $("#sold-val-min, #sold-val-max").on("input", function () {
-        //   var minVal = parseInt($("#sold-val-min").val());
-        //   var maxVal = parseInt($("#sold-val-max").val());
+        function checkVals() {
+          const elementIds = [
+            // "#sold_calendar_lowest",
+            // "#sold_calendar_highest",
+            // "#acres-val-min",
+            // "#acres-val-max",
+            "#designTypeFilter",
+            "#buildingUseFilter",
+            "#buildingFilter",
+            "#neighborhoodFilter",
+            "#zoningFilter",
+            "#propertyFilter",
+            // "#assess-val-min",
+            // "#assess-val-max",
+            // "#app-val-min",
+            // "#app-val-max",
+            "#ownerFilter",
+            "#streetFilter",
+            // "#saleP-val-min",
+            // "#saleP-val-max",
+          ];
 
-        //   const slider4 = document.querySelector("#soldon-val-slider");
-        //   slider4.value = [minVal, maxVal];
-        // });
+          const values = elementIds.map((id) => $(id).val());
 
-        // $("#saleP-val-slider").on("calciteSliderChange", function (e) {
-        //   value = e.target.value;
-        //   minVal = value[0];
-        //   maxVal = value[1];
+          function isEmpty(value) {
+            return value.length === 0;
+          }
 
-        //   queryParameters.soldPMin = minVal;
-        //   $("#saleP-val-min").val("$" + minVal.toLocaleString());
+          const allEmpty = values.every(isEmpty);
 
-        //   queryParameters.soldPMax = maxVal;
-        //   $("#saleP-val-max").val("$" + maxVal.toLocaleString());
-        // });
+          // Check if the state has changed
+          if (previousState !== allEmpty) {
+            onStateChange(allEmpty);
+            previousState = allEmpty;
+          }
+
+          // console.log(values); // This will log the values of all the elements
+          // console.log(allEmpty); // This will log true if all values are empty, false otherwise
+
+          return allEmpty;
+        }
+
+        function triggerReset() {
+          clearQueryParameters();
+        }
+
+        function onStateChange(newState) {
+          // console.log("State changed to:", newState);
+          // Add your code to handle the state change here
+          if (newState) {
+            // Perform actions when all values are empty
+            // console.log("All values are empty.");
+            triggerReset();
+          } else {
+            // Perform actions when there is at least one non-empty value
+            // console.log("There are some non-empty values.");
+          }
+        }
+
+        // Initialize previousState to the current state of the inputs
+        document.addEventListener("DOMContentLoaded", () => {
+          previousState = checkVals(); // Set the initial state without triggering state change actions
+        });
 
         $("#saleP-val-min, #saleP-val-max").on("input", function () {
           var minValStr = $("#saleP-val-min").val();
@@ -5929,9 +6424,8 @@ require([
             queryParameters.soldPMin = minVal;
             queryParameters.soldPMax = maxVal;
 
-            // Optionally, update the slider values with the parsed integers
-            // const slider2 = document.querySelector("#saleP-val-slider");
-            // slider2.value = [minVal, maxVal];
+            triggerMultiFilter("Sale_Price", minVal, maxVal);
+            triggerMultiDates("Sale_Price", minVal, maxVal);
           } else {
             // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
             console.log("Invalid input");
@@ -5943,44 +6437,55 @@ require([
             {
               fieldName: "Appraised_Total",
               // slider: "app-val-slider",
-              minInput: "app-val-min",
-              maxInput: "app-val-max",
+              minInput: "#app-val-min",
+              maxInput: "#app-val-max",
               index: 0,
             },
             {
               fieldName: "Assessed_Total",
               // slider: "assess-val-slider",
-              minInput: "assess-val-min",
-              maxInput: "assess-val-max",
+              minInput: "#assess-val-min",
+              maxInput: "#assess-val-max",
               index: 1,
             },
 
             {
               fieldName: "Total_Acres",
               // slider: "acres-val-slider",
-              minInput: "acres-val-min",
-              maxInput: "acres-val-max",
+              minInput: "#acres-val-min",
+              maxInput: "#acres-val-max",
               index: 2,
             },
             {
               fieldName: "Sale_Date",
-              minInput: "sold_calendar_lowest",
-              maxInput: "sold_calendar_highest",
+              minInput: "#sold_calendar_lowest",
+              maxInput: "#sold_calendar_highest",
               index: 3,
             },
             {
               fieldName: "Sale_Price",
               // slider: "saleP-val-slider",
-              minInput: "saleP-val-min",
-              maxInput: "saleP-val-max",
+              minInput: "#saleP-val-min",
+              maxInput: "#saleP-val-max",
               index: 4,
             },
           ];
 
           sliderVals.forEach(function (slider) {
             if (slider.fieldName == "Sale_Date") {
-              // const sliderElLow = document.getElementById(slider.minInput);
-              // const sliderElMax = document.getElementById(slider.maxInput);
+              const sliderInputMin = $(slider.minInput);
+              const sliderInputMax = $(slider.maxInput);
+
+              // const sliderInputMin = document.getElementById(slider.minInput);
+              // const sliderInputMax = document.getElementById(slider.maxInput);
+
+              showWaiting(slider.minInput);
+              showWaiting(slider.maxInput);
+
+              // var sliderInputMin = $(sliderInputMin);
+              // var sliderInputMax = $(sliderInputMax);
+              sliderInputMin.empty();
+              sliderInputMax.empty();
 
               var minstr = vals[slider.index][slider.fieldName].min;
               var maxstr = vals[slider.index][slider.fieldName].max;
@@ -6003,28 +6508,17 @@ require([
               // Format the date as yyyy-MM-dd
               let formattedDateM = `${yearM}-${monthM}-${dayM}`;
 
-              // sliderElLow.value = formattedDateL;
-              // sliderElMax.value = formattedDateM;
+              sliderInputMin.val(formattedDateL);
+              sliderInputMax.val(formattedDateM);
 
-              queryParameters.soldOnMin = formattedDateL;
-              queryParameters.soldOnMax = formattedDateM;
-
-              // const sliderInputMin = document.getElementById(slider.minInput);
-              // const sliderInputMax = document.getElementById(slider.maxInput);
+              hideWaiting(slider.minInput, formattedDateL);
+              hideWaiting(slider.maxInput, formattedDateM);
             } else {
-              // gets slider and slider min / max values
-              // const sliderEl = document.getElementById(slider.slider);
-              const sliderInputMin = document.getElementById(slider.minInput);
-              const sliderInputMax = document.getElementById(slider.maxInput);
+              showWaiting(slider.minInput);
+              showWaiting(slider.maxInput);
 
-              // let minString = vals[slider.index][slider.fieldName].min;
-              // let maxString = vals[slider.index][slider.fieldName].max;
-
-              //   var formattedMinValue = minStr.minValue.toLocaleString();
-              //   var formattedMaxValue =maxStr.maxValue.toLocaleString();
-
-              // sliderEl.min = vals[slider.index][slider.fieldName].min;
-              // sliderEl.max = vals[slider.index][slider.fieldName].max;
+              const sliderInputMin = $(slider.minInput);
+              const sliderInputMax = $(slider.maxInput);
 
               const minVal = (sliderInputMin.value =
                 vals[slider.index][slider.fieldName].min);
@@ -6042,8 +6536,11 @@ require([
                 maxStr = maxVal.toLocaleString();
               }
 
-              sliderInputMin.value = minStr;
-              sliderInputMax.value = maxStr;
+              sliderInputMin.val(minStr);
+              sliderInputMax.val(maxStr);
+
+              hideWaiting(slider.minInput, minStr);
+              hideWaiting(slider.maxInput, maxStr);
             }
           });
         }
@@ -6106,6 +6603,7 @@ require([
           }
 
           changeSliderValues(queryValues);
+          // console.log(queryValues);
         }
 
         buildQueries();
@@ -6114,7 +6612,9 @@ require([
           updateQuery();
         });
 
-        function clearQueryParameters() {
+        function resetQuery() {
+          dontTriggerMultiQuery = true;
+          previousState = null;
           $("#lasso").removeClass("btn-warning");
           // $("#select-button").removeClass("btn-warning");
           $("#searchInput ul").remove();
@@ -6130,6 +6630,145 @@ require([
           searchTerm = "";
           firstList = [];
           secondList = [];
+
+          multiFilterConfigurations = [
+            {
+              layer: CondosLayer,
+              field: "Appraised_Total",
+              filterSelector: "#app-val-min",
+              filterSelector2: "#app-val-max",
+            },
+            {
+              layer: CondosLayer,
+              field: "Assessed_Total",
+              filterSelector: "#assess-val-min",
+              filterSelector2: "#assess-val-max",
+            },
+            {
+              layer: CondosLayer,
+              field: "Total_Acres",
+              filterSelector: "#acres-val-min",
+              filterSelector2: "#acres-val-max",
+            },
+            {
+              layer: CondosLayer,
+              field: "Sale_Date",
+              filterSelector: "#sold_calendar_lowest",
+              filterSelector2: "#sold_calendar_highest",
+            },
+            {
+              layer: CondosLayer,
+              field: "Sale_Price",
+              filterSelector: "#saleP-val-min",
+              filterSelector2: "#saleP-val-max",
+            },
+          ];
+
+          filterConfigurations = [
+            {
+              layer: CondosLayer,
+              field: "Street_Name",
+              filterSelector: "#streetFilter",
+              alias: "Street_Name",
+              message: "Select a Street Name",
+            },
+            {
+              layer: CondosLayer,
+              field: "Owner",
+              filterSelector: "#ownerFilter",
+              message: "Select a Owner",
+            },
+            {
+              layer: CondosLayer,
+              field: "Parcel_Type",
+              filterSelector: "#propertyFilter",
+              alias: "Parcel_Type",
+              message: "Select a Property Type",
+            },
+            {
+              layer: CondosLayer,
+              field: "Building_Type",
+              filterSelector: "#buildingFilter",
+              message: "Select a Building Type",
+            },
+            {
+              layer: CondosLayer,
+              field: "Building_Use_Code",
+              filterSelector: "#buildingUseFilter",
+              message: "Select a Building Use Type",
+            },
+            {
+              layer: CondosLayer,
+              field: "Design_Type",
+              filterSelector: "#designTypeFilter",
+              message: "Select a Design Type",
+            },
+            {
+              layer: CondosLayer,
+              field: "Zoning",
+              filterSelector: "#zoningFilter",
+              message: "Select a Zone",
+            },
+            {
+              layer: CondosLayer,
+              field: "Neighborhood",
+              filterSelector: "#neighborhoodFilter",
+              message: "Select a Neighborhood",
+            },
+          ];
+
+          filterConfigs = [
+            {
+              layer: CondosLayer,
+              field: "Appraised_Total",
+              filterSelector: "#streetFilter",
+              minInput: "app-val-min",
+              maxInput: "app-val-max",
+              minValField: "appraisedValueMin",
+              maxValueField: "appraisedValueMax",
+              index: 0,
+            },
+            {
+              layer: CondosLayer,
+              field: "Assessed_Total",
+              filterSelector: "#ownerFilter",
+              minInput: "assess-val-min",
+              maxInput: "assess-val-max",
+              minValField: "assessedValueMin",
+              maxValueField: "assessedValueMax",
+              index: 1,
+            },
+            {
+              layer: CondosLayer,
+              field: "Total_Acres",
+              filterSelector: "#propertyFilter",
+              minInput: "acres-val-min",
+              maxInput: "acres-val-max",
+              minValField: "acresValueMin",
+              maxValueField: "acresValueMax",
+              index: 2,
+            },
+            {
+              layer: CondosLayer,
+              field: "Sale_Date",
+              filterSelector: "#buildingFilter",
+              minInput: "sold_calendar_lowest",
+              maxInput: "sold_calendar_highest",
+              minValField: "soldOnMin",
+              maxValueField: "soldOnMax",
+              index: 3,
+            },
+            {
+              layer: CondosLayer,
+              field: "Sale_Price",
+              filterSelector: "#buildingUseFilter",
+              minInput: "saleP-val-min",
+              maxInput: "saleP-val-max",
+              minValField: "soldPMin",
+              maxValueField: "soldPMax",
+              index: 4,
+            },
+          ];
 
           $("#result-btns").hide();
           $("#details-btns").hide();
@@ -6178,86 +6817,152 @@ require([
           // put this in its own function
           // can use this for setting the values and clearing them
           // keep clearQueryParamters for just resetting other values
-          const combobox1ID = document.querySelector("#streetFilter");
-          const combobox2ID = document.querySelector("#ownerFilter");
-          const combobox3ID = document.querySelector("#propertyFilter");
-          const combobox4ID = document.querySelector("#buildingFilter");
-          const combobox5ID = document.querySelector("#buildingUseFilter");
-          const combobox6ID = document.querySelector("#designTypeFilter");
-          const combobox7ID = document.querySelector("#zoningFilter");
-          const combobox8ID = document.querySelector("#neighborhoodFilter");
-          const soldOnLowest = document.querySelector("#sold_calendar_lowest");
-          const soldOnHighest = document.querySelector(
-            "#sold_calendar_highest"
-          );
+          const combobox1ID = $("#streetFilter");
+          const combobox2ID = $("#ownerFilter");
+          const combobox3ID = $("#propertyFilter");
+          const combobox4ID = $("#buildingFilter");
+          const combobox5ID = $("#buildingUseFilter");
+          const combobox6ID = $("#designTypeFilter");
+          const combobox7ID = $("#zoningFilter");
+          const combobox8ID = $("#neighborhoodFilter");
+          const soldOnLowest = $("#sold_calendar_lowest");
+          const soldOnHighest = $("#sold_calendar_highest");
 
-          combobox1ID.selectedItems = [];
-          combobox2ID.selectedItems = [];
-          combobox3ID.selectedItems = [];
-          combobox4ID.selectedItems = [];
-          combobox5ID.selectedItems = [];
-          combobox6ID.selectedItems = [];
-          combobox7ID.selectedItems = [];
-          combobox8ID.selectedItems = [];
+          combobox1ID.empty();
+          combobox2ID.empty();
+          combobox3ID.empty();
+          combobox4ID.empty();
+          combobox5ID.empty();
+          combobox6ID.empty();
+          combobox7ID.empty();
+          combobox8ID.empty();
 
-          combobox1ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox1ID.selectedItems = [];
+          // combobox2ID.selectedItems = [];
+          // combobox3ID.selectedItems = [];
+          // combobox4ID.selectedItems = [];
+          // combobox5ID.selectedItems = [];
+          // combobox6ID.selectedItems = [];
+          // combobox7ID.selectedItems = [];
+          // combobox8ID.selectedItems = [];
 
-          combobox2ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox1ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox3ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox2ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox4ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox3ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox5ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox4ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox6ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox5ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox7ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox6ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox8ID.filteredItems.forEach((item) => {
-            item.active = false;
-            item.selected = false;
-          });
+          // combobox7ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
 
-          combobox1ID.value = "";
-          combobox2ID.value = "";
-          combobox3ID.value = "";
-          combobox4ID.value = "";
-          combobox5ID.value = "";
-          combobox6ID.value = "";
-          combobox7ID.value = "";
-          combobox8ID.value = "";
+          // combobox8ID.filteredItems.forEach((item) => {
+          //   item.active = false;
+          //   item.selected = false;
+          // });
+
+          // combobox1ID.value = "";
+          // combobox2ID.value = "";
+          // combobox3ID.value = "";
+          // combobox4ID.value = "";
+          // combobox5ID.value = "";
+          // combobox6ID.value = "";
+          // combobox7ID.value = "";
+          // combobox8ID.value = "";
 
           soldOnLowest.value = "";
           soldOnHighest.value = "";
           soldOnLowest.activeDate = null;
           soldOnHighest.activeDate = null;
+          // Usage of the generalized function
+          // Usage of the generalized function
+          generateFilter(
+            CondosLayer,
+            "Street_Name",
+            "#streetFilter",
+            "Select a Street Name"
+          );
+          generateFilter(
+            CondosLayer,
+            "Owner",
+            "#ownerFilter",
+            "Select a Owner"
+          );
+          generateFilter(
+            CondosLayer,
+            "Parcel_Type",
+            "#propertyFilter",
+            "Select a Property Type"
+          );
+          generateFilter(
+            CondosLayer,
+            "Building_Type",
+            "#buildingFilter",
+            "Select a Building Type"
+          );
+          generateFilter(
+            CondosLayer,
+            "Building_Use_Code",
+            "#buildingUseFilter",
+            "Select a Building Use"
+          );
+          generateFilter(
+            CondosLayer,
+            "Design_Type",
+            "#designTypeFilter",
+            "Select a Design Type"
+          );
+          generateFilter(
+            CondosLayer,
+            "Zoning",
+            "#zoningFilter",
+            "Select a Zone"
+          );
+          generateFilter(
+            CondosLayer,
+            "Neighborhood",
+            "#neighborhoodFilter",
+            "Select a Neighborhood"
+          );
 
           buildQueries();
 
           $(".wrapper .x-button").click();
           $("#streetFilter").value = "";
+        }
+
+        let resetTimer;
+
+        function clearQueryParameters() {
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(() => {
+            resetQuery();
+          }, 600);
         }
 
         $("#clearFilter").on("click", function () {
@@ -6429,7 +7134,7 @@ require([
         ([stationary, scale]) => {
           // Only print the new scale value when the view is stationary
           if (stationary) {
-            console.log(`Change in scale level: ${scale}`);
+            // console.log(`Change in scale level: ${scale}`);
             updateScaleDropdown(scale);
           }
         }
