@@ -147,7 +147,7 @@ require([
       });
 
       const lods = tileInfo.lods;
-      console.log(lods);
+      // console.log(lods);
       var view = new MapView({
         container: "viewDiv",
         map: webmap,
@@ -164,7 +164,7 @@ require([
         },
       });
       view.when(() => {
-        console.log(view.spatialReference);
+        // console.log(view.spatialReference);
         configVars.homeExtent = view.extent;
       });
 
@@ -5726,7 +5726,7 @@ require([
         };
 
         function updateQuery() {
-          console.log(queryParameters);
+          // console.log(queryParameters);
           let queryParts = [];
           if (
             queryParameters.streetName !== null &&
@@ -5927,7 +5927,7 @@ require([
             query.returnGeometry = true;
             query.outFields = ["*"];
 
-            console.log(query.where);
+            // console.log(query.where);
 
             // noCondosTable.queryFeatures(query).then(function (response) {
             clearContents();
@@ -6060,7 +6060,7 @@ require([
             triggerMultiFilter("Appraised_Total", minVal, maxVal);
             triggerMultiDates("Appraised_Total", minVal, maxVal);
           } else {
-            console.log("Invalid input values: ", minVal, maxVal);
+            // console.log("Invalid input values: ", minVal, maxVal);
           }
         });
 
@@ -6090,7 +6090,7 @@ require([
             queryParameters.assessedValueMax = maxVal;
           } else {
             // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
-            console.log("Invalid input");
+            // console.log("Invalid input");
           }
 
           // Check if the values are valid numbers, minVal is less than or equal to maxVal, and the lengths are at least 1
@@ -6281,14 +6281,42 @@ require([
         });
 
         $("#sold_calendar_highest").on("calciteDatePickerChange", function () {
-          var dateValueMin = $("#sold_calendar_lowest").val();
-          var dateValueMax = $("#sold_calendar_highest").val();
-          queryParameters.soldOnMin = dateValueMin;
-          queryParameters.soldOnMax = dateValueMax;
-          triggerMultiFilter("Sale_Date", dateValueMin, dateValueMax);
-          triggerMultiDates("Sale_Date", dateValueMin, dateValueMax);
+          var dateValueMin = new Date($("#sold_calendar_lowest").val());
+          var dateValueMax = new Date($("#sold_calendar_highest").val());
+
+          // Add one day to both dates
+          dateValueMin.setDate(dateValueMin.getDate() + 1);
+          dateValueMax.setDate(dateValueMax.getDate() + 1);
+
+          // Format dates to 'YYYY-MM-DD' string
+          var formattedDateValueMin = dateValueMin.toISOString().split("T")[0];
+          var formattedDateValueMax = dateValueMax.toISOString().split("T")[0];
+
+          queryParameters.soldOnMin = formattedDateValueMin;
+          queryParameters.soldOnMax = formattedDateValueMax;
+
+          triggerMultiFilter(
+            "Sale_Date",
+            formattedDateValueMin,
+            formattedDateValueMax
+          );
+          triggerMultiDates(
+            "Sale_Date",
+            formattedDateValueMin,
+            formattedDateValueMax
+          );
           // checkVals();
         });
+
+        // $("#sold_calendar_highest").on("calciteDatePickerChange", function () {
+        //   var dateValueMin = $("#sold_calendar_lowest").val();
+        //   var dateValueMax = $("#sold_calendar_highest").val();
+        //   queryParameters.soldOnMin = dateValueMin;
+        //   queryParameters.soldOnMax = dateValueMax;
+        //   triggerMultiFilter("Sale_Date", dateValueMin, dateValueMax);
+        //   triggerMultiDates("Sale_Date", dateValueMin, dateValueMax);
+        //   // checkVals();
+        // });
         let previousState = null;
 
         function checkVals() {
@@ -6327,8 +6355,8 @@ require([
             previousState = allEmpty;
           }
 
-          console.log(values); // This will log the values of all the elements
-          console.log(allEmpty); // This will log true if all values are empty, false otherwise
+          // console.log(values); // This will log the values of all the elements
+          // console.log(allEmpty); // This will log true if all values are empty, false otherwise
 
           return allEmpty;
         }
