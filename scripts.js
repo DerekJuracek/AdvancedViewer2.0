@@ -41,7 +41,7 @@ require([
     "columbiact",
     "haddamct",
     "northcanaanct",
-    "roxbury",
+    "roxburyct",
     "scotlandct",
     "warrenct",
     "washingtonct",
