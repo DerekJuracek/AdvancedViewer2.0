@@ -563,6 +563,7 @@ require([
       });
 
       webmap.add(sketchGL);
+      let lassoGisLinks = false;
       let urlSearchUniqueId;
       let scaleBar;
       let runQuerySearchTerm;
@@ -1789,6 +1790,7 @@ require([
         firstList = [];
         secondList = [];
         zoomToObjectID = "";
+        lassoGisLinks = false;
         $(".spinner-container").hide();
         $("#distanceButton").removeClass("active");
         $("#areaButton").removeClass("active");
@@ -2491,6 +2493,8 @@ require([
           features = polygonGeometries.features;
         }
 
+        sketchGL.removeAll();
+
         let polygonGraphics2 = [];
         let bufferGraphicId;
         let pointGisLink;
@@ -2646,6 +2650,9 @@ require([
       });
 
       function highlightLasso(lasso) {
+        let lassoBuffer = true;
+        lassoGisLinks = true;
+        let bufferResults = [];
         // $("#select-button").prop("disabled", true);
         // $("#select-button").addClass("disabled");
 
@@ -2663,9 +2670,15 @@ require([
           query2.returnGeometry = true;
           query2.outFields = ["*"];
 
-          CondosLayer.queryFeatures(query2).then(function (response) {
-            totalResults = response.features;
-            addResultGraphics(totalResults);
+          CondosLayer.queryFeatures(query2).then(function (results) {
+            const bufferRes = results.features;
+            bufferRes.forEach((parcel) => {
+              bufferResults.push(parcel.attributes.GIS_LINK);
+            });
+
+            buildAndQueryTable(bufferResults, lassoBuffer);
+
+            lasso = false;
           });
         }
 
@@ -2678,9 +2691,17 @@ require([
           query.returnGeometry = true;
           query.outFields = ["*"];
 
-          noCondosLayer.queryFeatures(query).then(function (response) {
-            totalResults = response.features;
-            addResultGraphics(totalResults);
+          noCondosLayer.queryFeatures(query).then(function (results) {
+            const bufferRes = results.features;
+            bufferRes.forEach((parcel) => {
+              bufferResults.push(parcel.attributes.GIS_LINK);
+            });
+
+            buildAndQueryTable(bufferResults, lassoBuffer);
+
+            lasso = false;
+            // totalResults = response.features;
+            // addResultGraphics(totalResults);
           });
         }
 
@@ -3065,12 +3086,19 @@ require([
 
         if (filterQuery) {
           query = filterQuery;
+        } else if (lassoGisLinks) {
+          // let query = noCondosLayer.createQuery();
+          // query.where = whereClause;
+          // query.returnGeometry = true; // Adjust based on your needs
+          // query.outFields = ["*"];
+          query = filterQuery;
+          tableSearch = true;
         } else {
-          query = CondosTable.createQuery();
-          query.where = whereClause;
-          query.returnGeometry = false;
-          query.returnHiddenFields = true; // Adjust based on your needs
-          query.outFields = ["*"];
+          // query = CondosTable.createQuery();
+          // query.where = whereClause;
+          // query.returnGeometry = false;
+          // query.returnHiddenFields = true; // Adjust based on your needs
+          // query.outFields = ["*"];
         }
 
         let GISLINK;
@@ -3088,12 +3116,12 @@ require([
         let triggerUrl;
 
         if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer.queryFeatures(filterQuery).then(function (result) {
+          noCondosLayer.queryFeatures(query).then(function (result) {
             triggerUrl = result.features;
             if (result.features.length >= 1) {
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
-              addPolygons(result, view.graphics);
+              addPolygons(result, view.graphics, "");
               processFeatures(result.features);
               if (urlSearch) {
                 triggerListGroup(triggerUrl, searchTerm);
@@ -3116,7 +3144,7 @@ require([
               firstQuery.outFields = ["*"];
 
               noCondosTable.queryFeatures(firstQuery).then(function (result) {
-                addPolygons(result.features, "", "", tableSearch);
+                addPolygons(result.features);
                 processFeatures();
                 if (urlSearch) {
                   triggerListGroup(triggerUrl, searchTerm);
@@ -3177,7 +3205,7 @@ require([
                   target: result.features,
                 });
               }
-              addPolygons(result, view.graphics);
+              addPolygons(result, view.graphics, "");
               processFeatures(result.features);
               if (urlSearch) {
                 triggerListGroup(triggerUrl, searchTerm);
@@ -4011,9 +4039,18 @@ require([
         }
       }
 
-      function buildAndQueryTable(bufferResults) {
+      function buildAndQueryTable(bufferResults, lasso) {
         if (bufferResults.length > 0) {
-          const queryValues = bufferResults
+          let uniqueLinks = [];
+          bufferResults.forEach((item) => {
+            if (!uniqueLinks.includes(item)) {
+              uniqueLinks.push(item);
+            } else {
+              return;
+            }
+          });
+
+          const queryValues = uniqueLinks
             .map((value) => `'${value}'`)
             .join(" OR GIS_LINK = ");
           const queryString = `GIS_LINK = ${queryValues}`;
@@ -4025,7 +4062,13 @@ require([
           query.outFields = ["*"];
 
           CondosTable.queryFeatures(query).then((response) => {
-            buildPanel(response);
+            if (lasso) {
+              runQuery("", "", query);
+              // processFeatures(response.features);
+              // addPolygons(response, view.graphics);
+            } else {
+              buildPanel(response);
+            }
           });
         } else {
           console.log("No buffer results to query.");
@@ -5234,7 +5277,7 @@ require([
 
       // LOGIC FOR SEARCH OF FEATURE LAYERS AND RELATED RECORDS
 
-      const runQuery = (e, filterQuery) => {
+      const runQuery = (e, filterQuery, lassoquery) => {
         firstList = [];
 
         // Check if the key exists in sessionStorage
@@ -5258,8 +5301,10 @@ require([
         let searchTerm = runQuerySearchTerm;
 
         if (
-          (searchTerm?.length < 3 && !filterQuery) ||
-          (!searchTerm && !filterQuery)
+          searchTerm?.length < 3 &&
+          !filterQuery &&
+          !searchTerm &&
+          !lassoquery
         ) {
           clearContents();
           return;
@@ -5277,10 +5322,6 @@ require([
 
           let whereClause;
 
-          // if (filterQuery) {
-          //   whereClause = filterQuery;
-          // } else {
-
           whereClause = `
           Street_Name LIKE '%${searchTerm}%' OR 
           MBL LIKE '%${searchTerm}%' OR 
@@ -5291,20 +5332,12 @@ require([
           GIS_LINK LIKE '%${searchTerm}%'
       `;
 
-          // let whereClause = `
-          //     Street_Name LIKE '%${searchTerm}%' OR
-          //     MBL LIKE '%${searchTerm}%' OR
-          //     Location LIKE '%${searchTerm}%' OR
-          //     Co_Owner LIKE '%${searchTerm}%' OR
-          //     Uniqueid LIKE '%${searchTerm}%' OR
-          //     Owner LIKE '%${searchTerm}%' OR
-          //     GIS_LINK LIKE '%${searchTerm}%'
-          // `;
-
           let query;
 
           if (filterQuery) {
             query = filterQuery;
+          } else if (lassoGisLinks) {
+            query = lassoquery;
           } else {
             query = CondosTable.createQuery();
             query.where = whereClause;
@@ -5428,13 +5461,10 @@ require([
                   query2.outFields = ["*"];
                 }
 
-                // if ('yes') {
-                //   let query = noCondosTable.createQuery();
-                //   query.where = queryString;
-                //   query.returnDistinctValues = false;
-                //   query.returnGeometry = true;
-                //   query.outFields = ["*"];
-                // }
+                if (lassoGisLinks) {
+                  query2.where = lassoquery.where;
+                }
+
                 queryRelatedRecords(runQuerySearchTerm, null, query2);
               }
             })
