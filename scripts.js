@@ -60,6 +60,7 @@ require([
     $("#whole-app").show();
   } else if (window.location.href === "https://terrenogis.com") {
     window.open("https://www.qds.biz/gis-service");
+    return; // Stop further execution
   } else {
     window.location.href = "./onload.html";
   }
