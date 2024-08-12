@@ -716,7 +716,7 @@ ul {
   height: 80%;
   width: 250px;
   z-index: 1000;
-  background-color: var(--background-color) !important;
+  background-color: rgba(30, 30, 30, .9) !important;
   transition: width 0.5s;
 }
 
