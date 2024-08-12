@@ -58,6 +58,8 @@ require([
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
     $("#whole-app").show();
+  } else if ((window.location.href = "https://terrenogis.com")) {
+    window.open("https://www.qds.biz/gis-service");
   } else {
     window.location.href = "./onload.html";
   }
