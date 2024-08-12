@@ -4202,7 +4202,6 @@ require([
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
       <div class="card-body">
         <p>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
@@ -4553,7 +4552,6 @@ require([
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
       <div class="card-body">
         <p>
-        <span style="font-family:Tahoma;font-size:12px;"><strong>Latest Qualified Sale:</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
         <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>

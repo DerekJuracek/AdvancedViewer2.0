@@ -227,6 +227,11 @@ width: 250px !important;
    color: white;
   }
 
+  #collapseFour {
+    border-bottom: white 1px solid !important;
+    border-radius: 1px;
+  }
+
   .collapse {
     width: 248px;
   }
@@ -1474,6 +1479,8 @@ calcite-slider::part(tick) {
   left: 50%;
   transform: translateX(-50%);
 }
+
+
 
 
 
