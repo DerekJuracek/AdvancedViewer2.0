@@ -731,14 +731,6 @@ require([
               }
             }
 
-            // if (handleUsed == "details") {
-            //   handleUsed = "details";
-            // } else {
-            //   handleUsed = "click";
-            // }
-
-            // handleUsed = "none yet";
-
             if (activeWidget1 && activeWidget1.viewModel) {
               // Listen for the "measure-end" event on the viewModel
               activeWidget1.viewModel.watch("state", function (state) {
@@ -750,12 +742,6 @@ require([
                     detailsHandleUsed == "";
                   } else {
                   }
-                  // The measurement is complete
-                  // console.log("Measurement completed");
-
-                  // Your custom logic here
-                  // For example, you could display the measurement result in a custom UI element,
-                  // log it, or store it for further processing.
                 }
               });
             }
@@ -794,14 +780,6 @@ require([
               }
             }
 
-            // if (handleUsed == "details") {
-            //   handleUsed = "details";
-            // } else {
-            //   handleUsed = "click";
-            // }
-
-            // handleUsed = "none yet";
-
             // Assuming activeWidget1 is an instance of DistanceMeasurement2D or AreaMeasurement2D
             if (activeWidget1 && activeWidget1.viewModel) {
               // Listen for the "measure-end" event on the viewModel
@@ -814,12 +792,6 @@ require([
                     detailsHandleUsed == "";
                   } else {
                   }
-                  // The measurement is complete
-                  // console.log("Measurement completed");
-
-                  // Your custom logic here
-                  // For example, you could display the measurement result in a custom UI element,
-                  // log it, or store it for further processing.
                 }
               });
             }
@@ -1763,14 +1735,7 @@ require([
           overRideSelect(false);
         }
 
-        // $("#scale-value").val("").html("Select Scale");
-
-        // clickHandle = view.on("click", handleClick);
-        //$("#lasso").removeClass("btn-warning");
         $("#select-button").removeClass("btn-warning");
-        // select = false;
-        // lasso = false;
-
         $("#select-button").addClass("btn-warning");
         clickHandle = view.on("click", handleClick);
         select = true;
@@ -1778,7 +1743,6 @@ require([
         $("#searchInput ul").remove();
         $("#searchInput").val = "";
         $("#select-button").prop("disabled", false);
-        // $("#side-Exp2").addClass("disabled");
 
         // Get a reference to the search input field
         const searchInput = document.getElementById("searchInput");
@@ -2053,8 +2017,6 @@ require([
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
           zoomToFeature(objectID, polygonGraphics, itemId);
-          // DetailsHandle = view.on("click", handleDetailsClick);
-          // clickHandle.remove();
           $("#details-spinner").show();
           $("#WelcomeBox").hide();
           $("#featureWid").hide();
@@ -2164,11 +2126,6 @@ require([
         const featureWidDiv = document.getElementById("featureWid");
         const listGroup = document.createElement("ul");
 
-        // if (uniqueArray.length <= 0) {
-        //   clearContents();
-        //   alert("Parcel Selection did not return any results.");
-        // }
-
         uniqueArray.forEach(function (feature) {
           // console.log(feature);
 
@@ -2245,20 +2202,13 @@ require([
         $("status-loader").hide();
         $("#dropdown").show();
         $("#sidebar2").css("left", "0px");
-
         $("#sidebar2").addClass("collapsed");
         $("#results-div").css("left", "350px");
         $("#left-arrow-2").show();
         $("#right-arrow-2").hide();
         $("#WelcomeBox").hide();
-        // $("#results-div").css("height", "200px");
-
-        // if (uniqueArray.length <= 1) {
-        //   $("#exportSearch").hide();
         $("#csvExportResults").hide();
-        // } else {
         $("#exportSearch").show();
-        // }
         $("#results-div").css("height", "300px");
         $("#exportButtons").show();
         $("#exportResults").hide();
@@ -2284,18 +2234,13 @@ require([
             DetailsHandle = null;
           }
           $("#select-button").attr("title", "Select Enabled");
-          // Check if the clicked element is an li or a descendant of an li
           let targetElement = event.target.closest("li");
-
-          // If it's not an li, exit the handler
           if (!targetElement) return;
 
           // Now you can handle the click event as you would in the individual event listener
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
           zoomToFeature(objectID, polygonGraphics, itemId);
-          // DetailsHandle = view.on("click", handleDetailsClick);
-          // clickHandle.remove();
           $("#details-spinner").show();
           $("#WelcomeBox").hide();
           $("#featureWid").hide();
@@ -2320,7 +2265,6 @@ require([
           $(".center-container").hide();
           $("#abutters-attributes").prop("disabled", false);
           $("#abutters-zoom").prop("disabled", false);
-
           buildDetailsPanel(objectID, itemId);
         });
 
@@ -2789,10 +2733,10 @@ require([
             clickHandle = null;
           }
 
-          clickHandle = view.on("click", handleClick);
+          // clickHandle = view.on("click", handleClick);
           $("#lasso").removeClass("btn-warning");
           $("#lasso").addClass("btn-info");
-          $("#select-button").addClass("btn-warning");
+          // $("#select-button").addClass("btn-warning");
         }
       });
 
@@ -3068,9 +3012,6 @@ require([
 
         let whereClause;
 
-        // if (filterQuery) {
-        //   whereClause = filterQuery;
-        // } else {
         whereClause = `
           Street_Name LIKE '%${searchTerm}%' OR 
           MBL LIKE '%${searchTerm}%' OR 
@@ -3080,39 +3021,18 @@ require([
           Owner LIKE '%${searchTerm}%' OR 
           GIS_LINK LIKE '%${searchTerm}%'
       `;
-        // }
 
         let query;
 
         if (filterQuery) {
           query = filterQuery;
         } else if (lassoGisLinks) {
-          // let query = noCondosLayer.createQuery();
-          // query.where = whereClause;
-          // query.returnGeometry = true; // Adjust based on your needs
-          // query.outFields = ["*"];
           query = filterQuery;
           tableSearch = true;
         } else {
-          // query = CondosTable.createQuery();
-          // query.where = whereClause;
-          // query.returnGeometry = false;
-          // query.returnHiddenFields = true; // Adjust based on your needs
-          // query.outFields = ["*"];
         }
 
         let GISLINK;
-
-        // let query = noCondosLayer.createQuery();
-        // query.where = whereClause;
-        // query.returnGeometry = true; // Adjust based on your needs
-        // query.outFields = ["*"];
-
-        // let query2 = CondosLayer.createQuery();
-        // query2.where = whereClause;
-        // query2.returnGeometry = true; // Adjust based on your needs
-        // query2.outFields = ["*"];
-
         let triggerUrl;
 
         if (sessionStorage.getItem("condos") === "no") {
@@ -3221,7 +3141,15 @@ require([
           DetailsHandle?.remove();
           DetailsHandle = null;
         }
-        DetailsHandle = view.on("click", handleDetailsClick);
+
+        if (lassoGisLinks) {
+          $("#select-button").addClass("btn-warning");
+          clickHandle = view.on("click", handleClick);
+        } else {
+          DetailsHandle = view.on("click", handleDetailsClick);
+          $("#select-button").removeClass("btn-warning");
+        }
+
         lasso = false;
         select = false;
       }
@@ -5279,16 +5207,6 @@ require([
 
       const runQuery = (e, filterQuery, lassoquery) => {
         firstList = [];
-
-        // Check if the key exists in sessionStorage
-        // if (sessionStorage.getItem(key) === "no") {
-        //   noCondosLayer.visible = true;
-        // } else {
-        //   CondosLayer.visible = true;
-        // }
-
-        // noCondosLayer.visible = true;
-        // CondosLayer.visible = true;
         let suggestionsContainer = document.getElementById("suggestions");
         suggestionsContainer.innerHTML = "";
 
@@ -5577,6 +5495,7 @@ require([
 
             // Place your function call or code here
             queryUrlUniqueId(uniqueId, urlSearch);
+            // queryUrlUniqueId(uniqueId, urlSearch);
           })
           .catch(function (error) {
             console.error("Error occurred while the view was loading: ", error);
@@ -5597,26 +5516,6 @@ require([
           $("#abut-mail").hide();
 
           var searchTerm = e.target.value.toUpperCase();
-
-          // if (searchTerm.length < 1) {
-          //   if (DetailsHandle) {
-          //     DetailsHandle?.remove();
-          //     DetailsHandle = null;
-          //   }
-
-          //   if (clickHandle) {
-          //     clickHandle?.remove();
-          //     clickHandle = null;
-          //   }
-
-          //   clickHandle = view.on("click", handleClick);
-          //   $("#lasso").removeClass("btn-warning");
-          //   $("#select-button").addClass("btn-warning");
-          //   select = true;
-          //   lasso = false;
-          // }
-
-          // if (searchTerm.length < 2) {
           firstList = [];
           secondList = [];
           polygonGraphics = [];
