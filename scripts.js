@@ -563,6 +563,8 @@ require([
       });
 
       webmap.add(sketchGL);
+      let needToSearchGisLink = false;
+      let zoomToGisLink;
       let lassoGisLinks = false;
       let urlSearchUniqueId;
       let scaleBar;
@@ -1754,7 +1756,9 @@ require([
         firstList = [];
         secondList = [];
         zoomToObjectID = "";
+        urlSearchUniqueId = false;
         lassoGisLinks = false;
+        needToSearchGisLink = false;
         $(".spinner-container").hide();
         $("#distanceButton").removeClass("active");
         $("#areaButton").removeClass("active");
@@ -2535,7 +2539,6 @@ require([
               .map(function (feature) {
                 bufferGraphicId = feature.attributes.OBJECTID;
                 if (!feature.geometry || tableSearch) {
-                  console.error("Feature does not have geometry:", feature);
                   return null; // Skip this feature as it has no geometry
                 }
                 const graphic = new Graphic({
@@ -3029,6 +3032,9 @@ require([
         } else if (lassoGisLinks) {
           query = filterQuery;
           tableSearch = true;
+        } else if (urlSearchUniqueId) {
+          query = filterQuery;
+          tableSearch = true;
         } else {
         }
 
@@ -3047,16 +3053,10 @@ require([
                 triggerListGroup(triggerUrl, searchTerm);
               }
 
-              if (result.features.length == 1) {
-                view.goTo({
-                  target: result.features,
-                  // zoom: 15,
-                });
-              } else {
-                view.goTo({
-                  target: result.features,
-                });
-              }
+              view.goTo({
+                target: result.features,
+                // zoom: 15,
+              });
             } else if (result.features.length === 1 && firstList.length > 2) {
               const firstQuery = noCondosTable.createQuery();
               firstQuery.where = whereClause;
@@ -3072,7 +3072,7 @@ require([
               });
             } else {
               const firstQuery = noCondosTable.createQuery();
-              firstQuery.where = whereClause;
+              firstQuery.where = filterQuery.where;
               firstQuery.returnGeometry = false;
               firstQuery.outFields = ["*"];
 
@@ -3080,35 +3080,43 @@ require([
                 noCondosTable
                   .queryFeatures(firstQuery)
                   .then(function (result) {
-                    if (result.features.length <= 0) {
-                      clearContents();
-                      alert("Search resulted in an error, please try again.");
-                    }
+                    triggerUrl = result.features;
+                    // if (result.features.length <= 0) {
+                    //   clearContents();
+                    //   alert("Search resulted in an error, please try again.");
+                    // }
                     GISLINK = result.features[0].attributes.GIS_LINK;
+                    let uniId = result.features[0].attributes.Uniqueid;
+                    noCondosParcelGeom = result.features;
+                    addPolygons(result, view.graphics);
+                    processFeatures(result.features);
+                    if (urlSearch) {
+                      needToSearchGisLink = true;
+                      triggerListGroup(triggerUrl, uniId);
+                    }
                   })
                   .then(function (result) {
-                    const newQuery = noCondosLayer.createQuery();
-                    newQuery.where = `GIS_LINK = '${GISLINK}'`;
-                    newQuery.returnGeometry = true;
-                    newQuery.outFields = ["*"];
-
-                    noCondosLayer
-                      .queryFeatures(newQuery)
-                      .then(function (result) {
-                        // console.log(result);
-
-                        view.goTo({
-                          target: result.features,
-                          // zoom: 15,
-                        });
-
-                        noCondosParcelGeom = result.features;
-                        addPolygons(result, view.graphics);
-                        processFeatures(result.features);
-                        if (urlSearch) {
-                          triggerListGroup(triggerUrl, searchTerm);
-                        }
-                      });
+                    // this could be used to zoom to condo main?
+                    // maybe not for now
+                    // const newQuery = noCondosLayer.createQuery();
+                    // newQuery.where = `GIS_LINK = '${GISLINK}'`;
+                    // newQuery.returnGeometry = true;
+                    // newQuery.outFields = ["*"];
+                    // noCondosLayer
+                    //   .queryFeatures(newQuery)
+                    //   .then(function (result) {
+                    //     // console.log(result);
+                    //     view.goTo({
+                    //       target: result.features,
+                    //       // zoom: 15,
+                    //     });
+                    //     // noCondosParcelGeom = result.features;
+                    //     // addPolygons(result, view.graphics);
+                    //     // processFeatures(result.features);
+                    //     // if (urlSearch) {
+                    //     //   triggerListGroup(triggerUrl, searchTerm);
+                    //     // }
+                    //   });
                   });
               }
             }
@@ -4392,6 +4400,7 @@ require([
 
         // zoomToItemId = locationUniqueId;
         zoomToObjectID = objectID2;
+        zoomToGisLink = locationGIS_LINK;
 
         const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
         // console.log(matchedObject);
@@ -4522,40 +4531,58 @@ require([
       }
 
       $(document).ready(function () {
-        // Add click event listener to the dynamically generated buttons with class 'justZoom'
         $(document).on("click", ".abutters-zoom", function (event) {
           event.stopPropagation();
           event.preventDefault();
 
           if (sessionStorage.getItem("condos") === "no") {
-            // If the key doesn't exist, set it to "none"
-            let whereClause = `OBJECTID = ${zoomToObjectID}`;
-            let query = noCondosLayer.createQuery();
-            query.where = whereClause;
-            query.returnGeometry = true;
-            query.returnHiddenFields = true; // Adjust based on your needs
-            query.outFields = ["*"];
+            if (!needToSearchGisLink) {
+              // If the key doesn't exist, set it to "none"
+              let whereClause = `OBJECTID = ${zoomToObjectID}`;
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
 
-            noCondosLayer.queryFeatures(query).then((response) => {
-              let feature = response;
-              let geometry = feature.features[0].geometry;
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+                const geometryExtent = geometry.extent;
+                const center = geometryExtent.center;
+                const zoomOutFactor = 3.0; // Adjust as needed
+                const newExtent = geometryExtent.expand(zoomOutFactor);
 
-              // Get the extent of the geometry
-              const geometryExtent = geometry.extent;
-
-              // Calculate the center of the geometry
-              const center = geometryExtent.center;
-
-              // Calculate a new extent with a slightly zoomed-out level
-              const zoomOutFactor = 3.0; // Adjust as needed
-              const newExtent = geometryExtent.expand(zoomOutFactor);
-
-              // Set the view to the new extent
-              view.goTo({
-                target: center, // Center the view on the center of the geometry
-                extent: newExtent, // Set the extent to the new adjusted extent
+                view.goTo({
+                  extent: newExtent,
+                });
               });
-            });
+            } else if (needToSearchGisLink) {
+              // When No Condos, but there are condos actually present in table, not feature layer
+              // Wilton vs Washington
+              // where condos are only on table, no individual geometry, need to go to condo main instead by gis link
+              // If the key doesn't exist, set it to "none"
+              let whereClause = `GIS_LINK = '${zoomToGisLink}'`;
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true;
+              query.outFields = ["*"];
+
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+                const geometryExtent = geometry.extent;
+                const center = geometryExtent.center;
+                const zoomOutFactor = 3.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
+
+                view.goTo({
+                  target: center,
+                  extent: newExtent,
+                });
+              });
+            }
           } else {
             let whereClause = `OBJECTID = ${zoomToObjectID}`;
             // let whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
@@ -4566,26 +4593,45 @@ require([
             query.outFields = ["*"];
 
             CondosLayer.queryFeatures(query).then((response) => {
-              let feature = response;
-              let geometry = feature.features[0].geometry;
+              let feature;
+              let geometry;
+              let geometryExtent;
+              let center;
 
-              // Get the extent of the geometry
-              const geometryExtent = geometry.extent;
+              if (response.features > 0) {
+                CondosLayer.queryFeatures(query)
+                  .then((response) => {
+                    let query = CondosLayer.createQuery();
+                    query.where = `GIS_LINK = ${zoomToGisLink}`;
+                    query.returnGeometry = true;
+                    query.returnHiddenFields = true; // Adjust based on your needs
+                    query.outFields = ["*"];
+                  })
+                  .then((response) => {
+                    feature = response;
+                    geometry = feature.features[0].geometry;
 
-              // Calculate the center of the geometry
-              const center = geometryExtent.center;
+                    // Get the extent of the geometry
+                    geometryExtent = geometry.extent;
 
-              // Calculate a new extent with a slightly zoomed-out level
-              const zoomOutFactor = 3.0; // Adjust as needed
+                    // Calculate the center of the geometry
+                    center = geometryExtent.center;
+                  });
+              } else {
+                feature = response;
+                geometry = feature.features[0].geometry;
+                geometryExtent = geometry.extent;
+                center = geometryExtent.center;
+              }
+
+              const zoomOutFactor = 3.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
-              // Set the view to the new extent
               view.goTo({
-                target: center, // Center the view on the center of the geometry
-                extent: newExtent, // Set the extent to the new adjusted extent
+                target: center,
+                extent: newExtent,
               });
             });
-            // You can perform any actions you want here, such as zooming to a location
           }
         });
       });
@@ -4742,6 +4788,7 @@ require([
 
         // zoomToItemId = locationUniqueId;
         zoomToObjectID = objectID2;
+        zoomToGisLink = locationGIS_LINK;
 
         const imageUrl = `https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Washington_CT/${locationUniqueId}.jpg`;
         const detailsDiv = document.getElementById("detail-content");
@@ -4768,8 +4815,6 @@ require([
             panels.push(obj);
           }
         });
-
-        console.log(panels);
 
         details.innerHTML = `
       <p>
@@ -4869,6 +4914,7 @@ require([
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
+        $("abutters-zoom").trigger("click");
       }
 
       function zoomToDetail(objectid, geom, item) {
@@ -4889,9 +4935,6 @@ require([
           },
         };
 
-        // if (sessionStorage.getItem(key) == "no") {
-        // if (noCondosParcelGeom) {
-        // CondoBuffer = false;
         targetExtent = geom;
         detailsGeometry = geom;
 
@@ -5256,6 +5299,8 @@ require([
             query = filterQuery;
           } else if (lassoGisLinks) {
             query = lassoquery;
+          } else if (urlSearchUniqueId) {
+            query = filterQuery; // coming from url unique id search
           } else {
             query = CondosTable.createQuery();
             query.where = whereClause;
@@ -5379,11 +5424,16 @@ require([
                   query2.outFields = ["*"];
                 }
 
+                let tableSearch = null;
+
                 if (lassoGisLinks) {
                   query2.where = lassoquery.where;
+                } else if (urlSearchUniqueId) {
+                  query2.where = filterQuery.where;
+                  tableSearch = true;
                 }
 
-                queryRelatedRecords(runQuerySearchTerm, null, query2);
+                queryRelatedRecords(runQuerySearchTerm, tableSearch, query2);
               }
             })
             .catch((error) => {
@@ -5394,6 +5444,7 @@ require([
 
       function triggerListGroup(results, searchTerm) {
         let items = results;
+        changeAbuttersZoom = true;
 
         if (items.length <= 0) {
           clearContents();
@@ -5408,7 +5459,7 @@ require([
         let objectID = parcel[0].attributes.OBJECTID;
         let geometry = parcel[0].attributes.geometry;
 
-        zoomToFeature(objectID, polygonGraphics, itemId);
+        // zoomToFeature(objectID, polygonGraphics, itemId);
         $("#details-spinner").show();
         $("#WelcomeBox").hide();
         $("#featureWid").hide();
@@ -5430,7 +5481,9 @@ require([
         $("#results-div").css("height", "300px");
         $("#backButton-div").css("padding-top", "0px");
         document.getElementById("total-results").style.display = "none";
+
         buildDetailsPanel(objectID, itemId);
+        zoomToFeature(objectID, polygonGraphics, itemId);
         $("#total-results").hide();
         $("#ResultDiv").hide();
 
@@ -5479,7 +5532,8 @@ require([
 
       // document.addEventListener("DOMContentLoaded", async () => {
       const params = getQueryParams();
-      const uniqueId = params.uniqueid; // Ensure this key matches your URL parameter
+      const uniqueId = params.uniqueid;
+      let whereClause = `Uniqueid = '${uniqueId}'`; // Ensure this key matches your URL parameter
 
       if (uniqueId) {
         // Assuming the layer name and field name are known and static
@@ -5493,8 +5547,15 @@ require([
             // This function runs when the view is fully ready
             console.log("The view is ready.");
 
+            query = CondosTable.createQuery();
+            query.where = whereClause;
+            query.returnGeometry = false;
+            query.returnHiddenFields = true; // Adjust based on your needs
+            query.outFields = ["*"];
+
             // Place your function call or code here
-            queryUrlUniqueId(uniqueId, urlSearch);
+            // queryUrlUniqueId(uniqueId, urlSearch);
+            runQuery(null, query);
             // queryUrlUniqueId(uniqueId, urlSearch);
           })
           .catch(function (error) {
@@ -5949,51 +6010,17 @@ require([
             query.returnDistinctValues = false;
             query.returnGeometry = true;
             query.outFields = ["*"];
-
-            // console.log(query.where);
-
-            // noCondosTable.queryFeatures(query).then(function (response) {
             clearContents();
             runQuery(null, query);
-            // addPolygons(response, view.graphics);
-            // queryRelatedRecords("", "", query.where);
-            // addPolygons(response, view.graphics);
-            // processFeatures(response.features);
-            // if (clickHandle) {
-            //   clickHandle?.remove();
-            //   clickHandle = null;
-            // }
-            // if (DetailsHandle) {
-            //   DetailsHandle?.remove();
-            //   DetailsHandle = null;
-            // }
-            // DetailsHandle = view.on("click", handleDetailsClick);
-            // });
           } else {
             let query = noCondosTable.createQuery();
             query.where = queryString;
             query.returnDistinctValues = false;
             query.returnGeometry = true;
             query.outFields = ["*"];
-
-            // noCondosTable.queryFeatures(query).then(function (response) {
             clearContents();
             runQuery(null, query);
-            // addPolygons(response, view.graphics);
-            // queryRelatedRecords("", "", query.where);
-            // if (clickHandle) {
-            //   clickHandle?.remove();
-            //   clickHandle = null;
-            // }
-            // if (DetailsHandle) {
-            //   DetailsHandle?.remove();
-            //   DetailsHandle = null;
-            // }
-            // DetailsHandle = view.on("click", handleDetailsClick);
-            // });
           }
-
-          // Here, you can use this query string to fetch data from your feature service
         }
 
         $("#streetFilter").on("calciteComboboxChange", function (e) {
@@ -6331,15 +6358,6 @@ require([
           // checkVals();
         });
 
-        // $("#sold_calendar_highest").on("calciteDatePickerChange", function () {
-        //   var dateValueMin = $("#sold_calendar_lowest").val();
-        //   var dateValueMax = $("#sold_calendar_highest").val();
-        //   queryParameters.soldOnMin = dateValueMin;
-        //   queryParameters.soldOnMax = dateValueMax;
-        //   triggerMultiFilter("Sale_Date", dateValueMin, dateValueMax);
-        //   triggerMultiDates("Sale_Date", dateValueMin, dateValueMax);
-        //   // checkVals();
-        // });
         let previousState = null;
 
         function checkVals() {
