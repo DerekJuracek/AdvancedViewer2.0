@@ -1030,7 +1030,7 @@ require([
       function updateLayerUI(layerId, isVisible) {
         // Find the corresponding UI element in the pick list
         let actionElement = $(
-          `calcite-pick-list-item[value="${layerId}"] calcite-action`
+          `calcite-list-item[value="${layerId}"] calcite-action`
         );
 
         // Toggle the icon based on visibility
@@ -1067,14 +1067,37 @@ require([
           // var icon = "square";
 
           // Create the pick list item and action for each layer
-          var item =
-            $(`<calcite-pick-list-item scale="m" label="${layer.title}" value="${layer.id}" description="${layer.type}">
-      <calcite-action id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
-    </calcite-pick-list-item>`);
+          var item = $(`
+          <calcite-list-item scale="m" label="${layer.title}" value="${layer.id}" style="border: white 0.5px solid;">
+            <calcite-action id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
+            <div id="opacityDiv-${layer.id}" class="esri-slider esri-widget esri-slider--horizontal" touch-action="none" style="display: flex; height: 45px; align-items: center; padding-bottom: 10px; padding-left: 10px;">
+              <label style="margin-right: 10px; padding-top: 20px;">Layer Opacity (%)</label>
+              <calcite-slider class="slider-opacity" id="${layer.id}" style="width: 50%;" value="100" label-handles max-label="100" max-value="100" min-label="0"></calcite-slider>
+              </calcite-slider>
+            </div>
+          </calcite-list-item>
+      `);
 
           // Append the item to the specified container
           container.append(item);
+
+          // // Optionally, you can add event listeners to handle the opacity change
+          // $(`#slider-${layer.id}`).on("calciteSliderChange", function (event) {
+          //   var opacityValue = event.target.value / 100; // Convert to 0-1 range for layer opacity
+          //   layer.opacity = opacityValue; // Assuming 'layer' has an 'opacity' property
+          // });
         }
+      }
+
+      function addSliderEvents() {
+        $(".slider-opacity").on("calciteSliderChange", function (event) {
+          const Id = event.target.id;
+
+          let layer = webmap.findLayerById(Id);
+
+          var opacityValue = event.target.value / 100; // Convert to 0-1 range for layer opacity
+          layer.opacity = opacityValue; // Assuming 'layer' has an 'opacity' property
+        });
       }
 
       function processLayers(layers, container) {
@@ -1137,7 +1160,7 @@ require([
         event.preventDefault();
 
         // Get the layer ID stored in the value of the pick-list-item
-        let layerId = $(this).closest("calcite-pick-list-item").attr("value");
+        let layerId = $(this).closest("calcite-list-item").attr("value");
 
         // Toggle the layer visibility and icon
         toggleLayerVisibility(layerId, $(this));
@@ -1153,6 +1176,7 @@ require([
 
         // Process each layer and add it to the pick list
         processLayers(layers, pickListContainer);
+        addSliderEvents();
       });
 
       function overRideSelect(bool) {

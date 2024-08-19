@@ -48,6 +48,10 @@ header.esri-print__header-title {
   display: none !important;
 }
 
+div.esri-slider {
+  background-color: transparent !important;
+}
+
 div.esri-print__container {
     height: 400px;
     overflow-y: auto;
