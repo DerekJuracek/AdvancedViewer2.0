@@ -2136,6 +2136,12 @@ require([
             (item) => item.location != pointLocation
           );
 
+          // here its removing it from the list
+          // whats the logic when you lasso a condomain, with no geom for all condos
+          // and you select other polygons too
+          // right now when you click two and unlick condomain, it wont make all of them dissapear
+          // need to fix this
+
           $(`li[object-id="${pointGraphic}"]`).remove();
 
           if (sessionStorage.getItem("condos") == "no") {
@@ -2297,6 +2303,8 @@ require([
         });
 
         featureWidDiv.appendChild(listGroup);
+
+        lassoGisLinks = false;
       }
 
       function processFeatures(features, polygonGraphics, e, removeFromList) {
@@ -4938,7 +4946,7 @@ require([
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
-        $("abutters-zoom").trigger("click");
+        $(".abutters-zoom").trigger("click");
       }
 
       function zoomToDetail(objectid, geom, item) {
