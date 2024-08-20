@@ -2413,7 +2413,11 @@ require([
             (g) => g.objectid === pointGraphic
           ).length;
 
-          if (count >= 1) {
+          const countGisLinks = firstList.filter(
+            (g) => g.GIS_LINK === pointGisLink
+          ).length;
+
+          if (count >= 1 || (count == 0 && countGisLinks >= 1)) {
             buildResultsPanel(
               features,
               polygonGraphics,
