@@ -4950,7 +4950,10 @@ require([
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
-        $(".abutters-zoom").trigger("click");
+        if (urlSearchUniqueId) {
+          $(".abutters-zoom").trigger("click");
+        }
+        urlSearchUniqueId = false;
       }
 
       function zoomToDetail(objectid, geom, item) {
@@ -5027,6 +5030,7 @@ require([
 
         // if "no condos" and GIS_LINK is equal to firstlist(means its searched by GIS_LINK)
         // and GIS_LINK > 1( not searched on one uniqueid w/ no geometry) or will error
+        // so say selected a condomain with 111 condos, checks against 1st list
         if (
           sessionStorage.getItem("condos") == "no" &&
           isGisLink.length == firstList.length &&
