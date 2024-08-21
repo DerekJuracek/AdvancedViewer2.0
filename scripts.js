@@ -563,6 +563,7 @@ require([
       });
 
       webmap.add(sketchGL);
+      let urlBackButton = false;
       let needToSearchGisLink = false;
       let zoomToGisLink;
       let lassoGisLinks = false;
@@ -1813,6 +1814,7 @@ require([
         $("#filterDiv").hide();
         $("#dropdown").show();
         $("#WelcomeBox").show();
+        urlBackButton = false;
         $("#select-button").attr("title", "Add to Selection Enabled");
         $(".center-container").show();
 
@@ -1839,19 +1841,37 @@ require([
       $(document).ready(function () {
         // Add click event listener to the dynamically generated buttons with class 'justRemove'
         $(document).on("click", ".justRemove", function (event) {
+          // Get the clicked element
+
           event.stopPropagation();
           event.preventDefault();
 
           let targetElement = event.target.closest("li");
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
-
           let capturedEvent = event;
           let ClickEvent = true;
+          let classes = [];
+          let noGeom = false;
+
+          // Assuming there's only one div inside the li, you can use:
+          let nestedDiv = targetElement.querySelector(".listText");
+
+          if (nestedDiv) {
+            let classList = nestedDiv.classList;
+            classes = Array.from(classList);
+            noGeom = classes.includes("noGeometry");
+          }
 
           if (sessionStorage.getItem("condos") === "no") {
             let query = CondosLayer.createQuery();
-            query.where = `OBJECTID = ${objectID}`;
+
+            if (noGeom) {
+              query.where = `GIS_LINK = '${itemId}'`;
+            } else {
+              query.where = `OBJECTID = '${objectID}'`;
+            }
+
             query.returnGeometry = true;
             query.outFields = ["*"];
 
@@ -2006,7 +2026,7 @@ require([
           if (!locationCoOwner && locationGeom) {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
@@ -2203,7 +2223,7 @@ require([
           if (!locationCoOwner && locationGeom) {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
@@ -2413,7 +2433,11 @@ require([
             (g) => g.objectid === pointGraphic
           ).length;
 
-          if (count >= 1) {
+          const countGisLinks = firstList.filter(
+            (g) => g.GIS_LINK === pointGisLink
+          ).length;
+
+          if (count >= 1 || (count == 0 && countGisLinks >= 1)) {
             buildResultsPanel(
               features,
               polygonGraphics,
@@ -3089,7 +3113,31 @@ require([
                 target: result.features,
                 // zoom: 15,
               });
-            } else if (result.features.length === 1 && firstList.length > 2) {
+            }
+            //  else if(result.features.length == 0) {
+            //   noCondosLayer.visible = true;
+            //   query = noCondosLayer.createQuery();
+            //   query.where = `GIS_LINK = '${uniqueId}'`;
+            //   query.returnGeometry = true; // Adjust based on your needs
+            //   query.outFields = ["*"];
+
+            //   noCondosLayer.queryFeatures(query).then(function (result) {
+            //   triggerUrl = result.features;
+            //   noCondosParcelGeom = result.features;
+            //   addPolygons(result, view.graphics, "");
+            //   processFeatures(result.features);
+            //   if (urlSearch) {
+            //     triggerListGroup(triggerUrl, searchTerm);
+            //   }
+
+            //   view.goTo({
+            //     target: result.features,
+            //     // zoom: 15,
+            //   });
+            // })
+
+            // }
+            else if (result.features.length === 1 && firstList.length > 2) {
               const firstQuery = noCondosTable.createQuery();
               firstQuery.where = whereClause;
               firstQuery.returnGeometry = false;
@@ -3156,19 +3204,20 @@ require([
         } else {
           CondosLayer.queryFeatures(query).then(function (result) {
             triggerUrl = result.features;
+            const getId = result.features[0].attributes.Uniqueid;
             if (result.features) {
               // console.log(`condos result: ${result}`);
-              if (result.features.length > 2) {
-                view.goTo(result.features);
-              } else {
-                view.goTo({
-                  target: result.features,
-                });
-              }
+              // if (result.features.length > 2) {
+              //   view.goTo(result.features);
+              // } else {
+              //   view.goTo({
+              //     target: result.features,
+              //   });
+              // }
               addPolygons(result, view.graphics, "");
               processFeatures(result.features);
               if (urlSearch) {
-                triggerListGroup(triggerUrl, searchTerm);
+                triggerListGroup(triggerUrl, getId);
               }
             }
           });
@@ -3365,7 +3414,10 @@ require([
 
       $(document).ready(function () {
         $("#backButton").on("click", function () {
-          if (polygonGraphics && polygonGraphics.length >= 1) {
+          if (
+            (polygonGraphics && polygonGraphics.length >= 1) ||
+            urlBackButton === true
+          ) {
             $("#WelcomeBox").hide();
             $("#select-button").prop("disabled", false);
             $("#detailBox").hide();
@@ -4946,7 +4998,10 @@ require([
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
-        $(".abutters-zoom").trigger("click");
+        if (urlSearchUniqueId) {
+          $(".abutters-zoom").trigger("click");
+        }
+        urlSearchUniqueId = false;
       }
 
       function zoomToDetail(objectid, geom, item) {
@@ -5023,6 +5078,7 @@ require([
 
         // if "no condos" and GIS_LINK is equal to firstlist(means its searched by GIS_LINK)
         // and GIS_LINK > 1( not searched on one uniqueid w/ no geometry) or will error
+        // so say selected a condomain with 111 condos, checks against 1st list
         if (
           sessionStorage.getItem("condos") == "no" &&
           isGisLink.length == firstList.length &&
@@ -5513,15 +5569,11 @@ require([
         $("#results-div").css("height", "300px");
         $("#backButton-div").css("padding-top", "0px");
         document.getElementById("total-results").style.display = "none";
-
         buildDetailsPanel(objectID, itemId);
         zoomToFeature(objectID, polygonGraphics, itemId);
         $("#total-results").hide();
         $("#ResultDiv").hide();
-
-        // view.goTo({
-        //   target: results,
-        // });
+        urlBackButton = true;
       }
 
       // Helper function to parse and modify URL query parameters
