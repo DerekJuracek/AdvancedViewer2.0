@@ -16,7 +16,7 @@
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Columbia_CT.png",
-  "customWelcomePage": "yes",
+  "customWelcomePage": "no",
   "customWelcomeMessage": "We want something different.",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
