@@ -392,25 +392,6 @@ require([
         });
       });
 
-      // view.when(() => {
-      //   const print = new Print({
-      //     view: view,
-      //     container: $("#PrintDiv")[0],
-      //     templateOptions: {
-      //       scaleEnabled: false,
-      //     },
-      //     allowedLayouts: [
-      //       "letter-ansi-a-landscape",
-      //       "letter-ansi-a-portrait",
-      //       "tabloid-ansi-b-landscape",
-      //       "tabloid-ansi-b-portrait",
-      //       "a3-landscape",
-      //       "a3-portrait",
-      //       "a4-landscape",
-      //       "a4-portrait",
-      //     ],
-      //   });
-      // });
       view.when(() => {
         const basemaps = new BasemapLayerList({
           view: view,
@@ -563,6 +544,7 @@ require([
       });
 
       webmap.add(sketchGL);
+      let triggerfromNoCondos = false;
       let urlBackButton = false;
       let needToSearchGisLink = false;
       let zoomToGisLink;
@@ -1784,6 +1766,7 @@ require([
         urlSearchUniqueId = false;
         lassoGisLinks = false;
         needToSearchGisLink = false;
+        triggerfromNoCondos = false;
         $(".spinner-container").hide();
         $("#distanceButton").removeClass("active");
         $("#areaButton").removeClass("active");
@@ -2144,6 +2127,10 @@ require([
           return ownerA.localeCompare(ownerB);
         });
 
+        // function removeSingle(pointGraphic, pointLocation, pointGisLink) {
+        //   uniqueArray = uniqueArray.splice(-1, 1);
+        // }
+
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
           uniqueArray = uniqueArray.filter(
             (item) => item.objectid != pointGraphic
@@ -2175,7 +2162,11 @@ require([
           }
         }
 
-        removeDups(pointGraphic, pointLocation, pointGisLink);
+        if (triggerfromNoCondos) {
+          // removeSingle();
+        } else {
+          removeDups(pointGraphic, pointLocation, pointGisLink);
+        }
 
         const featureWidDiv = document.getElementById("featureWid");
         const listGroup = document.createElement("ul");
@@ -2269,6 +2260,7 @@ require([
         $("#csvExportSearch").show();
         $(".spinner-container").hide();
         $(`li[object-id="${pointGraphic}"]`).remove();
+        triggerfromNoCondos = false;
 
         listGroup.addEventListener("click", function (event) {
           if (
@@ -2468,6 +2460,17 @@ require([
         if (e) {
           return;
         } else {
+          // this logic needs to be sorted, no condos are searched on here
+          //
+          //triggerfromNoCondos = true;
+          // pointGraphic = features[0].attributes.OBJECTID;
+          // pointLocation = features[0].attributes.Location;
+          // pointGisLink = features[0].attributes.GIS_LINK;
+          // where no geom on condos are building results panel and passing in undefined values
+          // only features is not empty
+
+          // triggerfromNoCondos = true;
+
           buildResultsPanel(
             features,
             polygonGraphics,
@@ -2985,80 +2988,6 @@ require([
           runQuerySearchTerm = e.target.value.toUpperCase();
         });
 
-      function queryUrlUniqueId(uniqueId, urlSearch) {
-        let query;
-        if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer.visible = true;
-          query = noCondosLayer.createQuery();
-          query.where = `UniqueId = '${uniqueId}'`;
-          query.returnGeometry = true; // Adjust based on your needs
-          query.outFields = ["*"];
-        } else {
-          CondosLayer.visible = true;
-          query = CondosLayer.createQuery();
-          query.where = `UniqueId = '${uniqueId}'`;
-          query.returnGeometry = true; // Adjust based on your needs
-          query.outFields = ["*"];
-        }
-
-        if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer
-            .queryFeatures(query)
-            .then(function (result) {
-              triggerUrl = result.features;
-
-              if (triggerUrl.length <= 0) {
-                clearContents();
-                alert("Search resulted in an error, please try again.");
-              }
-              if (result.features.length >= 1) {
-                triggerUrl = result.features;
-                noCondosParcelGeom = result.features;
-                addPolygons(result, view.graphics);
-                processFeatures(result.features);
-                if (urlSearch) {
-                  triggerListGroup(triggerUrl, searchTerm);
-                }
-
-                if (result.features.length >= 0) {
-                  view.goTo({
-                    target: result.features,
-                  });
-                }
-              }
-            })
-            .catch(function (error) {
-              if (items.length <= 0) {
-                clearContents();
-                alert("Search resulted in an error, please try again.");
-              }
-            });
-        } else {
-          CondosLayer.queryFeatures(query).then(function (result) {
-            triggerUrl = result.features;
-            if (triggerUrl.length <= 0) {
-              clearContents();
-              alert("Search resulted in an error, please try again.");
-            }
-            if (result.features.length >= 1) {
-              triggerUrl = result.features;
-              noCondosParcelGeom = result.features;
-              addPolygons(result, view.graphics);
-              processFeatures(result.features);
-              if (urlSearch) {
-                triggerListGroup(triggerUrl, searchTerm);
-              }
-
-              if (result.features.length >= 0) {
-                view.goTo({
-                  target: result.features,
-                });
-              }
-            }
-          });
-        }
-      }
-
       function queryRelatedRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
@@ -3100,44 +3029,59 @@ require([
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.queryFeatures(query).then(function (result) {
             triggerUrl = result.features;
-            if (result.features.length >= 1) {
+            if (result.features.length >= 0) {
+              // THIS LOGIC RUNS WHERE THERES A CONDO MAIN BUT NO FOOTPRINTS
+              // queries layer, no data, queries table to get gis_link
+              // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
-              addPolygons(result, view.graphics, "");
-              processFeatures(result.features);
-              if (urlSearch) {
-                triggerListGroup(triggerUrl, searchTerm);
+              // if no condos and coming from url search of condiminium like wilton
+              if (triggerfromNoCondos) {
+                const firstQuery = noCondosTable.createQuery();
+                firstQuery.where = query.where;
+                firstQuery.returnGeometry = false;
+                firstQuery.outFields = ["*"];
+
+                noCondosTable
+                  .queryFeatures(firstQuery)
+                  .then(function (result) {
+                    console.log(result);
+                    let data = result.features[0].attributes;
+                    const gis_link = data.GIS_LINK;
+
+                    let query2 = noCondosLayer.createQuery();
+                    query2.where = `GIS_LINK = '${gis_link}'`;
+                    query2.returnGeometry = true;
+                    query2.returnHiddenFields = true; // Adjust based on your needs
+                    query2.outFields = ["*"];
+
+                    return noCondosLayer.queryFeatures(query2); // Return the promise to chain
+                  })
+                  .then(function (response) {
+                    triggerUrl = response.features;
+                    noCondosParcelGeom = response.features;
+                    addPolygons(response, view.graphics, "");
+                    processFeatures(response.features);
+                    if (urlSearch) {
+                      triggerListGroup(triggerUrl, searchTerm);
+                    }
+                  })
+                  .catch(function (error) {
+                    console.error("Error querying features: ", error);
+                  });
+              } else {
+                noCondosParcelGeom = result.features;
+                addPolygons(result, view.graphics, "");
+                processFeatures(result.features);
+                if (urlSearch) {
+                  triggerListGroup(triggerUrl, searchTerm);
+                }
               }
 
               view.goTo({
                 target: result.features,
-                // zoom: 15,
               });
-            }
-            //  else if(result.features.length == 0) {
-            //   noCondosLayer.visible = true;
-            //   query = noCondosLayer.createQuery();
-            //   query.where = `GIS_LINK = '${uniqueId}'`;
-            //   query.returnGeometry = true; // Adjust based on your needs
-            //   query.outFields = ["*"];
-
-            //   noCondosLayer.queryFeatures(query).then(function (result) {
-            //   triggerUrl = result.features;
-            //   noCondosParcelGeom = result.features;
-            //   addPolygons(result, view.graphics, "");
-            //   processFeatures(result.features);
-            //   if (urlSearch) {
-            //     triggerListGroup(triggerUrl, searchTerm);
-            //   }
-
-            //   view.goTo({
-            //     target: result.features,
-            //     // zoom: 15,
-            //   });
-            // })
-
-            // }
-            else if (result.features.length === 1 && firstList.length > 2) {
+            } else if (result.features.length === 1 && firstList.length > 2) {
               const firstQuery = noCondosTable.createQuery();
               firstQuery.where = whereClause;
               firstQuery.returnGeometry = false;
@@ -3176,27 +3120,7 @@ require([
                     }
                   })
                   .then(function (result) {
-                    // this could be used to zoom to condo main?
-                    // maybe not for now
-                    // const newQuery = noCondosLayer.createQuery();
-                    // newQuery.where = `GIS_LINK = '${GISLINK}'`;
-                    // newQuery.returnGeometry = true;
-                    // newQuery.outFields = ["*"];
-                    // noCondosLayer
-                    //   .queryFeatures(newQuery)
-                    //   .then(function (result) {
-                    //     // console.log(result);
-                    //     view.goTo({
-                    //       target: result.features,
-                    //       // zoom: 15,
-                    //     });
-                    //     // noCondosParcelGeom = result.features;
-                    //     // addPolygons(result, view.graphics);
-                    //     // processFeatures(result.features);
-                    //     // if (urlSearch) {
-                    //     //   triggerListGroup(triggerUrl, searchTerm);
-                    //     // }
-                    //   });
+                    console.log(result);
                   });
               }
             }
@@ -3206,14 +3130,6 @@ require([
             triggerUrl = result.features;
             const getId = result.features[0].attributes.Uniqueid;
             if (result.features) {
-              // console.log(`condos result: ${result}`);
-              // if (result.features.length > 2) {
-              //   view.goTo(result.features);
-              // } else {
-              //   view.goTo({
-              //     target: result.features,
-              //   });
-              // }
               addPolygons(result, view.graphics, "");
               processFeatures(result.features);
               if (urlSearch) {
@@ -3364,6 +3280,7 @@ require([
       function handleClick(event) {
         detailsHandleUsed = "click";
         // console.log(event);
+        triggerfromNoCondos = false;
 
         isClickEvent = true;
         if (DetailsHandle) {
@@ -3447,11 +3364,14 @@ require([
           } else {
             $("#total-results").hide();
             $("#ResultDiv").hide();
+            $("#abut-mail").hide();
             $("#backButton").hide();
+            $("#details-btns").hide();
             $("#detailBox").hide();
             $("#filterDiv").hide();
             $("#layerListDiv").hide();
             $("#dropdown").show();
+            $(".center-container").show();
             $("#WelcomeBox").show();
             return;
           }
@@ -5539,13 +5459,16 @@ require([
           alert("Search resulted in an error, please try again.");
         }
 
-        let parcel = items.filter(
-          (item) => item.attributes.Uniqueid === searchTerm
-        );
+        // NOT SURE IF NEEDED ANYMORE?
+        // if (searchTerm != undefined && search) {
+        //   let parcel = items.filter(
+        //     (item) => item.attributes.Uniqueid === searchTerm
+        //   );
+        // }
 
-        let itemId = parcel[0].attributes.Uniqueid;
-        let objectID = parcel[0].attributes.OBJECTID;
-        let geometry = parcel[0].attributes.geometry;
+        let itemId = items[0].attributes.Uniqueid;
+        let objectID = items[0].attributes.OBJECTID;
+        let geometry = items[0].attributes.geometry;
 
         // zoomToFeature(objectID, polygonGraphics, itemId);
         $("#details-spinner").show();
@@ -5574,6 +5497,9 @@ require([
         $("#total-results").hide();
         $("#ResultDiv").hide();
         urlBackButton = true;
+        triggerfromNoCondos = false;
+        urlSearchUniqueId = false;
+        urlSearch = false;
       }
 
       // Helper function to parse and modify URL query parameters
@@ -5628,6 +5554,28 @@ require([
 
         view
           .when(function () {
+            function checkQueryVal() {
+              query = CondosTable.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = false;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+
+              noCondosTable.queryFeatures(query).then((response) => {
+                let data = response.features[0].attributes;
+                let uID = data.Uniqueid;
+                let type = data.Building_Type;
+                let misMatch = data.Match_Status;
+
+                if (misMatch === "MISMATCH" && type === "Condominium") {
+                  triggerfromNoCondos = true;
+                }
+                runQuery(null, query);
+
+                console.log(response);
+              });
+            }
+
             // This function runs when the view is fully ready
             console.log("The view is ready.");
 
@@ -5637,9 +5585,11 @@ require([
             query.returnHiddenFields = true; // Adjust based on your needs
             query.outFields = ["*"];
 
+            checkQueryVal();
+
             // Place your function call or code here
             // queryUrlUniqueId(uniqueId, urlSearch);
-            runQuery(null, query);
+
             // queryUrlUniqueId(uniqueId, urlSearch);
           })
           .catch(function (error) {
