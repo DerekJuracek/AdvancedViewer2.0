@@ -1054,7 +1054,7 @@ require([
           <calcite-list-item scale="m" label="${layer.title}" value="${layer.id}" style="border: white 0.5px solid;">
             <calcite-action id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
             <div id="opacityDiv-${layer.id}" class="esri-slider esri-widget esri-slider--horizontal" touch-action="none" style="display: flex; height: 45px; align-items: center; padding-bottom: 10px; padding-left: 10px;">
-              <label style="margin-right: 10px; padding-top: 20px;">Layer Opacity (%)</label>
+              <label style="margin-right: 10px; padding-top: 20px; font-weight: 500;font-size: 12px;">Layer Opacity (%)</label>
               <calcite-slider class="slider-opacity" id="${layer.id}" style="width: 50%;" value="100" label-handles max-label="100" max-value="100" min-label="0"></calcite-slider>
               </calcite-slider>
             </div>
