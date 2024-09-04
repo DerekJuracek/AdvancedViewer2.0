@@ -3751,8 +3751,8 @@ require([
             let Mailing_City = feature.Mailing_City || "";
             let Mail_State = feature.Mail_State || "";
             let Mailing_Zip = feature.Mailing_Zip
-              ? `'${feature.Mailing_Zip.toString().padStart(5, "0")}'`
-              : ""; // Ensure leading zeros are preserved
+            ? `\t${feature.Mailing_Zip.toString().padStart(5, "0")}`
+            : ""; // Add a tab in front to preserve leading zeros
             let Location = feature.location || "";
             let MBL = feature.MBL || "";
 
