@@ -111,8 +111,8 @@ require([
       configVars.customDisclaimerPage = config.customDisclaimerPage;
       configVars.customDisclaimerMessage = config.customDisclaimerMessage;
       configVars.DetailLinks = config.DetailLinks;
-
       configVars.DetailLinksToInclude = config.DetailLinksToInclude;
+      configVars.includePermitLink = config.includePermitLink;
 
       if (configVars.showDisclaimer === "no") {
         sessionStorage.setItem("agreedToDisclaimer", "yes");
@@ -126,6 +126,10 @@ require([
       if (configVars.customDisclaimerPage === "yes") {
         document.getElementById("disclaimer-text").innerHTML =
           configVars.customDisclaimerMessage;
+      }
+
+      if (configVars.includePermitLink === "yes") {
+        configVars.permitLink = config.permitLink;
       }
 
       document.getElementById("AccessorName").innerHTML = config.accessorName;
@@ -1996,6 +2000,28 @@ require([
 
           const listItem = document.createElement("li");
           const imageDiv = document.createElement("li");
+          const linksDiv = document.createElement("tr");
+
+          // Creating the new li for links that will span the full width (col-12)
+          linksDiv.classList.add("col-12", "list-group-item");
+
+          // Constructing the initial part of the inner HTML
+          let linksHTML = `<div class="extra-links">
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+
+          // Conditionally add the "Permits" link if the variable allows it
+          if (configVars.includePermitLink === "yes") {
+            linksHTML += `<a class='mx-2' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+          }
+
+          // Closing the div
+          linksHTML += `</div>`;
+
+          // Set the inner HTML of the linksDiv
+          linksDiv.innerHTML = linksHTML;
+
           imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}" alt="Image of ${locationUniqueId}" >`;
           listItem.classList.add("list-group-item", "col-9");
           listItem.classList.add("search-list");
@@ -2007,12 +2033,16 @@ require([
           let displayNoGeometry = sessionStorage.getItem("condos") === "yes";
 
           if (!locationCoOwner && locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
+             </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
+
           listItem.innerHTML += listItemHTML;
           listItem.setAttribute("object-id", objectID);
           listItem.setAttribute("data-id", locationGISLINK);
@@ -2194,6 +2224,28 @@ require([
 
           const listItem = document.createElement("li");
           const imageDiv = document.createElement("li");
+          const linksDiv = document.createElement("tr");
+
+          // Creating the new li for links that will span the full width (col-12)
+          linksDiv.classList.add("col-12", "list-group-item");
+
+          // Constructing the initial part of the inner HTML
+          let linksHTML = `<div class="extra-links">
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+
+          // Conditionally add the "Permits" link if the variable allows it
+          if (configVars.includePermitLink === "yes") {
+            linksHTML += `<a class='mx-2' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+          }
+
+          // Closing the div
+          linksHTML += `</div>`;
+
+          // Set the inner HTML of the linksDiv
+          linksDiv.innerHTML = linksHTML;
+
           imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}" alt="Image of ${locationUniqueId}" >`;
           listItem.classList.add("list-group-item", "col-9");
           listItem.classList.add("search-list");
@@ -2212,11 +2264,14 @@ require([
           }
 
           if (!locationCoOwner && locationGeom) {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else if (!locationGeom) {
-            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
+             </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           } else {
-            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} <br><a target="_blank" class='pdf-links' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf>PDF Map</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target="_blank" class='pdf-links' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}>Property Card</a></div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
 
           // Append the new list item to the list
@@ -2226,6 +2281,7 @@ require([
 
           listGroup.appendChild(imageDiv);
           listGroup.appendChild(listItem);
+          listGroup.appendChild(linksDiv);
         });
 
         searchResults = uniqueArray.length;
@@ -3700,12 +3756,14 @@ require([
             let Mailing_City = feature.attributes["Mailing_City"] || "";
             let Mail_State = feature.attributes["Mail_State"] || "";
             let Mailing_Zip = feature.attributes["Mailing_Zip"]
-            ? `\t${feature.attributes["Mailing_Zip"].toString().padStart(5, "0")}`
-            : ""; // Add a tab in front to preserve leading zeros
+              ? `\t${feature.attributes["Mailing_Zip"]
+                  .toString()
+                  .padStart(5, "0")}`
+              : ""; // Add a tab in front to preserve leading zeros
             let Location = feature.attributes["Location"] || "";
             let MBL = feature.attributes["MBL"] || "";
             // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","'${Mailing_Zip}'","${MBL}","${Location}"\n`;
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
           });
           // Create blob
           const blob = new Blob([csvContent], {
@@ -3753,8 +3811,8 @@ require([
             let Mailing_City = feature.Mailing_City || "";
             let Mail_State = feature.Mail_State || "";
             let Mailing_Zip = feature.Mailing_Zip
-            ? `\t${feature.Mailing_Zip.toString().padStart(5, "0")}`
-            : ""; // Add a tab in front to preserve leading zeros
+              ? `\t${feature.Mailing_Zip.toString().padStart(5, "0")}`
+              : ""; // Add a tab in front to preserve leading zeros
             let Location = feature.location || "";
             let MBL = feature.MBL || "";
 
@@ -4436,101 +4494,114 @@ require([
           }
         });
 
-        details.innerHTML = `
-      <p>
-      <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
-      </p>
-
-      <div>
-      <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+        let detailsHTML = `
+        <p>
+        <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
+        </p>
+  
+        <div>
+        <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+        </div>
+        <p>
+        <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
+        <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
+    </p>
+    <div id="accordion">
+      <div class="card" id="links" style="display:${panels[0].links.show}">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+            <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                Property Links
+            </button>
+          </h5>
       </div>
-      <p>
-      <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
-      <span style="font-family:Tahoma;font-size:12px;"><strong>${mailingAddress}</strong></span> <br>
-      <span style="font-family:Tahoma;font-size:12px;"><strong>${Mailing_City} ${Mail_State} ${Mailing_Zip}</strong></span><br>
-  </p>
-  <div id="accordion">
-    <div class="card" id="links" style="display:${panels[0].links.show}">
-      <div class="card-header" id="headingOne">
-          <h5 class="mb-0">
-          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-              Property Links
-          </button>
-        </h5>
-    </div>
-    <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
-      <div class="card-body">
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>View in Google Maps</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>View in Bing Maps</strong></span></a><br>
+  
+      
+      <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
+        <div class="card-body">
+        `;
+
+        if (configVars.includePermitLink === "yes") {
+          detailsHTML += `<a class='mx-auto' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a><br>`;
+        }
+
+        detailsHTML += `
+          <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
+          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span>
+          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
+          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
+          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>Google Maps</strong></span></a>
+          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>Bing Maps</strong></span></a><br>
+  
+          <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
+          <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
+  
+            </div>
           </div>
         </div>
-      </div>
-        <div class="card " id="ids" style="display:${panels[1].ids.show}">
-            <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Property Ids & Uses
-                </button>
-            </h5>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
-                  <p>
-                  <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
-                  <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
-                  <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
-                  <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
-                  <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
-                  </p>
-                </div>
-            </div>
-        </div>
-    <div class="card" id="sales" style="display:${panels[3].sales.show}" >
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Latest Sale / Transfer
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-      <div class="card-body">
-        <p>
-        <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
-        <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
-        </p>
-      </div>
-    </div>
-  </div>
-  <div class="card" id="vals" style="display:${panels[2].vals.show}">
-    <div class="card-header" id="headingFour">
+          <div class="card " id="ids" style="display:${panels[1].ids.show}">
+              <div class="card-header" id="headingTwo">
+              <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Property Ids & Uses
+                  </button>
+              </h5>
+              </div>
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <p>
+                    <span style="font-family:Tahoma;font-size:12px;">Unique ID: <strong>${locationUniqueId}</strong></span> <br>
+                    <span style="font-family:Tahoma;font-size:12px;">MBL: <strong>${locationMBL}</strong></span> <br>
+                    <span style="font-family:Tahoma;font-size:12px;">Total Acres: <strong>${Total_Acres}</strong></span> <br>
+                    <span style="font-family:Tahoma;font-size:12px;">Primary Use: <strong>${Parcel_Primary_Use}</strong></span> <br>
+                    <span style="font-family:Tahoma;font-size:12px;">Primary Bldg Use: <strong>${Building_Use_Code}</strong></span><br>
+                    </p>
+                  </div>
+              </div>
+          </div>
+      <div class="card" id="sales" style="display:${panels[3].sales.show}" >
+      <div class="card-header" id="headingThree">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-            Valuations
+          <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Latest Sale / Transfer
           </button>
         </h5>
       </div>
-      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
         <div class="card-body">
-            <p>
-            <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
-            <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
-            <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
-            <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
-            <span style="font-family:Tahoma;font-size:12px;"></span>
-            </p>
+          <p>
+          <span style="font-family:Tahoma;font-size:12px;">Sold on: <strong>${Sale_Date}</strong></span> <br>
+          <span style="font-family:Tahoma;font-size:12px;">Sale Price: <strong>$${Sale_Price}</strong></span> <br>
+          <span style="font-family:Tahoma;font-size:12px;">Volume/Page: <strong>${Vol_Page}</strong></span><br>
+          </p>
         </div>
+      </div>
+    </div>
+    <div class="card" id="vals" style="display:${panels[2].vals.show}">
+      <div class="card-header" id="headingFour">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" style="width: fit-content;" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+              Valuations
+            </button>
+          </h5>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+          <div class="card-body">
+              <p>
+              <span style="font-family:Tahoma;font-size:12px;"><strong>Valuations:</strong></span><br>
+              <span style="font-family:Tahoma;font-size:12px;">GL Year: <strong>${Prior_Assessment_Year}</strong></span> <br>
+              <span style="font-family:Tahoma;font-size:12px;">Assessment: <strong>$${Prior_Assessed_Total}</strong></span> <br>
+              <span style="font-family:Tahoma;font-size:12px;">Appraised: <strong>$${Prior_Appraised_Total}</strong></span> <br>
+              <span style="font-family:Tahoma;font-size:12px;"></span>
+              </p>
+          </div>
+      </div>
     </div>
   </div>
-</div>
-    `;
+      `;
+
+        details.innerHTML = detailsHTML;
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
@@ -4822,7 +4893,7 @@ require([
           }
         });
 
-        details.innerHTML = `
+        let detailsHTML = `
       <p>
       <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
       </p>
@@ -4844,16 +4915,27 @@ require([
           </button>
         </h5>
     </div>
+
+    
     <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
       <div class="card-body">
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
+      `;
+
+        if (configVars.includePermitLink === "yes") {
+          detailsHTML += `<a class='mx-auto' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a><br>`;
+        }
+
+        detailsHTML += `
         <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
+        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span>
+        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
+        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
+        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>Google Maps</strong></span></a>
+        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>Bing Maps</strong></span></a><br>
+
         <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
         <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>View in Google Maps</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>View in Bing Maps</strong></span></a><br>
+
           </div>
         </div>
       </div>
@@ -4917,6 +4999,8 @@ require([
   </div>
 </div>
     `;
+
+        details.innerHTML = detailsHTML;
 
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
