@@ -3705,7 +3705,7 @@ require([
             let Location = feature.attributes["Location"] || "";
             let MBL = feature.attributes["MBL"] || "";
             // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","'${Mailing_Zip}'","${MBL}","${Location}"\n`;
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
           });
           // Create blob
           const blob = new Blob([csvContent], {
