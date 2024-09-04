@@ -3699,7 +3699,9 @@ require([
             let mailingAddress2 = feature.attributes["Mailing_Address_2"] || "";
             let Mailing_City = feature.attributes["Mailing_City"] || "";
             let Mail_State = feature.attributes["Mail_State"] || "";
-            let Mailing_Zip = feature.attributes["Mailing_Zip"] || "";
+            let Mailing_Zip = feature.attributes["Mailing_Zip"]
+            ? `\t${feature.attributes["Mailing_Zip"].toString().padStart(5, "0")}`
+            : ""; // Add a tab in front to preserve leading zeros
             let Location = feature.attributes["Location"] || "";
             let MBL = feature.attributes["MBL"] || "";
             // Append data to CSV content
