@@ -9,6 +9,11 @@
 
 }
 
+.mx-2 {
+  margin-right: .4rem !important;
+  margin-left: .4rem !important;
+}
+
 ul.esri-print__layout-tab-list {
   height: 30px !important;
 }
