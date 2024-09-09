@@ -4518,25 +4518,69 @@ require([
       </div>
   
       
-      <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
-        <div class="card-body">
-        `;
+      <div id="collapseOne" class="collapse show" aria-labelledby="OneFour" data-parent="#accordion">
+             <div class="card-body" style="text-align: left;">
+      `;
 
         if (configVars.includePermitLink === "yes") {
           detailsHTML += `<a class='mx-auto' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a><br>`;
         }
 
         detailsHTML += `
-          <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
-          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span>
-          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
-          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
-          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>Google Maps</strong></span></a>
-          <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>Bing Maps</strong></span></a><br>
-  
-          <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
-          <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
-  
+        <table style="width: 100%; font-family: Tahoma; font-size: 12px; border-collapse: collapse; text-align: left;">
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${locationUniqueId}">
+        <strong>Tax Bills</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}&uniqueid=${locationUniqueId}">
+        <strong>Property Card</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf">
+        <strong>Parcel Map</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.taxMap_Url}${map_pdf}.pdf">
+        <strong>Tax Map</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2">
+        <strong>Google Maps</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0">
+        <strong>Bing Maps</strong>
+      </a>
+    </td>
+  </tr>
+  <tr><td colspan="2"> &nbsp </td></tr>
+  <tr>
+    <td colspan="2">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.pdf_demo}">
+        <strong>Demographics Profile</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.housingUrl}">
+        <strong>Housing Profile</strong>
+      </a>
+    </td>
+  </tr>
+</table>
+
             </div>
           </div>
         </div>
@@ -4917,8 +4961,8 @@ require([
     </div>
 
     
-    <div id="collapseOne" class="collapse" aria-labelledby="OneFour" data-parent="#accordion">
-      <div class="card-body">
+    <div id="collapseOne" class="collapse show" aria-labelledby="OneFour" data-parent="#accordion">
+           <div class="card-body" style="text-align: left;">
       `;
 
         if (configVars.includePermitLink === "yes") {
@@ -4926,15 +4970,59 @@ require([
         }
 
         detailsHTML += `
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a><br>
-        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Parcel Map</strong></span></a><span style="font-family:Tahoma;font-size:12px;"> </span>
-        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.taxMap_Url}${map_pdf}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Map</strong></span></a><br>
-        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></span></a><br>
-        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2><span style="font-family:Tahoma;font-size:12px;"><strong>Google Maps</strong></span></a>
-        <a target="_blank" class='mx-3' rel="noopener noreferrer" href=https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0><span style="font-family:Tahoma;font-size:12px;"><strong>Bing Maps</strong></span></a><br>
-
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.pdf_demo}><span style="font-family:Tahoma;font-size:12px;"><strong>Demographics Profile</strong></span></a><br>
-        <a target="_blank" rel="noopener noreferrer" href=${configVars.housingUrl}><span style="font-family:Tahoma;font-size:12px;"><strong>Housing Profile</strong></span></a><br>
+        <table style="width: 100%; font-family: Tahoma; font-size: 12px; border-collapse: collapse; text-align: left;">
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${locationUniqueId}">
+        <strong>Tax Bills</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}&uniqueid=${locationUniqueId}">
+        <strong>Property Card</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf">
+        <strong>Parcel Map</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.taxMap_Url}${map_pdf}.pdf">
+        <strong>Tax Map</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2">
+        <strong>Google Maps</strong>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" rel="noopener noreferrer" href="https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0">
+        <strong>Bing Maps</strong>
+      </a>
+    </td>
+  </tr>
+  <tr><td colspan="2"> &nbsp </td></tr>
+  <tr>
+    <td colspan="2">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.pdf_demo}">
+        <strong>Demographics Profile</strong>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.housingUrl}">
+        <strong>Housing Profile</strong>
+      </a>
+    </td>
+  </tr>
+</table>
 
           </div>
         </div>
