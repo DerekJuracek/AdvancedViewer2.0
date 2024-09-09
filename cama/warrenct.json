@@ -22,7 +22,7 @@
   "DetailLinksToInclude": ["links", "ids", "sales"],
   "accessorName": "- Linda Bertaccini | Assessor  <br>    - Jamie Hatch | Assistant Assessor",
   "includePermitLink": "yes",
-  "permitLink": "http://permitlinkusa-online.com/csp/warrenct/DocumentLink.PublicDLinkHome.cls?uniqueid=",
+  "permitLink": "http://permitlinkusa-online.com/csp/warrenct/DocumentLink.PublicDLinkHome.cls",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=149",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Warren",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Warren_Demographics_2024.pdf",
