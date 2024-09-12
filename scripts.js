@@ -2234,8 +2234,8 @@ require([
             zoomToItemId = locationUniqueId;
             Id = locationUniqueId;
           } else {
-            zoomToItemId = locationGIS_LINK;
-            Id = locationGIS_LINK;
+            zoomToItemId = locationGISLINK;
+            Id = locationGISLINK;
           }
 
           const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
