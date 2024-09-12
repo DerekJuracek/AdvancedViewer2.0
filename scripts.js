@@ -1977,6 +1977,8 @@ require([
       }
 
       function updateDisplay() {
+        let Id;
+        let zoomToItemId;
         const featureWidDiv = document.getElementById("featureWid");
         featureWidDiv.innerHTML = ""; // Clear the existing content
         const listGroup = document.createElement("ul");
@@ -1998,6 +2000,14 @@ require([
           let streetName = feature.Street_Name;
           const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
 
+          if (configVars.useUniqueIdforParcelMap === "yes") {
+            zoomToItemId = locationUniqueId;
+            Id = locationUniqueId;
+          } else {
+            zoomToItemId = locationGIS_LINK;
+            Id = locationGIS_LINK;
+          }
+
           const listItem = document.createElement("li");
           const imageDiv = document.createElement("li");
           const linksDiv = document.createElement("tr");
@@ -2007,7 +2017,7 @@ require([
 
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
 
@@ -2201,6 +2211,9 @@ require([
         const featureWidDiv = document.getElementById("featureWid");
         const listGroup = document.createElement("ul");
 
+        let zoomToItemId;
+        let Id;
+
         uniqueArray.forEach(function (feature) {
           // console.log(feature);
 
@@ -2217,6 +2230,14 @@ require([
           let locationGeom = feature.geometry;
           let propertyType = feature.Parcel_Type;
 
+          if (configVars.useUniqueIdforParcelMap === "yes") {
+            zoomToItemId = locationUniqueId;
+            Id = locationUniqueId;
+          } else {
+            zoomToItemId = locationGIS_LINK;
+            Id = locationGIS_LINK;
+          }
+
           const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
 
           listGroup.classList.add("row");
@@ -2231,7 +2252,7 @@ require([
 
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${locationUniqueId}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
 
@@ -3041,7 +3062,9 @@ require([
       document
         .getElementById("searchInput")
         .addEventListener("input", function (e) {
-          runQuerySearchTerm = e.target.value.toUpperCase();
+          runQuerySearchTerm = e.target.value
+            .toUpperCase()
+            .replace(/&amp;/g, "&");
         });
 
       function queryRelatedRecords(searchTerm, urlSearch, filterQuery) {
@@ -5272,8 +5295,19 @@ require([
               });
               view.graphics.addMany([polygonGraphic]);
             } else {
+              let whereClause;
               CondoBuffer = false;
-              let whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
+
+              let match = matchingObject.filter((item) => {
+                item.GIS_LINK === gisLink;
+              });
+
+              if (match) {
+                whereClause = `GIS_LINK = '${gisLink}'`;
+              } else {
+                whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
+              }
+
               let query = noCondosLayer.createQuery();
               query.where = whereClause;
               query.returnGeometry = true;
@@ -5438,7 +5472,7 @@ require([
         let features;
 
         if (clickedToggle) {
-          runQuerySearchTerm = e;
+          runQuerySearchTerm = e.replace(/&amp;/g, "&");
         }
 
         let searchTerm = runQuerySearchTerm;
