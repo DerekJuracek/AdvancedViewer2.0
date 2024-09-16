@@ -3412,7 +3412,8 @@ require([
         $("#backButton").on("click", function () {
           if (
             (polygonGraphics && polygonGraphics.length >= 1) ||
-            urlBackButton === true
+            urlBackButton === true ||
+            firstList.length > 0
           ) {
             $("#WelcomeBox").hide();
             $("#select-button").prop("disabled", false);
@@ -4802,7 +4803,9 @@ require([
         var matchedObject;
 
         matchedObject = firstList.find(function (item) {
-          return item.objectid === parseInt(objectId);
+          return (
+            item.objectid === parseInt(objectId) && item.uniqueId === itemId
+          );
         });
 
         if (!matchedObject) {
