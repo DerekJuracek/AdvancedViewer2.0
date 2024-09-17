@@ -2669,6 +2669,7 @@ require([
             }
             view.goTo(polygonGraphics);
           } else {
+            let graphic3;
             regSearch = true;
             // regular search polygons added here
             features
@@ -2677,12 +2678,12 @@ require([
                 if (!feature.geometry || tableSearch) {
                   return null; // Skip this feature as it has no geometry
                 }
-                const graphic = new Graphic({
+                graphic3 = new Graphic({
                   geometry: feature.geometry,
                   symbol: fillSymbol,
                   id: bufferGraphicId,
                 });
-                polygonGraphics2.push(graphic);
+                polygonGraphics2.push(graphic3);
               })
               .filter((graphic) => graphic !== null);
 
@@ -2690,7 +2691,9 @@ require([
               graphicsLayer.addMany(polygonGraphics2);
             }
 
-            view.goTo(polygonGraphics2);
+            view.goTo({
+              target: graphic3,
+            });
           }
         }
 
@@ -3114,6 +3117,7 @@ require([
               // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
+
               // if no condos and coming from url search of condiminium like wilton
               if (triggerfromNoCondos) {
                 const firstQuery = noCondosTable.createQuery();
@@ -3155,6 +3159,7 @@ require([
                 if (urlSearch) {
                   triggerListGroup(triggerUrl, searchTerm);
                 }
+                triggerfromNoCondos = false;
               }
 
               view.goTo({
@@ -5518,6 +5523,7 @@ require([
             query = filterQuery;
           } else if (lassoGisLinks) {
             query = lassoquery;
+            lasso = true;
           } else if (urlSearchUniqueId) {
             query = filterQuery; // coming from url unique id search
           } else {
@@ -5532,6 +5538,15 @@ require([
             .then((response) => {
               if (response.features.length > 0) {
                 features = response.features;
+
+                if (
+                  response.features[0].attributes.Match_Status === "MISMATCH" &&
+                  response.features[0].attributes.Parcel_Type ===
+                    "Condominium" &&
+                  lasso == false
+                ) {
+                  triggerfromNoCondos = true;
+                }
                 features.forEach(function (feature) {
                   if (feature.attributes.Owner === "" || null || undefined) {
                     return;
