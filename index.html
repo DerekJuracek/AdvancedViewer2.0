@@ -47,6 +47,8 @@
       crossorigin="anonymous"
     ></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
@@ -1240,13 +1242,41 @@
               class="list-group-item list-group-item-info options-bar-li">
               Add REST Service
             </li>
-            <li
+            <li>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle dropdown-prints" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown button
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a id="Print-selector" class="dropdown-item">Print Version 1 </a>
+                <a id="Print-selector-variant1" class="dropdown-item">Print Version 2</a>
+                <a id="Print-selector-variant2" class="dropdown-item">Print Version 3</a>
+                <a id="Print-selector-variant3" class="dropdown-item">Print Version 3</a>
+                <a id="Print-selector-variant4" class="dropdown-item">Print Version 4</a>
+              </div>
+            </div>
+          </li>
+            <!-- <li
+            id="Print-menu"
+            class="list-group-item list-group-item-info options-bar-li"
+          >
+            Export / Print
+          
+      
+            <ul class="dropdown-menu">
+              <li id="Print-selector" class="dropdown-item">Print Version 1 (Default)</li>
+              <li id="Print-option2" class="dropdown-item">Print Version 2</li>
+              <li id="Print-option3" class="dropdown-item">Print Version 3</li>
+              <li id="Print-option4" class="dropdown-item">Print Version 4</li>
+            </ul>
+          </li> -->
+            <!-- <li
               id="Print-selector"
               class="list-group-item list-group-item-info options-bar-li"
             >
               Export / Print
               
-            </li>
+            </li> -->
             <li class="list-group-item list-group-item-light options-bar-li">
               <a href="QDS.biz" target="_blank" class="help-url" style="font-size: 16px;"> Help</a>
             </li>

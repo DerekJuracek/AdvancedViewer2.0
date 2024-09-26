@@ -1493,6 +1493,46 @@ calcite-slider::part(tick) {
   transform: translateX(-50%);
 }
 
+ /* Initially hide the dropdown menu */
+ .dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.dropdown-menu.show {
+  z-index: 1001;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* Positioning for the dropdown */
+#Print-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-prints {
+  width: 100%;
+}
+
 
 
 

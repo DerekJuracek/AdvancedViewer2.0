@@ -1712,6 +1712,161 @@ require([
           });
       }
 
+      document
+        .getElementById("Print-selector-variant1")
+        .addEventListener("click", function () {
+          captureMapVariant1();
+        });
+
+      function captureMapVariant1() {
+        const printDPI = 320; // Adjusted DPI for testing
+        const mapWidthInInches = 8.8;
+        const mapHeightInInches = 7.7;
+        const mapWidthInPixels = mapWidthInInches * printDPI;
+        const mapHeightInPixels = mapHeightInInches * printDPI;
+
+        view
+          .takeScreenshot({
+            width: mapWidthInPixels,
+            height: mapHeightInPixels,
+          })
+          .then(function (screenshot) {
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(
+              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
+            );
+            printWindow.document.close();
+          });
+      }
+
+      document
+        .getElementById("Print-selector-variant2")
+        .addEventListener("click", function () {
+          captureMapVariant2();
+        });
+
+      function captureMapVariant2() {
+        const printDPI = 300;
+        const mapWidthInInches = 9.0; // Adjusted width for testing
+        const mapHeightInInches = 7.5; // Adjusted height for testing
+        const mapWidthInPixels = mapWidthInInches * printDPI;
+        const mapHeightInPixels = mapHeightInInches * printDPI;
+
+        view
+          .takeScreenshot({
+            width: mapWidthInPixels,
+            height: mapHeightInPixels,
+          })
+          .then(function (screenshot) {
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(
+              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
+            );
+            printWindow.document.close();
+          });
+      }
+
+      document
+        .getElementById("Print-selector-variant3")
+        .addEventListener("click", function () {
+          captureMapVariant3();
+        });
+
+      function captureMapVariant3() {
+        const originalZoom = view.zoom;
+        view.zoom += 0.1; // Apply slight zoom before capture
+
+        const printDPI = 300;
+        const mapWidthInInches = 8.8;
+        const mapHeightInInches = 7.7;
+        const mapWidthInPixels = mapWidthInInches * printDPI;
+        const mapHeightInPixels = mapHeightInInches * printDPI;
+
+        view
+          .takeScreenshot({
+            width: mapWidthInPixels,
+            height: mapHeightInPixels,
+          })
+          .then(function (screenshot) {
+            const printWindow = window.open("", "_blank");
+            printWindow.document.write(
+              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
+            );
+            printWindow.document.close();
+            view.zoom = originalZoom; // Reset zoom after capture
+          });
+      }
+
+      document
+        .getElementById("Print-selector-variant4")
+        .addEventListener("click", function () {
+          captureMapVariant4();
+          hideDropdown(); // Hide the dropdown after selecting an option
+        });
+
+      function captureMapVariant4() {
+        const userDPI = prompt(
+          "Please enter the desired DPI for printing (e.g., 300):",
+          "300"
+        );
+
+        if (userDPI && !isNaN(userDPI)) {
+          const printDPI = parseInt(userDPI, 10);
+          const mapWidthInInches = 8.8;
+          const mapHeightInInches = 7.7;
+          const mapWidthInPixels = mapWidthInInches * printDPI;
+          const mapHeightInPixels = mapHeightInInches * printDPI;
+
+          view
+            .takeScreenshot({
+              width: mapWidthInPixels,
+              height: mapHeightInPixels,
+            })
+            .then(function (screenshot) {
+              const printWindow = window.open("", "_blank");
+              printWindow.document.write(
+                generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
+              );
+              printWindow.document.close();
+            });
+        } else {
+          alert("Invalid DPI input. Please enter a numeric value.");
+        }
+      }
+
+      function generatePrintHTML(mapDataUrl, mapWidthInInches) {
+        const currentDate = new Date().toLocaleString();
+        const scaleBarHTML = document.getElementById("scale-value").innerHTML;
+        return `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Print Map</title>
+              <style>
+                  body { display: flex; flex-direction: column; align-items: center; margin: 0; padding: 0; }
+                  .print-title { font-size: 24px; margin: 20px 0; text-align: center; }
+                  .print-map img { width: ${mapWidthInInches}in; height: auto; margin: 0 0.75in; }
+                  .print-scale { display: flex; justify-content: space-around; font-size: 14px; width: 100%; margin: 20px; }
+                  .print-scale-bar { font-size: 12px; }
+              </style>
+          </head>
+          <body>
+              <div class="print-title">
+                  <h1>Map Title</h1>
+              </div>
+              <div class="print-map">
+                  <img src="${mapDataUrl}" alt="Map Image">
+              </div>
+              <div class="print-scale">
+                  <div>Date Printed: ${currentDate}</div>
+                  <div>${scaleBarHTML}</div>
+              </div>
+          </body>
+          </html>`;
+      }
+
       function clearContents(e, string) {
         const currentUrl = window.location.href;
         const newUrl = removeQueryParam("uniqueid", currentUrl);
