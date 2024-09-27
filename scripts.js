@@ -1719,52 +1719,94 @@ require([
         });
 
       function captureMapVariant1() {
-        const printDPI = 320; // Adjusted DPI for testing
-        const mapWidthInInches = 8.8;
-        const mapHeightInInches = 7.7;
-        const mapWidthInPixels = mapWidthInInches * printDPI;
-        const mapHeightInPixels = mapHeightInInches * printDPI;
+        // Prompt the user to input the DPI, width, and height
+        const userDPI = prompt(
+          "Please enter the desired DPI for printing (e.g., 300):",
+          "320"
+        );
+        const mapWidthInInches = prompt(
+          "Please enter the desired map width in inches (e.g., 8.8):",
+          "8.8"
+        );
+        const mapHeightInInches = prompt(
+          "Please enter the desired map height in inches (e.g., 7.7):",
+          "7.7"
+        );
 
-        view
-          .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
-          })
-          .then(function (screenshot) {
-            const printWindow = window.open("", "_blank");
-            printWindow.document.write(
-              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
-            );
-            printWindow.document.close();
-          });
+        // Validate inputs
+        if (
+          userDPI &&
+          !isNaN(userDPI) &&
+          mapWidthInInches &&
+          !isNaN(mapWidthInInches) &&
+          mapHeightInInches &&
+          !isNaN(mapHeightInInches)
+        ) {
+          const printDPI = parseInt(userDPI, 10);
+          const widthInInches = parseFloat(mapWidthInInches);
+          const heightInInches = parseFloat(mapHeightInInches);
+
+          // Calculate map dimensions in pixels
+          const mapWidthInPixels = widthInInches * printDPI;
+          const mapHeightInPixels = heightInInches * printDPI;
+
+          view
+            .takeScreenshot({
+              width: mapWidthInPixels,
+              height: mapHeightInPixels,
+            })
+            .then(function (screenshot) {
+              const printWindow = window.open("", "_blank");
+              printWindow.document.write(
+                generatePrintHTML(screenshot.dataUrl, widthInInches)
+              );
+              printWindow.document.close();
+            });
+        } else {
+          alert(
+            "Invalid input. Please enter numeric values for DPI, width, and height."
+          );
+        }
       }
 
-      document
-        .getElementById("Print-selector-variant2")
-        .addEventListener("click", function () {
-          captureMapVariant2();
-        });
+      // document
+      //   .getElementById("Print-selector-variant2")
+      //   .addEventListener("click", function () {
+      //     captureMapVariant2();
+      //   });
 
-      function captureMapVariant2() {
-        const printDPI = 300;
-        const mapWidthInInches = 9.0; // Adjusted width for testing
-        const mapHeightInInches = 7.5; // Adjusted height for testing
-        const mapWidthInPixels = mapWidthInInches * printDPI;
-        const mapHeightInPixels = mapHeightInInches * printDPI;
+      // function captureMapVariant2() {
+      //   const printDPI = 300;
+      //   const mapWidthInInches = 9.0; // Adjusted width for testing
+      //   const mapHeightInInches = 7.5; // Adjusted height for testing
+      //   const margin = "0 0.75in"; // Custom margin for the map image
+      //   const borderColor = "#A9A9A9"; // Custom border color
+      //   const borderThickness = "3px"; // Custom border thickness
+      //   const titleFontSize = "24px"; // Custom title font size
 
-        view
-          .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
-          })
-          .then(function (screenshot) {
-            const printWindow = window.open("", "_blank");
-            printWindow.document.write(
-              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
-            );
-            printWindow.document.close();
-          });
-      }
+      //   const mapWidthInPixels = mapWidthInInches * printDPI;
+      //   const mapHeightInPixels = mapHeightInInches * printDPI;
+
+      //   view
+      //     .takeScreenshot({
+      //       width: mapWidthInPixels,
+      //       height: mapHeightInPixels,
+      //     })
+      //     .then(function (screenshot) {
+      //       const printWindow = window.open("", "_blank");
+      //       printWindow.document.write(
+      //         generatePrintHTMLParams(
+      //           screenshot.dataUrl,
+      //           mapWidthInInches,
+      //           margin,
+      //           borderColor,
+      //           borderThickness,
+      //           titleFontSize
+      //         )
+      //       );
+      //       printWindow.document.close();
+      //     });
+      // }
 
       document
         .getElementById("Print-selector-variant3")
@@ -1773,28 +1815,78 @@ require([
         });
 
       function captureMapVariant3() {
-        const originalZoom = view.zoom;
-        view.zoom += 0.1; // Apply slight zoom before capture
+        // Prompt the user to input the DPI, width, height, margin, border color, border thickness, and title font size
+        const printDPI = prompt(
+          "Please enter the desired DPI for printing (e.g., 300):",
+          "300"
+        );
+        const mapWidthInInches = prompt(
+          "Please enter the desired map width in inches (e.g., 9.0):",
+          "9.0"
+        );
+        const mapHeightInInches = prompt(
+          "Please enter the desired map height in inches (e.g., 7.5):",
+          "7.5"
+        );
+        const margin = prompt(
+          "Please enter the desired margin for the map image (e.g., 0 0.75in):",
+          "0 0.75in"
+        );
+        const borderColor = prompt(
+          "Please enter the desired border color (e.g., #A9A9A9):",
+          "#A9A9A9"
+        );
+        const borderThickness = prompt(
+          "Please enter the desired border thickness (e.g., 3px):",
+          "3px"
+        );
+        const titleFontSize = prompt(
+          "Please enter the desired title font size (e.g., 24px):",
+          "24px"
+        );
 
-        const printDPI = 300;
-        const mapWidthInInches = 8.8;
-        const mapHeightInInches = 7.7;
-        const mapWidthInPixels = mapWidthInInches * printDPI;
-        const mapHeightInPixels = mapHeightInInches * printDPI;
+        // Validate inputs
+        if (
+          printDPI &&
+          !isNaN(printDPI) &&
+          mapWidthInInches &&
+          !isNaN(mapWidthInInches) &&
+          mapHeightInInches &&
+          !isNaN(mapHeightInInches) &&
+          borderThickness &&
+          borderThickness.endsWith("px") // Ensures border thickness is a valid px value
+        ) {
+          const dpiValue = parseInt(printDPI, 10);
+          const widthInInches = parseFloat(mapWidthInInches);
+          const heightInInches = parseFloat(mapHeightInInches);
 
-        view
-          .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
-          })
-          .then(function (screenshot) {
-            const printWindow = window.open("", "_blank");
-            printWindow.document.write(
-              generatePrintHTML(screenshot.dataUrl, mapWidthInInches)
-            );
-            printWindow.document.close();
-            view.zoom = originalZoom; // Reset zoom after capture
-          });
+          const mapWidthInPixels = widthInInches * dpiValue;
+          const mapHeightInPixels = heightInInches * dpiValue;
+
+          view
+            .takeScreenshot({
+              width: mapWidthInPixels,
+              height: mapHeightInPixels,
+            })
+            .then(function (screenshot) {
+              const printWindow = window.open("", "_blank");
+              printWindow.document.write(
+                generatePrintHTML(
+                  screenshot.dataUrl,
+                  widthInInches,
+                  margin,
+                  borderColor,
+                  borderThickness,
+                  titleFontSize
+                )
+              );
+              printWindow.document.close();
+            });
+        } else {
+          alert(
+            "Invalid input. Please enter numeric values for DPI, width, height, and valid px for border thickness."
+          );
+        }
       }
 
       document
