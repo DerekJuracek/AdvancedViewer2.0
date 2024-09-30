@@ -1715,58 +1715,77 @@ require([
       document
         .getElementById("Print-selector-variant1")
         .addEventListener("click", function () {
-          captureMapVariant1();
+          captureMap2();
         });
 
-      function captureMapVariant1() {
-        // Prompt the user to input the DPI, width, and height
-        const userDPI = prompt(
-          "Please enter the desired DPI for printing (e.g., 300):",
-          "320"
-        );
-        const mapWidthInInches = prompt(
-          "Please enter the desired map width in inches (e.g., 8.8):",
-          "8.8"
-        );
-        const mapHeightInInches = prompt(
-          "Please enter the desired map height in inches (e.g., 7.7):",
-          "7.7"
-        );
+      function captureMap2() {
+        const printDPI = 300; // Standard print DPI
+        const mapWidthInInches = 6.5; // Slightly reduced width of the map on paper in inches
+        const mapHeightInInches = 4.5; // Slightly reduced height of the map on paper in inches
+        const mapWidthInPixels = mapWidthInInches * printDPI;
+        const mapHeightInPixels = mapHeightInInches * printDPI;
 
-        // Validate inputs
-        if (
-          userDPI &&
-          !isNaN(userDPI) &&
-          mapWidthInInches &&
-          !isNaN(mapWidthInInches) &&
-          mapHeightInInches &&
-          !isNaN(mapHeightInInches)
-        ) {
-          const printDPI = parseInt(userDPI, 10);
-          const widthInInches = parseFloat(mapWidthInInches);
-          const heightInInches = parseFloat(mapHeightInInches);
+        view
+          .takeScreenshot({
+            width: mapWidthInPixels,
+            height: mapHeightInPixels,
+          })
+          .then(function (screenshot) {
+            const currentDate = new Date().toLocaleString();
+            const scaleBar1 = document.getElementById("scale-value");
+            const scaleBarHTML = scaleBar1.innerHTML;
 
-          // Calculate map dimensions in pixels
-          const mapWidthInPixels = widthInInches * printDPI;
-          const mapHeightInPixels = heightInInches * printDPI;
-
-          view
-            .takeScreenshot({
-              width: mapWidthInPixels,
-              height: mapHeightInPixels,
-            })
-            .then(function (screenshot) {
-              const printWindow = window.open("", "_blank");
-              printWindow.document.write(
-                generatePrintHTML(screenshot.dataUrl, widthInInches)
-              );
-              printWindow.document.close();
+            // Create a new jsPDF instance
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+              orientation: "portrait", // or "landscape"
+              unit: "in",
+              format: [8.5, 11], // Paper size in inches
             });
-        } else {
-          alert(
-            "Invalid input. Please enter numeric values for DPI, width, and height."
-          );
-        }
+
+            // Add a title to the PDF
+            pdf.setFontSize(24);
+            pdf.text("Map Title", 4.25, 0.5, { align: "center" });
+
+            // Add the map screenshot as an image to the PDF
+            pdf.addImage(
+              screenshot.dataUrl,
+              "PNG",
+              0.75,
+              1,
+              mapWidthInInches,
+              mapHeightInInches
+            );
+
+            // Add the date and scale bar to the PDF
+            pdf.setFontSize(12);
+            pdf.text(
+              `Date Printed: ${currentDate}`,
+              0.75,
+              mapHeightInInches + 1.5
+            );
+            pdf.text(scaleBarHTML, 0.75, mapHeightInInches + 1.75);
+
+            // Add the disclaimer to the PDF
+            const disclaimerText = `
+                Disclaimer: This map is intended for reference and general informational purposes
+                only and is not a legally recorded map or survey. While reasonable effort has been
+                made to ensure the accuracy, correctness, and timeliness of materials presented,
+                the map vendor and the municipality disclaim any and all liability and responsibility for
+                any errors, omissions, or inaccuracies in the data provided, including without limitation
+                any liability for direct, indirect, incidental, consequential, special, exemplary,
+                punitive, or any other type of damages. Users are hereby notified that the primary
+                information source should be consulted for verification of the data contained herein.
+                Continued use of this map acknowledges acceptance of these terms.
+              `;
+            pdf.setFontSize(10);
+            pdf.text(disclaimerText, 0.75, mapHeightInInches + 2.25, {
+              maxWidth: 7,
+            });
+
+            // Save the PDF with a dynamic name
+            pdf.save(`Map_Print_${currentDate}.pdf`);
+          });
       }
 
       // document
@@ -2270,7 +2289,7 @@ require([
 
           // Conditionally add the "Permits" link if the variable allows it
           if (configVars.includePermitLink === "yes") {
-            linksHTML += `<a class='mx-2' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+            linksHTML += `<a  target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
           }
 
           // Closing the div
@@ -2505,7 +2524,7 @@ require([
 
           // Conditionally add the "Permits" link if the variable allows it
           if (configVars.includePermitLink === "yes") {
-            linksHTML += `<a class='mx-2' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId} ><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
           }
 
           // Closing the div
