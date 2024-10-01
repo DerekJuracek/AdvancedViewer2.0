@@ -2913,11 +2913,8 @@ require([
 
             if (polygonGraphics2.length >= 1) {
               graphicsLayer.addMany(polygonGraphics2);
+              view.goTo(polygonGraphics2);
             }
-
-            view.goTo({
-              target: graphic3,
-            });
           }
         }
 
@@ -3378,9 +3375,9 @@ require([
                 triggerfromNoCondos = false;
               }
 
-              view.goTo({
-                target: result.features,
-              });
+              // view.goTo({
+              //   target: result.features,
+              // });
             } else if (result.features.length === 1 && firstList.length > 2) {
               const firstQuery = noCondosTable.createQuery();
               firstQuery.where = whereClause;
