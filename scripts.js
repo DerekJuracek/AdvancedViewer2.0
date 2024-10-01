@@ -1022,9 +1022,19 @@ require([
 
         // Toggle the icon based on visibility
         if (isVisible) {
-          actionElement.attr("icon", "check-square"); // Assuming you use 'check' icon for visible
+          if (actionElement.hasClass("layer-vis")) {
+            return; // If it's not the visibility action, exit the function
+          } else {
+            actionElement.attr("icon", "check-square");
+          }
+          // Assuming you use 'check' icon for visible
         } else {
-          actionElement.attr("icon", "square"); // Use an appropriate icon for non-visible
+          if (actionElement.hasClass("layer-vis")) {
+            return; // If it's not the visibility action, exit the function
+          } else {
+            actionElement.attr("icon", "square");
+          }
+          // Use an appropriate icon for non-visible
         }
       }
 
@@ -1056,8 +1066,9 @@ require([
           // Create the pick list item and action for each layer
           var item = $(`
           <calcite-list-item scale="m" label="${layer.title}" value="${layer.id}" style="border: white 0.5px solid;">
-            <calcite-action id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
-            <div id="opacityDiv-${layer.id}" class="esri-slider esri-widget esri-slider--horizontal" touch-action="none" style="display: flex; height: 45px; align-items: center; padding-bottom: 10px; padding-left: 10px;">
+          <calcite-action class="toggle-slider" id="action-${layer.id}-dropdown" slot="actions-end" icon="sliders-horizontal" text="${layer.title}"></calcite-action>
+            <calcite-action class="layer-vis" id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
+            <div id="opacityDiv-${layer.id}" class="esri-slider esri-widget esri-slider--horizontal opacity-div " touch-action="none" style="display: none; height: 45px; align-items: center; padding-bottom: 10px; padding-left: 10px;">
               <label style="margin-right: 10px; padding-top: 20px; font-weight: 500;font-size: 12px;">Layer Opacity (%)</label>
               <calcite-slider class="slider-opacity" id="${layer.id}" style="width: 50%;" value="100" label-handles max-label="100" max-value="100" min-label="0"></calcite-slider>
               </calcite-slider>
@@ -1120,6 +1131,11 @@ require([
       }
 
       function toggleLayerVisibility(layerId, actionElement) {
+        // Check if the clicked action is the visibility action, not the toggle-slider
+        // if (actionElement.hasClass("layer-vis")) {
+        //   return; // If it's not the visibility action, exit the function
+        // }
+
         // Find the layer in the webmap
         let layer = webmap.findLayerById(layerId);
 
@@ -1127,7 +1143,7 @@ require([
           // Toggle the layer's visibility
           layer.visible = !layer.visible;
 
-          // If the layer is part of a group layer, you might need to toggle each sublayer
+          // If the layer is part of a group layer, toggle each sublayer
           if (layer.type === "group") {
             layer.layers.forEach((subLayer) => {
               subLayer.visible = layer.visible;
@@ -1142,7 +1158,15 @@ require([
         }
       }
 
-      $("#layerList").on("click", "calcite-action", function (event) {
+      $(document).ready(function () {
+        // Attach the event listener to a parent element, like 'body' or a wrapper around the list
+        $("body").on("click", ".toggle-slider", function () {
+          // Find the closest layer-item and toggle the opacity div inside it
+          $(this).closest("calcite-list-item").find(".opacity-div").toggle();
+        });
+      });
+
+      $("#layerList").on("click", ".layer-vis", function (event) {
         // Prevent the default action
         event.preventDefault();
 
