@@ -1533,6 +1533,16 @@ calcite-slider::part(tick) {
   width: 100%;
 }
 
+calcite-combobox {
+  --calcite-combobox-max-items: 5; /* Display 5 items before scrolling */
+}
+
+calcite-combobox::part(items-wrapper) {
+  max-height: 300px; /* Customize this value to your needs */
+  overflow-y: auto;
+}
+
+
 
 
 

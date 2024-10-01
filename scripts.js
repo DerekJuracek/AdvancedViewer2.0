@@ -1834,78 +1834,36 @@ require([
         });
 
       function captureMapVariant3() {
-        // Prompt the user to input the DPI, width, height, margin, border color, border thickness, and title font size
-        const printDPI = prompt(
-          "Please enter the desired DPI for printing (e.g., 300):",
-          "300"
-        );
-        const mapWidthInInches = prompt(
-          "Please enter the desired map width in inches (e.g., 9.0):",
-          "9.0"
-        );
-        const mapHeightInInches = prompt(
-          "Please enter the desired map height in inches (e.g., 7.5):",
-          "7.5"
-        );
-        const margin = prompt(
-          "Please enter the desired margin for the map image (e.g., 0 0.75in):",
-          "0 0.75in"
-        );
-        const borderColor = prompt(
-          "Please enter the desired border color (e.g., #A9A9A9):",
-          "#A9A9A9"
-        );
-        const borderThickness = prompt(
-          "Please enter the desired border thickness (e.g., 3px):",
-          "3px"
-        );
-        const titleFontSize = prompt(
-          "Please enter the desired title font size (e.g., 24px):",
-          "24px"
-        );
+        // Capture the map screenshot exactly as displayed, without any DPI or scaling
+        view.takeScreenshot().then(function (screenshot) {
+          const currentDate = new Date().toLocaleString();
+          const scaleBar1 = document.getElementById("scale-value");
+          const scaleBarHTML = scaleBar1.innerHTML;
 
-        // Validate inputs
-        if (
-          printDPI &&
-          !isNaN(printDPI) &&
-          mapWidthInInches &&
-          !isNaN(mapWidthInInches) &&
-          mapHeightInInches &&
-          !isNaN(mapHeightInInches) &&
-          borderThickness &&
-          borderThickness.endsWith("px") // Ensures border thickness is a valid px value
-        ) {
-          const dpiValue = parseInt(printDPI, 10);
-          const widthInInches = parseFloat(mapWidthInInches);
-          const heightInInches = parseFloat(mapHeightInInches);
+          // Create a new jsPDF instance
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: "portrait", // or "landscape"
+            unit: "in",
+            format: [8.5, 11], // Paper size in inches
+          });
 
-          const mapWidthInPixels = widthInInches * dpiValue;
-          const mapHeightInPixels = heightInInches * dpiValue;
+          // Add a title to the PDF
+          pdf.setFontSize(24);
+          pdf.text("Map Title", 10, 10); // Text at default position (10,10)
 
-          view
-            .takeScreenshot({
-              width: mapWidthInPixels,
-              height: mapHeightInPixels,
-            })
-            .then(function (screenshot) {
-              const printWindow = window.open("", "_blank");
-              printWindow.document.write(
-                generatePrintHTML(
-                  screenshot.dataUrl,
-                  widthInInches,
-                  margin,
-                  borderColor,
-                  borderThickness,
-                  titleFontSize
-                )
-              );
-              printWindow.document.close();
-            });
-        } else {
-          alert(
-            "Invalid input. Please enter numeric values for DPI, width, height, and valid px for border thickness."
-          );
-        }
+          // Add the screenshot as an image to the PDF without any scaling or DPI adjustments
+          // It will place the image in its exact dimensions as captured on the screen
+          pdf.addImage(screenshot.dataUrl, "PNG", 10, 30);
+
+          // Add date and scale bar text to the PDF
+          pdf.setFontSize(12);
+          pdf.text(`Date Printed: ${currentDate}`, 10, 280); // Adjust position as needed based on image height
+          pdf.text(scaleBarHTML, 10, 290);
+
+          // Save the PDF without any DPI or custom layout
+          pdf.save(`Map_Print_${currentDate}.pdf`);
+        });
       }
 
       document
@@ -2906,7 +2864,7 @@ require([
             }
 
             // will zoom to extent of adding and deselecting
-            view.goTo(polygonGraphics);
+            //view.goTo(polygonGraphics);
           } else {
             graphicsLayer.addMany(polygonGraphics2);
           }
@@ -2977,7 +2935,6 @@ require([
         }
         count = false;
         regSearch = false;
-        // count = 0;
       }
 
       let sketch = new SketchViewModel({
@@ -3005,8 +2962,6 @@ require([
         let lassoBuffer = true;
         lassoGisLinks = true;
         let bufferResults = [];
-        // $("#select-button").prop("disabled", true);
-        // $("#select-button").addClass("disabled");
 
         let results = [];
         let features = [];
@@ -3052,8 +3007,6 @@ require([
             buildAndQueryTable(bufferResults, lassoBuffer);
 
             lasso = false;
-            // totalResults = response.features;
-            // addResultGraphics(totalResults);
           });
         }
 
@@ -3141,10 +3094,8 @@ require([
             clickHandle = null;
           }
 
-          // clickHandle = view.on("click", handleClick);
           $("#lasso").removeClass("btn-warning");
           $("#lasso").addClass("btn-info");
-          // $("#select-button").addClass("btn-warning");
         }
       });
 
@@ -3192,7 +3143,6 @@ require([
               console.error("Failed to remove DetailsHandle", error);
             }
           }
-          // DetailsHandle = view.on("click", handleDetailsClick);
           clickHandle = view.on("click", handleClick);
         } else if (select && lasso) {
           if (DetailsHandle) {
