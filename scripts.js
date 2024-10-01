@@ -1712,11 +1712,11 @@ require([
           });
       }
 
-      document
-        .getElementById("Print-selector-variant1")
-        .addEventListener("click", function () {
-          captureMap2();
-        });
+      // document
+      //   .getElementById("Print-selector-variant1")
+      //   .addEventListener("click", function () {
+      //     captureMap2();
+      //   });
 
       function captureMap2() {
         const printDPI = 300; // Standard print DPI
@@ -1827,11 +1827,11 @@ require([
       //     });
       // }
 
-      document
-        .getElementById("Print-selector-variant3")
-        .addEventListener("click", function () {
-          captureMapVariant3();
-        });
+      // document
+      //   .getElementById("Print-selector-variant3")
+      //   .addEventListener("click", function () {
+      //     captureMapVariant3();
+      //   });
 
       function captureMapVariant3() {
         // Capture the map screenshot exactly as displayed, without any DPI or scaling
@@ -1866,12 +1866,12 @@ require([
         });
       }
 
-      document
-        .getElementById("Print-selector-variant4")
-        .addEventListener("click", function () {
-          captureMapVariant4();
-          hideDropdown(); // Hide the dropdown after selecting an option
-        });
+      // document
+      //   .getElementById("Print-selector-variant4")
+      //   .addEventListener("click", function () {
+      //     captureMapVariant4();
+      //     hideDropdown(); // Hide the dropdown after selecting an option
+      //   });
 
       function captureMapVariant4() {
         const userDPI = prompt(

@@ -526,13 +526,13 @@
               <!-- Dropdown 1 -->
               <div class="filterContainer">
                 <div class="filterLabel green-class">Street Name is</div>
-                <calcite-combobox id="streetFilter" placeholder="Select a Street Name" scale="m">
+                <calcite-combobox id="streetFilter" placeholder="Select a Street Name" scale="m" max-items="5">
                   <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
                 <div class="filterLabel green-class">Owner is</div>
-                <calcite-combobox id="ownerFilter" placeholder="Select a Owner" scale="m">
+                <calcite-combobox id="ownerFilter" placeholder="Select a Owner" scale="m" max-items="5">
                   <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
@@ -617,6 +617,7 @@
                   id="zoningFilter"
                   placeholder="Select a Zone"
                   scale="m"
+                  max-items="5"
                 >
                   <!-- dynamically populated -->
                 </calcite-combobox>
@@ -624,7 +625,7 @@
               <div class="filterContainer">
                 <div class="filterLabel green-class">Neighborhood is</div>
                 <calcite-combobox
-                max-items="4"
+                  max-items="5"
                   id="neighborhoodFilter"
                   placeholder="Select a Neighborhood"
                   scale="m"
@@ -637,7 +638,7 @@
                 <div class="filterLabel green-class">Property Type is</div>
                 <calcite-combobox
                   id="propertyFilter"
-                  max-items="4"
+                  max-items="5"
                   placeholder="Select a Property Type"
                   scale="m"
                 >
@@ -648,7 +649,7 @@
                 <div class="filterLabel green-class">Building Type is</div>
                 <calcite-combobox
                   id="buildingFilter"
-                  max-items="4"
+                  max-items="5"
                   placeholder="Select a Building Type"
                   scale="m"
                 >
@@ -659,7 +660,7 @@
                 <div class="filterLabel green-class">Building Use is</div>
                 <calcite-combobox
                   id="buildingUseFilter"
-                  max-items="4"
+                  max-items="5"
                   placeholder="Select a Building Use Type"
                   scale="m"
                 >
@@ -670,7 +671,7 @@
                 <div class="filterLabel green-class">Design Type is</div>
                 <calcite-combobox
                   id="designTypeFilter"
-                  max-items="4"
+                  max-items="5"
                   placeholder="Select a Design Type"
                   scale="m"
                 >
