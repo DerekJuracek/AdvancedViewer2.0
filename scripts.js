@@ -1542,9 +1542,12 @@ require([
           query.orderByFields = [`${fieldName} ASC`];
         }
         query.outFields = [fieldName];
+        query.maxRecordCountFactor = 5;
 
         CondosTable.queryFeatures(query).then(function (response) {
           var features = response.features;
+          var count = response.features.length;
+          console.log(`${fieldName} had ${count} records`);
           var comboBox = $(comboBoxSelector);
 
           features.forEach(function (feature) {
