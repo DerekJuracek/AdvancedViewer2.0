@@ -2255,8 +2255,8 @@ require([
             zoomToItemId = locationUniqueId;
             Id = locationUniqueId;
           } else {
-            zoomToItemId = locationGIS_LINK;
-            Id = locationGIS_LINK;
+            zoomToItemId = locationGISLINK;
+            Id = locationGISLINK;
           }
 
           const listItem = document.createElement("li");
