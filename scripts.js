@@ -2249,7 +2249,8 @@ require([
           let locationGeom = feature.geometry;
           let propertyType = feature.Parcel_Type;
           let streetName = feature.Street_Name;
-          const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
+          let ImagePath = feature.Image_Path;
+          const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           if (configVars.useUniqueIdforParcelMap === "yes") {
             zoomToItemId = locationUniqueId;
@@ -2269,7 +2270,7 @@ require([
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
 
           // Conditionally add the "Permits" link if the variable allows it
@@ -2283,7 +2284,7 @@ require([
           // Set the inner HTML of the linksDiv
           linksDiv.innerHTML = linksHTML;
 
-          imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}" alt="Image of ${locationUniqueId}" >`;
+          imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}${imagePath}" alt="Image of ${locationUniqueId}" >`;
           listItem.classList.add("list-group-item", "col-9");
           listItem.classList.add("search-list");
           imageDiv.setAttribute("object-id", objectID);
@@ -2489,7 +2490,8 @@ require([
             Id = locationGISLINK;
           }
 
-          const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
+          let ImagePath = feature.Image_Path;
+          const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           listGroup.classList.add("row");
           listGroup.classList.add("list-group");
@@ -2504,7 +2506,7 @@ require([
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}&amp;uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
 
           // Conditionally add the "Permits" link if the variable allows it
@@ -2698,6 +2700,7 @@ require([
               let Map = feature.attributes["Map"];
               let Lat = feature.attributes["Lat"];
               let Lon = feature.attributes["Lon"];
+              let Image_Path = feature.attributes["Image_Path"];
 
               firstList.push(
                 new Parcel(
@@ -2737,7 +2740,8 @@ require([
                   Prior_Appraised_Total,
                   Map,
                   Lat,
-                  Lon
+                  Lon,
+                  Image_Path
                 )
               );
             }
@@ -3240,7 +3244,8 @@ require([
           Prior_Appraised_Total,
           Map,
           Lat,
-          Lon
+          Lon,
+          Image_Path
         ) {
           this.objectid = objectid;
           this.location = location;
@@ -3279,6 +3284,7 @@ require([
           this.Map = Map;
           this.LAT = Lat;
           this.LON = Lon;
+          this.Image_Path = Image_Path;
         }
       }
 
@@ -3357,6 +3363,7 @@ require([
               // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
+              triggerfromNoCondos = false;
 
               // if no condos and coming from url search of condiminium like wilton
               if (triggerfromNoCondos) {
@@ -4735,7 +4742,8 @@ require([
         zoomToObjectID = objectID2;
         zoomToGisLink = locationGIS_LINK;
 
-        const imageUrl = `${configVars.imageUrl}${locationUniqueId}.jpg`;
+        let ImagePath = features.Image_Path;
+        const imageUrl = `${configVars.imageUrl}${ImagePath}`;
         // console.log(matchedObject);
 
         const detailsDiv = document.getElementById("detail-content");
@@ -4769,7 +4777,7 @@ require([
         </p>
   
         <div>
-        <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+        <img class="image" src=${configVars.imageUrl}${ImagePath} alt="Building Photo" width="250" height="125">
         </div>
         <p>
         <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
@@ -4804,7 +4812,7 @@ require([
       </a>
     </td>
     <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}&uniqueid=${locationUniqueId}">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}">
         <strong>Property Card</strong>
       </a>
     </td>
@@ -5168,6 +5176,10 @@ require([
 
         let Lat = matchedObject.LAT === undefined ? "" : matchedObject.LAT;
         let Lon = matchedObject.LON === undefined ? "" : matchedObject.LON;
+        let imagePath =
+          matchedObject.Image_Path === undefined
+            ? ""
+            : matchedObject.Image_Path;
         let Id;
 
         if (configVars.useUniqueIdforParcelMap === "yes") {
@@ -5182,7 +5194,7 @@ require([
         zoomToObjectID = objectID2;
         zoomToGisLink = locationGIS_LINK;
 
-        const imageUrl = `https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Washington_CT/${locationUniqueId}.jpg`;
+        // const imageUrl = `${imageUrl}${ImagePath};
         const detailsDiv = document.getElementById("detail-content");
         const details = document.createElement("div");
 
@@ -5214,7 +5226,7 @@ require([
       </p>
 
       <div>
-      <img class="image" src=${configVars.imageUrl}${locationUniqueId}.jpg alt="Building Photo" width="250" height="125">
+      <img class="image" src=${configVars.imageUrl}${imagePath} alt="Building Photo" width="250" height="125">
       </div>
       <p>
       <span style="font-family:Tahoma;font-size:12px;"><strong>${locationOwner} ${locationCoOwner}</strong></span> <br>
@@ -5249,7 +5261,7 @@ require([
       </a>
     </td>
     <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}&uniqueid=${locationUniqueId}">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}">
         <strong>Property Card</strong>
       </a>
     </td>
@@ -5773,7 +5785,8 @@ require([
             query.returnHiddenFields = true; // Adjust based on your needs
             query.outFields = ["*"];
           }
-
+          // THIS NEEDS TO BE FIXEDDDDDDD
+          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           CondosTable.queryFeatures(query)
             .then((response) => {
               if (response.features.length > 0) {
@@ -5837,6 +5850,7 @@ require([
                     let Map = feature.attributes["Map"];
                     let Lat = feature.attributes["Lat"];
                     let Lon = feature.attributes["Lon"];
+                    let Image_Path = feature.attributes["Image_Path"];
 
                     firstList.push(
                       new Parcel(
@@ -5876,7 +5890,8 @@ require([
                         Prior_Appraised_Total,
                         Map,
                         Lat,
-                        Lon
+                        Lon,
+                        Image_Path
                       )
                     );
                   }
