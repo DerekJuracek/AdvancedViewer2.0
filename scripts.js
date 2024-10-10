@@ -2244,8 +2244,7 @@ require([
           let propertyType = feature.Parcel_Type;
           let streetName = feature.Street_Name;
           let ImagePath = feature.Image_Path;
-          let VisionAct =
-            feature.VISION_AcctNum === undefined ? "" : feature.VISION_AcctNum;
+          let VisionAct = feature.AcctNum === undefined ? "" : feature.AcctNum;
           const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           if (configVars.useUniqueIdforParcelMap === "yes") {
@@ -2491,8 +2490,7 @@ require([
           }
 
           let ImagePath = feature.Image_Path;
-          let VisionAct =
-            feature.VISION_AcctNum === undefined ? "" : feature.VISION_AcctNum;
+          let VisionAct = feature.AcctNum === undefined ? "" : feature.AcctNum;
           const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           listGroup.classList.add("row");
@@ -2708,7 +2706,7 @@ require([
               let Lat = feature.attributes["Lat"];
               let Lon = feature.attributes["Lon"];
               let Image_Path = feature.attributes["Image_Path"];
-              let VISION_AcctNum = feature.attributes["VISION_AcctNum"];
+              let AcctNum = feature.attributes["AcctNum"];
 
               firstList.push(
                 new Parcel(
@@ -2750,7 +2748,7 @@ require([
                   Lat,
                   Lon,
                   Image_Path,
-                  VISION_AcctNum
+                  AcctNum
                 )
               );
             }
@@ -3255,7 +3253,7 @@ require([
           Lat,
           Lon,
           Image_Path,
-          VISION_AcctNum
+          AcctNum
         ) {
           this.objectid = objectid;
           this.location = location;
@@ -3295,7 +3293,7 @@ require([
           this.LAT = Lat;
           this.LON = Lon;
           this.Image_Path = Image_Path;
-          this.VISION_AcctNum = VISION_AcctNum;
+          this.AcctNum = AcctNum;
         }
       }
 
@@ -4739,8 +4737,7 @@ require([
 
         let Lat = features.Lat === undefined ? "" : features.Lat;
         let Lon = features.Lon === undefined ? "" : features.Lon;
-        let VisionAct =
-          features.VISION_AcctNum === undefined ? "" : features.VISION_AcctNum;
+        let VisionAct = features.AcctNum === undefined ? "" : features.AcctNum;
         let Id;
 
         if (configVars.useUniqueIdforParcelMap === "yes") {
@@ -5196,9 +5193,7 @@ require([
         let Lat = matchedObject.LAT === undefined ? "" : matchedObject.LAT;
         let Lon = matchedObject.LON === undefined ? "" : matchedObject.LON;
         let VisionAct =
-          matchedObject.VISION_AcctNum === undefined
-            ? ""
-            : matchedObject.VISION_AcctNum;
+          matchedObject.AcctNum === undefined ? "" : matchedObject.AcctNum;
         let imagePath =
           matchedObject.Image_Path === undefined
             ? ""
@@ -5882,7 +5877,7 @@ require([
                     let Lat = feature.attributes["Lat"];
                     let Lon = feature.attributes["Lon"];
                     let Image_Path = feature.attributes["Image_Path"];
-                    let VISION_AcctNum = feature.attributes["VISION_AcctNum"];
+                    let AcctNum = feature.attributes["AcctNum"];
 
                     firstList.push(
                       new Parcel(
@@ -5924,7 +5919,7 @@ require([
                         Lat,
                         Lon,
                         Image_Path,
-                        VISION_AcctNum
+                        AcctNum
                       )
                     );
                   }
