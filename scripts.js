@@ -98,6 +98,7 @@ require([
       configVars.housingUrl = config.housingUrl;
       configVars.propertyCard = config.propertyCard;
       configVars.tax_bill = config.tax_bill;
+      configVars.useVisionForTaxBillUrl = config.useVisionForTaxBillUrl;
       configVars.accessorName = config.accessorName;
       configVars.parcelTitle = config.parcelServiceTitle;
       configVars.tabTitle = config.tabTitle;
@@ -144,10 +145,10 @@ require([
 
       function formatDate(timestamp) {
         var date = new Date(timestamp);
-        var day = date.getDate(); // Get the day of the month
-        var month = date.getMonth() + 1; // Get the month (0-11, hence add 1)
-        var year = date.getFullYear(); // Get the full year
-        return month + "/" + day + "/" + year; // Format as "MM/DD/YYYY"
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        return month + "/" + day + "/" + year;
       }
 
       // Key to check in sessionStorage
@@ -191,7 +192,6 @@ require([
         },
       });
       view.when(() => {
-        // console.log(view.spatialReference);
         configVars.homeExtent = view.extent;
       });
 
@@ -199,8 +199,6 @@ require([
         $("#filterButton").remove();
       } else {
       }
-
-      // console.log("extent is", extent);
 
       view.when(() => {
         if (
@@ -218,10 +216,8 @@ require([
             if ($(this).is(":checked")) {
               $("#agreeBtn").prop("disabled", false);
               sessionStorage.setItem("agreedToDisclaimer", "yes");
-              // Perform actions when checkbox is checked
             } else {
               $("#agreeBtn").prop("disabled", true);
-              // Perform actions when checkbox is unchecked
             }
           });
         });
@@ -238,11 +234,9 @@ require([
               url: `${urlValue}`,
             });
 
-            // Listen for the load event to handle success and error
             urlInputLayer
               .load()
               .then(() => {
-                // Add the layer to the web map
                 webmap.add(urlInputLayer);
                 $("#urlMessage").html(
                   `<strong><p style="color:green;">Successfully uploaded REST Service.</p></strong>`
@@ -253,7 +247,6 @@ require([
                   console.log(event, " layer was added/removed from the map.");
                 });
 
-                // Add the newly added layer to the pick list
                 var pickListContainer = $("#layerList");
                 addLayerToPickList(urlInputLayer, pickListContainer);
 
@@ -2251,6 +2244,8 @@ require([
           let propertyType = feature.Parcel_Type;
           let streetName = feature.Street_Name;
           let ImagePath = feature.Image_Path;
+          let VisionAct =
+            feature.VISION_AcctNum === undefined ? "" : feature.VISION_AcctNum;
           const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           if (configVars.useUniqueIdforParcelMap === "yes") {
@@ -2271,9 +2266,13 @@ require([
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
 
+          if (configVars.useVisionForTaxBillUrl === "yes") {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${VisionAct}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          } else {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          }
           // Conditionally add the "Permits" link if the variable allows it
           if (configVars.includePermitLink === "yes") {
             linksHTML += `<a  target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
@@ -2492,6 +2491,8 @@ require([
           }
 
           let ImagePath = feature.Image_Path;
+          let VisionAct =
+            feature.VISION_AcctNum === undefined ? "" : feature.VISION_AcctNum;
           const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           listGroup.classList.add("row");
@@ -2507,8 +2508,13 @@ require([
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
             <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+
+          if (configVars.useVisionForTaxBillUrl === "yes") {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${VisionAct}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          } else {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          }
 
           // Conditionally add the "Permits" link if the variable allows it
           if (configVars.includePermitLink === "yes") {
@@ -2702,6 +2708,7 @@ require([
               let Lat = feature.attributes["Lat"];
               let Lon = feature.attributes["Lon"];
               let Image_Path = feature.attributes["Image_Path"];
+              let VISION_AcctNum = feature.attributes["VISION_AcctNum"];
 
               firstList.push(
                 new Parcel(
@@ -2742,7 +2749,8 @@ require([
                   Map,
                   Lat,
                   Lon,
-                  Image_Path
+                  Image_Path,
+                  VISION_AcctNum
                 )
               );
             }
@@ -3246,7 +3254,8 @@ require([
           Map,
           Lat,
           Lon,
-          Image_Path
+          Image_Path,
+          VISION_AcctNum
         ) {
           this.objectid = objectid;
           this.location = location;
@@ -3286,6 +3295,7 @@ require([
           this.LAT = Lat;
           this.LON = Lon;
           this.Image_Path = Image_Path;
+          this.VISION_AcctNum = VISION_AcctNum;
         }
       }
 
@@ -4729,6 +4739,8 @@ require([
 
         let Lat = features.Lat === undefined ? "" : features.Lat;
         let Lon = features.Lon === undefined ? "" : features.Lon;
+        let VisionAct =
+          features.VISION_AcctNum === undefined ? "" : features.VISION_AcctNum;
         let Id;
 
         if (configVars.useUniqueIdforParcelMap === "yes") {
@@ -4739,13 +4751,19 @@ require([
           Id = locationGIS_LINK;
         }
 
-        // zoomToItemId = locationUniqueId;
+        let TaxId;
+
+        if (configVars.useVisionForTaxBillUrl === "yes") {
+          TaxId = VisionAct;
+        } else {
+          TaxId = locationUniqueId;
+        }
+
         zoomToObjectID = objectID2;
         zoomToGisLink = locationGIS_LINK;
 
         let ImagePath = features.Image_Path;
         const imageUrl = `${configVars.imageUrl}${ImagePath}`;
-        // console.log(matchedObject);
 
         const detailsDiv = document.getElementById("detail-content");
 
@@ -4801,14 +4819,14 @@ require([
       `;
 
         if (configVars.includePermitLink === "yes") {
-          detailsHTML += `<a class='mx-auto' href=${configVars.permitLink}?uniqueid=${locationUniqueId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a><br>`;
+          detailsHTML += `<a class='mx-auto' href=${configVars.permitLink}?uniqueid=${TaxId} target="_blank"><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a><br>`;
         }
 
         detailsHTML += `
         <table style="width: 100%; font-family: Tahoma; font-size: 12px; border-collapse: collapse; text-align: left;">
   <tr>
     <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${locationUniqueId}">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${TaxId}">
         <strong>Tax Bills</strong>
       </a>
     </td>
@@ -5177,6 +5195,10 @@ require([
 
         let Lat = matchedObject.LAT === undefined ? "" : matchedObject.LAT;
         let Lon = matchedObject.LON === undefined ? "" : matchedObject.LON;
+        let VisionAct =
+          matchedObject.VISION_AcctNum === undefined
+            ? ""
+            : matchedObject.VISION_AcctNum;
         let imagePath =
           matchedObject.Image_Path === undefined
             ? ""
@@ -5189,6 +5211,14 @@ require([
         } else {
           zoomToItemId = locationGIS_LINK;
           Id = locationGIS_LINK;
+        }
+
+        let TaxId;
+
+        if (configVars.useVisionForTaxBillUrl === "yes") {
+          TaxId = VisionAct;
+        } else {
+          TaxId = locationUniqueId;
         }
 
         // zoomToItemId = locationUniqueId;
@@ -5257,7 +5287,7 @@ require([
         <table style="width: 100%; font-family: Tahoma; font-size: 12px; border-collapse: collapse; text-align: left;">
   <tr>
     <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${locationUniqueId}">
+      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${TaxId}">
         <strong>Tax Bills</strong>
       </a>
     </td>
@@ -5852,6 +5882,7 @@ require([
                     let Lat = feature.attributes["Lat"];
                     let Lon = feature.attributes["Lon"];
                     let Image_Path = feature.attributes["Image_Path"];
+                    let VISION_AcctNum = feature.attributes["VISION_AcctNum"];
 
                     firstList.push(
                       new Parcel(
@@ -5892,7 +5923,8 @@ require([
                         Map,
                         Lat,
                         Lon,
-                        Image_Path
+                        Image_Path,
+                        VISION_AcctNum
                       )
                     );
                   }

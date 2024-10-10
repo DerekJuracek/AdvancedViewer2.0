@@ -26,6 +26,7 @@
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=061&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Haddam/Quick_Maps/QM_",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Haddam_Demographics_2024.pdf",
+  "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=Haddam",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Haddam/Tax_Maps/Haddam_Tax_Map_",
   "useUniqueIdforParcelMap": "yes",

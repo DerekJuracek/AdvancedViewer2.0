@@ -25,6 +25,7 @@
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=100&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_North_Canaan",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/North_Canaan_Demographics_2024.pdf",
+  "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=northcanaan",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_North_Canaan/Tax_Maps/TaxMap_",
   "useUniqueIdforParcelMap": "no",
