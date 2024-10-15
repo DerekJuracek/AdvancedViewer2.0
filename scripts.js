@@ -1678,64 +1678,8 @@ require([
               <title>Print Map</title>
               <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
               <style>
-                  body {
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      justify-content: center;
-                      margin: 0;
-                      padding: 0;
-                  }
-                  // .print-title {
-                  //     display: flex;
-                  //     align-items: center;
-                  //     justify-content: center;
-                  //     text-align: center;
-                  //     font-size: 24px;
-                  //     margin: 20px 0;
-                  // }
-                  // .print-scale {
-                  //     display: flex;
-                  //     align-items: center;
-                  //     justify-content: space-around;
-                  //     text-align: center;
-                  //     font-size: 14px;
-                  //     width: 100%;
-                  //     margin-left: 20px;
-                  //     margin-right: 20px;
-                  // }
-                  // .print-title img {
-                  //     margin-right: 20px;
-                  // }
-                  // .scale-bar-container {
-                  //     transform: scale(1.5);
-                  //     margin-right: 50px;
-                  // }
-                  // .print-scale-bar {
-                  //     width: 300px;
-                  //     height: 30px;
-                  // }
-                  // .info-writing-container {
-                  //     display: flex;
-                  //     justify-content: center;
-                  //     align-items: flex-start;
-                  //     width: 80%;
-                  //     margin: 20px auto;
-                  // }
-                  // .info-text {
-                  //     width: 20%;
-                  //     text-align: left;
-                  //     margin-right: 20px;
-                  // }
-                  // .writing-lines {
-                  //     width: 80%;
-                  //     text-align: center;
-                  // }
-                  // .writing-lines div {
-                  //     border-bottom: 1px solid black;
-                  //     margin: 10px 0;
-                  //     height: 20px;
-                  // }
+                
+                
                   @media print {
                       body * {
                           visibility: visible;
