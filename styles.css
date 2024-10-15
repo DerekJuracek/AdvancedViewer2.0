@@ -140,7 +140,7 @@ esri-ui-corner esri-component {
   }
 }
 
-#print-container {
+/* #print-container {
   display: none;
 }
 .print-title {
@@ -154,7 +154,7 @@ esri-ui-corner esri-component {
 .print-legend, .print-scale-bar {
   background: white;
   padding: 10px;
-}
+} */
 
 
 
@@ -190,10 +190,10 @@ esri-ui-corner esri-component {
       display: none;
     }
 
-      #print-map-image {
+      /* #print-map-image {
         padding-top: 50px;
         margin-top: 200px;
-      }
+      } */
 
       #map-div {
         padding-top: 50px;

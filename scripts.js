@@ -1678,8 +1678,6 @@ require([
               <title>Print Map</title>
               <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
               <style>
-                
-                
                   @media print {
                       body * {
                           visibility: visible;
