@@ -140,7 +140,7 @@ esri-ui-corner esri-component {
   }
 }
 
-/* #print-container {
+#print-container {
   display: none;
 }
 .print-title {
@@ -148,7 +148,7 @@ esri-ui-corner esri-component {
   font-size: 24px;
   margin: 10px 0;
 }
-.print-map {
+/* .print-map {
   position: relative;
 }
 .print-legend, .print-scale-bar {
@@ -171,7 +171,7 @@ esri-ui-corner esri-component {
       .container {
         display: none;
       }
-
+/* 
       #print-container {
         display: flex;
         flex-direction: column;
@@ -190,10 +190,10 @@ esri-ui-corner esri-component {
       display: none;
     }
 
-      /* #print-map-image {
+      #print-map-image {
         padding-top: 50px;
         margin-top: 200px;
-      } */
+      }
 
       #map-div {
         padding-top: 50px;
@@ -208,7 +208,7 @@ esri-ui-corner esri-component {
         top: 0;
         width: 100%;
         height: 100%;
-    }
+    } */
 
       
   }
