@@ -1690,7 +1690,7 @@ require([
           <body>
              
               <div class="print-map">
-                  <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+                  <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" >
               </div>
             
               <script>
