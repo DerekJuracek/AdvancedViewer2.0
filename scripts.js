@@ -1659,8 +1659,8 @@ require([
 
         view
           .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
+            // width: mapWidthInPixels,
+            // height: mapHeightInPixels,
           })
           .then(function (screenshot) {
             const title = "Map Title"; // Set your dynamic title here
