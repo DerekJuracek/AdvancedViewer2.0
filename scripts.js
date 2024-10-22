@@ -187,11 +187,6 @@ require([
         ui: {
           components: ["attribution"],
         },
-        constraints: {
-          lods: lods,
-          minScale: 240,
-          maxScale: 170000,
-        },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
@@ -1598,11 +1593,11 @@ require([
         "Select a Neighborhood"
       );
 
-      //     document
-      //       .getElementById("Print-selector")
-      //       .addEventListener("click", function () {
-      //         captureViewDiv();
-      //       });
+      document
+        .getElementById("Print-selector")
+        .addEventListener("click", function () {
+          captureMap();
+        });
 
       //     function captureViewDiv() {
       //       const viewDiv = document.getElementById("viewDiv"); // Assuming 'view' is your map container div
@@ -1644,66 +1639,123 @@ require([
       //       printWindow.document.close();
       //     }
 
-      document
-        .getElementById("Print-selector")
-        .addEventListener("click", function () {
-          captureMap();
-        });
+      // Calculate the scale
+      // const scale = this.view.scale;
+      // console.log(scale);
 
       function captureMap() {
         const printDPI = 300; // Standard print DPI
-        const pageWidthInInches = 8.5; // Width of the paper in inches
-        const pageHeightInInches = 11; // Height of the paper in inches
-        const mapWidthInInches = 8.8; // Slightly reduced width of the map on paper in inches
-        const mapHeightInInches = 7.7; // Slightly reduced height of the map on paper in inches
-        const mapWidthInPixels = mapWidthInInches * printDPI;
-        const mapHeightInPixels = mapHeightInInches * printDPI;
+        const mapWidthInPixels = view.width; // Width of the map in pixels
+        const mapHeightInPixels = view.height; // Height of the map in pixels
 
+        // Get the current extent of the map
+        const mapExtent = view.extent;
+
+        // Calculate the scale
+        const scale = view.scale;
+        console.log(scale);
+
+        // Take the screenshot with calculated dimensions
         view
           .takeScreenshot({
-            // width: mapWidthInPixels,
-            // height: mapHeightInPixels,
+            width: mapWidthInPixels,
+            height: mapHeightInPixels,
           })
-          .then(function (screenshot) {
+          .then((screenshot) => {
             const title = "Map Title"; // Set your dynamic title here
-            const printWindow = window.open("", "_blank");
-            // const scaleBar1 = document.getElementById("scale-value");
-            // const scaleBarHTML = scaleBar1.innerHTML;
-            // const currentDate = new Date().toLocaleString();
+            const currentDate = new Date().toLocaleString();
 
-            printWindow.document.write(`
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Print Map</title>
-              <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
-              <style>
-                  @media print {
-                      body * {
-                          visibility: visible;
-                      }
-                  }
-              </style>
-          </head>
-          <body>
-             
-              <div class="print-map">
-                  <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" >
-              </div>
-            
-              <script>
-                  window.onload = function() {
-                      window.print();
-                  };
-              </script>
-          </body>
-          </html>
-        `);
-            printWindow.document.close();
+            // Open the print template
+            const printWindow = window.open("print.html", "_blank");
+
+            // Wait for the print window to load before populating it
+            $(printWindow).on("load", function () {
+              $(printWindow.document).find("#title").text(title);
+              $(printWindow.document)
+                .find("#map-image")
+                .attr("src", screenshot.dataUrl);
+              $(printWindow.document)
+                .find("#scale")
+                .text(`Scale: 1 inch = ${scale / 12} feet`);
+            });
           });
       }
+
+      // document
+      //   .getElementById("Print-selector")
+      //   .addEventListener("click", function () {
+      //     // captureMap();
+      //     printMap();
+      //   });
+
+      // // Capture map button click event
+      // function printMap() {
+      //   html2canvas(document.getElementById("viewDiv")).then(function (canvas) {
+      //     // Create a download link
+      //     var downloadLink = document.createElement("a");
+      //     downloadLink.href = canvas.toDataURL("image/png");
+      //     downloadLink.download = "mapCapture.png";
+      //     downloadLink.click();
+
+      //     // Trigger print dialog (optional)
+      //     // window.print();
+      //   });
+      // }
+
+      // function captureMap() {
+      //   const printDPI = 300; // Standard print DPI
+      //   const pageWidthInInches = 8.5; // Width of the paper in inches
+      //   const pageHeightInInches = 11; // Height of the paper in inches
+      //   const mapWidthInInches = 8.8; // Slightly reduced width of the map on paper in inches
+      //   const mapHeightInInches = 7.7; // Slightly reduced height of the map on paper in inches
+      //   const mapWidthInPixels = mapWidthInInches * printDPI;
+      //   const mapHeightInPixels = mapHeightInInches * printDPI;
+
+      //   view
+      //     .takeScreenshot({
+      //       // width: mapWidthInPixels,
+      //       // height: mapHeightInPixels,
+      //     })
+      //     .then(function (screenshot) {
+      //       const title = "Map Title"; // Set your dynamic title here
+      //       const printWindow = window.open("", "_blank");
+      //       // const scaleBar1 = document.getElementById("scale-value");
+      //       // const scaleBarHTML = scaleBar1.innerHTML;
+      //       // const currentDate = new Date().toLocaleString();
+
+      //       printWindow.document.write(`
+      //     <!DOCTYPE html>
+      //     <html lang="en">
+      //     <head>
+      //         <meta charset="UTF-8">
+      //         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      //         <title>Print Map</title>
+      //         <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+      //         <style>
+      //             @media print {
+      //                 body * {
+      //                     visibility: visible;
+      //                 }
+      //             }
+      //         </style>
+      //     </head>
+      //     <body>
+
+      //         <div class="print-map">
+      //             <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" >
+      //         </div>
+
+      //         <script>
+      //             window.onload = function() {
+      //                 window.print();
+      //             };
+      //         </script>
+      //     </body>
+      //     </html>
+      //   `);
+      //       printWindow.document.close();
+      //     });
+      // }
 
       // document
       //   .getElementById("Print-selector-variant1")
@@ -7657,14 +7709,21 @@ require([
         button.addEventListener("click", function (event) {
           var selectedScale = parseInt(event.target.value);
           var selectedText = event.target.innerHTML;
-          console.log(selectedScale);
+
+          console.log("Selected Scale (inches):", selectedScale);
+
           if (selectedScale) {
-            view.scale = selectedScale;
+            view.scale = selectedScale; // Set the map view scale
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
         });
       });
+
+      // Inside captureMap function, ensure scale is correctly used
+      const actualScaleInFeet = Math.round(view.scale / 12); // Ensure proper conversion
+      console.log("Current View Scale (inches):", view.scale);
+      console.log("Converted Scale (feet):", actualScaleInFeet);
 
       view.ui.add(scaleDropdown);
 
@@ -7674,6 +7733,7 @@ require([
         ([stationary, scale]) => {
           // Only print the new scale value when the view is stationary
           if (stationary) {
+            console.log(scale);
             // console.log(`Change in scale level: ${scale}`);
             updateScaleDropdown(scale);
           }
