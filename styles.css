@@ -66,13 +66,13 @@ li.esri-print__layout-tab {
   font-size: 12px !important;
 }
 
-button.esri-print__advanced-options-button {
+/* button.esri-print__advanced-options-button {
   display: none !important;
 }
 
 div.esri-print__advanced-options-button-container {
   display: none !important;
-}
+} */
 
 div.esri-ui-corner div.esri-component {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.0) !important;

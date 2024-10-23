@@ -14,7 +14,12 @@ require([
   "esri/widgets/BasemapLayerList",
   "esri/widgets/Bookmarks",
   "esri/widgets/Legend",
+  "esri/widgets/Print",
   "esri/layers/support/TileInfo",
+  "esri/geometry/Extent",
+  "esri/rest/support/PrintTemplate",
+  "esri/rest/support/PrintParameters",
+  "esri/widgets/Print/PrintViewModel",
 ], function (
   WebMap,
   MapView,
@@ -31,7 +36,12 @@ require([
   BasemapLayerList,
   Bookmarks,
   Legend,
-  TileInfo
+  Print,
+  TileInfo,
+  Extent,
+  PrintTemplate,
+  PrintParameters,
+  PrintViewModel
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -170,6 +180,7 @@ require([
         },
         layers: [searchGraphicsLayers],
       });
+      console.log(webmap);
 
       // Create LODs from level 0 to 31
       const tileInfo = TileInfo.create({
@@ -384,6 +395,26 @@ require([
           container: $("#BookmarksDiv")[0],
           // allows bookmarks to be added, edited, or deleted
           dragEnabled: true,
+        });
+      });
+
+      view.when(() => {
+        const print = new Print({
+          view: view,
+          container: $("#PrintDiv")[0],
+          templateOptions: {
+            scaleEnabled: true,
+          },
+          allowedLayouts: [
+            "letter-ansi-a-landscape",
+            "letter-ansi-a-portrait",
+            "tabloid-ansi-b-landscape",
+            "tabloid-ansi-b-portrait",
+            "a3-landscape",
+            "a3-portrait",
+            "a4-landscape",
+            "a4-portrait",
+          ],
         });
       });
 
@@ -1593,11 +1624,11 @@ require([
         "Select a Neighborhood"
       );
 
-      document
-        .getElementById("Print-selector")
-        .addEventListener("click", function () {
-          captureMap();
-        });
+      // document
+      //   .getElementById("Print-selector")
+      //   .addEventListener("click", function () {
+      //     captureMap();
+      //   });
 
       //     function captureViewDiv() {
       //       const viewDiv = document.getElementById("viewDiv"); // Assuming 'view' is your map container div
@@ -1643,43 +1674,328 @@ require([
       // const scale = this.view.scale;
       // console.log(scale);
 
-      function captureMap() {
-        const printDPI = 300; // Standard print DPI
-        const mapWidthInPixels = view.width; // Width of the map in pixels
-        const mapHeightInPixels = view.height; // Height of the map in pixels
+      console.log(view.height);
+      console.log(view.width);
+      console.log(view);
 
-        // Get the current extent of the map
-        const mapExtent = view.extent;
+      // document
+      //   .getElementById("Print-selector")
+      //   .addEventListener("click", function () {
+      //     captureMap();
+      //   });
 
-        // Calculate the scale
-        const scale = view.scale;
-        console.log(scale);
+      let het;
+      let wid;
 
-        // Take the screenshot with calculated dimensions
-        view
-          .takeScreenshot({
-            width: mapWidthInPixels,
-            height: mapHeightInPixels,
-          })
-          .then((screenshot) => {
-            const title = "Map Title"; // Set your dynamic title here
-            const currentDate = new Date().toLocaleString();
+      // function captureMap() {
+      //   const print = new Print({
+      //     view: view,
+      //     templateOptions: {
+      //       scaleEnabled: false,
+      //     },
+      //     advancedOptions: true,
+      //     // specify your own print service
+      //   });
 
-            // Open the print template
-            const printWindow = window.open("print.html", "_blank");
+      //   // Add widget to the top right corner of the view
+      //   view.ui.add(print, "top-right");
+      // }
 
-            // Wait for the print window to load before populating it
-            $(printWindow).on("load", function () {
-              $(printWindow.document).find("#title").text(title);
-              $(printWindow.document)
-                .find("#map-image")
-                .attr("src", screenshot.dataUrl);
-              $(printWindow.document)
-                .find("#scale")
-                .text(`Scale: 1 inch = ${scale / 12} feet`);
-            });
-          });
+      // function captureMap() {
+      //   const desiredWidthInPixels = 670;
+      //   const desiredHeightInPixels = 650;
+
+      //   const widthScaleFactor = desiredWidthInPixels / view.width;
+      //   const heightScaleFactor = desiredHeightInPixels / view.height;
+
+      //   // Choose the smaller scale factor to maintain aspect ratio
+      //   const scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
+
+      //   const screenshotWidth = view.width * scaleFactor;
+      //   const screenshotHeight = view.height * scaleFactor;
+
+      //   console.log("Screenshot Width:", screenshotWidth);
+      //   console.log("Screenshot Height:", screenshotHeight);
+
+      //   const desiredWidthInPixels = 670;
+      //   const desiredHeightInPixels = 650;
+      //   const mapExtent = view.extent;
+
+      //   // Calculate the center coordinates of the extent
+      //   const centerX = (mapExtent.xmax + mapExtent.xmin) / 2;
+      //   const centerY = (mapExtent.ymax + mapExtent.ymin) / 2;
+
+      //   // Calculate the area to capture (centered)
+      //   const area = new Extent({
+      //     xmin: mapExtent.xmin,
+      //     ymin: mapExtent.ymin,
+      //     xmax: mapExtent.xmax,
+      //     ymax: mapExtent.ymax,
+      //     spatialReference: mapExtent.spatialReference,
+      //   });
+
+      //   view
+      //     .takeScreenshot({
+      //       width: 670,
+      //       height: 650,
+      //       output: "png",
+      //       dpi: 1200, // Adjust as necessary
+      //     })
+      //     .then(function (screenshot) {
+      //       const currentDate = new Date().toLocaleString();
+      //       const scaleBarHTML =
+      //         document.getElementById("scale-value").innerHTML;
+
+      //       const printWindow = window.open("", "_blank");
+      //       printWindow.document.write(`
+      //         <!DOCTYPE html>
+      //         <html lang="en">
+      //         <head>
+      //           <!-- head content -->
+      //           <style>
+      //             /* Your CSS here, including the adjustments mentioned above */
+      //           </style>
+      //         </head>
+      //         <body>
+      //           <!-- body content -->
+      //           <div class="print-map">
+      //             <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image">
+      //           </div>
+      //           <!-- rest of your content -->
+      //           <script>
+      //             window.onload = function() {
+      //               window.print();
+      //             };
+      //           </script>
+      //         </body>
+      //         </html>
+      //       `);
+      //       printWindow.document.close();
+      //     });
+      // }
+
+      // function captureMap() {
+      //   const printDPI = 300; // Standard print DPI
+      //   const mapWidthInPixels = view.width; // Width of the map in pixels
+      //   const mapHeightInPixels = view.height; // Height of the map in pixels
+
+      //   // Get the current extent of the map
+      //   const mapExtent = view.extent;
+
+      //   // Calculate the center coordinates
+      //   const centerX = (mapExtent.xmin + mapExtent.xmax) / 2;
+      //   const centerY = (mapExtent.ymin + mapExtent.ymax) / 2;
+
+      //   // Define the width and height for the screenshot area
+      //   const screenshotWidth = 800; // Specify desired width
+      //   const screenshotHeight = 600; // Specify desired height
+
+      //   // Calculate the area to capture (centered)
+      //   const area = {
+      //     x: centerX - screenshotWidth / 2,
+      //     y: centerY - screenshotHeight / 2,
+      //     width: screenshotWidth,
+      //     height: screenshotHeight,
+      //   };
+
+      //   // Take the screenshot with the specified area
+      //   view
+      //     .takeScreenshot({
+      //       area: area,
+      //       format: "png", // or "jpg"
+      //     })
+      //     .then(function (screenshot) {
+      //       const imgData = screenshot.dataUrl; // Use this data URL for your image
+      //       openPrintWindow(imgData);
+      //     });
+      // }
+
+      // function openPrintWindow(imgData) {
+      //   const printWindow = window.open("", "_blank");
+      //   printWindow.document.write(`
+      //       <!DOCTYPE html>
+      //       <html lang="en">
+      //       <head>
+      //           <meta charset="UTF-8">
+      //           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      //           <title>Print Map</title>
+      //           <style>
+      //               body {
+      //                   display: flex;
+      //                   flex-direction: column;
+      //                   align-items: center;
+      //                   justify-content: center;
+      //                   margin: 0;
+      //                   padding: 0;
+      //               }
+      //               img {
+      //                   max-width: 100%;
+      //                   height: auto;
+      //               }
+      //           </style>
+      //       </head>
+      //       <body>
+      //           <img src="${imgData}" alt="Map Image">
+      //           <script>
+      //               window.onload = function() {
+      //                   window.print();
+      //               };
+      //           </script>
+      //       </body>
+      //       </html>
+      //   `);
+      //   printWindow.document.close();
+      // }
+
+      function clickRefreshButton() {
+        var refreshButton = document.querySelector(
+          ".esri-widget--button.esri-print__refresh-button.esri-icon-refresh"
+        );
+        if (refreshButton) {
+          refreshButton.click();
+        }
       }
+
+      // Watch for changes in the zoom level
+      view.watch("zoom", function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+          clickRefreshButton();
+        }
+      });
+
+      // Optionally, watch for changes in the center (pan)
+      view.watch("center", function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+          clickRefreshButton();
+        }
+      });
+
+      // Your captureMap function
+      // function captureMap() {
+      //   // Create the PrintViewModel
+      //   var printViewModel = new PrintViewModel({
+      //     view: view,
+      //     printServiceUrl:
+      //       "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
+      //   });
+
+      //   var templateOptions = {
+      //     format: "PDF",
+      //     layout: "A4 Portrait", // Use portrait orientation
+      //     scalePreserved: true,
+      //     exportOptions: {
+      //       dpi: 300,
+      //       outputSize: [500, 500],
+      //     },
+      //   };
+
+      //   // Call the print function
+      //   printViewModel
+      //     .print({
+      //       templateOptions: templateOptions,
+
+      //     })
+      //     .then(function (response) {
+      //       console.log("Map printed successfully: ", response);
+      //     })
+      //     .catch(function (error) {
+      //       console.error("Error printing map: ", error);
+      //     });
+      // }
+
+      // function captureMap() {
+      //   // Desired and actual scales
+      //   const desiredScale = 100; // 1 inch = 100 feet
+      //   const realWorldDistance = 142; // feet
+      //   const mapDistanceInches = 1.74; // inches measured on the printed map
+
+      //   // Calculate actual scale
+      //   const actualScale = realWorldDistance / mapDistanceInches; // ≈ 81.61 feet per inch
+
+      //   // Calculate scaling factor
+      //   const scalingFactor = actualScale / desiredScale; // ≈ 0.8161
+
+      //   // Adjusted physical dimensions
+      //   const physicalWidthInInches = 6.7 * scalingFactor; // ≈ 5.469 inches
+      //   const physicalHeightInInches = 6.5 * scalingFactor; // ≈ 5.305 inches
+
+      //   // Screen DPI
+      //   const printerDPI = 96;
+
+      //   // Calculate pixel dimensions
+      //   const wid = physicalWidthInInches * printerDPI; // ≈ 525 pixels
+      //   const het = physicalHeightInInches * printerDPI; // ≈ 509 pixels
+
+      //   console.log("Adjusted Width (pixels):", wid);
+      //   console.log("Adjusted Height (pixels):", het);
+
+      //   // Get the current extent of the map
+      //   const mapExtent = view.extent;
+
+      //   // Create an area object
+      //   const area = {
+      //     xmin: mapExtent.xmin,
+      //     ymin: mapExtent.ymin,
+      //     xmax: mapExtent.xmax,
+      //     ymax: mapExtent.ymax,
+      //     spatialReference: mapExtent.spatialReference,
+      //   };
+
+      //   view
+      //     .takeScreenshot({
+      //       width: wid,
+      //       height: het,
+      //       format: "png",
+      //     })
+      //     .then(function (screenshot) {
+      //       const img = new Image();
+      //       img.onload = function () {
+      //         console.log("Screenshot Image Width:", img.width);
+      //         console.log("Screenshot Image Height:", img.height);
+
+      //         // Create the print window content
+      //         const printWindow = window.open("", "_blank");
+      //         const currentDate = new Date().toLocaleString();
+
+      //         printWindow.document.write(`
+      //           <!DOCTYPE html>
+      //           <html lang="en">
+      //           <head>
+      //             <style>
+      //               #print-map-image {
+      //                 width: ${img.width}px;
+      //                 height: ${img.height}px;
+      //               }
+      //               @media print {
+      //                 body {
+      //                   margin: 0;
+      //                   padding: 0;
+      //                 }
+      //                 #print-map-image {
+      //                   width: ${physicalWidthInInches}in !important;
+      //                   height: ${physicalHeightInInches}in !important;
+      //                 }
+      //               }
+      //             </style>
+      //           </head>
+      //           <body>
+      //             <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image">
+      //             <script>
+      //               window.onload = function() {
+      //                 window.print();
+      //               };
+      //             </script>
+      //           </body>
+      //           </html>
+      //         `);
+      //         printWindow.document.close();
+      //       };
+      //       img.src = screenshot.dataUrl;
+      //     })
+      //     .catch(function (error) {
+      //       console.error("Error taking screenshot:", error);
+      //     });
+      // }
 
       // document
       //   .getElementById("Print-selector")
@@ -2307,7 +2623,7 @@ require([
           // Set the inner HTML of the linksDiv
           linksDiv.innerHTML = linksHTML;
 
-          imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}${imagePath}" alt="Image of ${locationUniqueId}" >`;
+          imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}" alt="Image of ${locationUniqueId}" >`;
           listItem.classList.add("list-group-item", "col-9");
           listItem.classList.add("search-list");
           imageDiv.setAttribute("object-id", objectID);
@@ -7602,17 +7918,17 @@ require([
           $("#group-container-right").show();
         });
 
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#AddDataDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
+        $("#Print-selector").on("click", function () {
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#AddDataDiv").hide();
+          $("#ContactDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#PrintDiv").show();
+          $("#LegendDiv").hide();
+          $("#group-container-right").show();
+        });
 
         $("#Contact-selector").on("click", function () {
           $("#rightPanel").hide();
@@ -7647,19 +7963,19 @@ require([
           $("#group-container-right").show();
         });
 
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").hide();
-        //   $("#PrintDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#AddDataDiv").hide();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
+        $("#Print-selector").on("click", function () {
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").hide();
+          $("#PrintDiv").hide();
+          $("#ContactDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#AddDataDiv").hide();
+          $("#PrintDiv").show();
+          $("#LegendDiv").hide();
+          $("#group-container-right").show();
+        });
 
         $("#Legend-selector").on("click", function () {
           $("#rightPanel").hide();
