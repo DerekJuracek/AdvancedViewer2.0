@@ -28,7 +28,7 @@
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Columbia_Demographics_2024.pdf",
   "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=columbia",
-  "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Columbia/Tax_Maps/2023_Columbia_TaxMap_",
+  "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Columbia/Tax_Maps/2024_Columbia_TaxMap_",
   "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Columbia",
