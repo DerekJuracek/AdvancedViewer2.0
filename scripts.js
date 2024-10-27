@@ -2888,6 +2888,7 @@ require([
           } else if (!locationGeom) {
             listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
              </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItem.classList.add("no-zoomto");
           } else {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
             <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
@@ -2938,6 +2939,7 @@ require([
         triggerfromNoCondos = false;
 
         listGroup.addEventListener("click", function (event) {
+          let shouldZoomTo = true;
           if (
             event.target.closest(".justZoom") ||
             event.target.closest(".justZoomBtn") ||
@@ -2986,7 +2988,11 @@ require([
           $(".center-container").hide();
           $("#abutters-attributes").prop("disabled", false);
           $("#abutters-zoom").prop("disabled", false);
-          buildDetailsPanel(objectID, itemId);
+          if (event.target.closest(".no-zoomto")) {
+            console.log("dont zoom");
+            shouldZoomTo = false;
+          }
+          buildDetailsPanel(objectID, itemId, shouldZoomTo);
         });
 
         featureWidDiv.appendChild(listGroup);
@@ -5390,7 +5396,10 @@ require([
         });
       });
 
-      function buildDetailsPanel(objectId, itemId) {
+      function buildDetailsPanel(objectId, itemId, shouldZoomTo) {
+        !shouldZoomTo
+          ? $("#abutters-zoom").prop("disabled", true)
+          : $("#abutters-zoom").prop("disabled", false);
         $("#select-button").prop("disabled", true);
         $("#select-button").removeClass("btn-warning");
 
