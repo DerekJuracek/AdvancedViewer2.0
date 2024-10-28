@@ -20,6 +20,7 @@ require([
   "esri/rest/support/PrintTemplate",
   "esri/rest/support/PrintParameters",
   "esri/widgets/Print/PrintViewModel",
+  "esri/widgets/Print/TemplateOptions",
 ], function (
   WebMap,
   MapView,
@@ -41,7 +42,8 @@ require([
   Extent,
   PrintTemplate,
   PrintParameters,
-  PrintViewModel
+  PrintViewModel,
+  TemplateOptions
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -197,6 +199,11 @@ require([
         popupEnabled: false,
         ui: {
           components: ["attribution"],
+        },
+        constraints: {
+          lods: lods,
+          minScale: 240,
+          maxScale: 170000,
         },
       });
       view.when(() => {
@@ -398,12 +405,40 @@ require([
         });
       });
 
+      // Template for Scale 1:1200
+      const template1200 = new TemplateOptions({
+        title: "Print Map at Scale 1:1200",
+        layout: "a4-portrait", // Use portrait orientation
+        scale: 1200,
+        scaleEnabled: true, // Enforce the scale
+        dpi: 96, // Set DPI, modify if needed for higher resolution
+        legendEnabled: true, // Set to false if you don't want a legend
+        northArrowEnabled: true, // Optional, adds a north arrow if available in the layout
+      });
+
+      // Template for Scale 1:2400
+      const template2400 = new TemplateOptions({
+        title: "Print Map at Scale 1:2400",
+        layout: "a4-portrait", // Use portrait orientation
+        scale: 2400,
+        scaleEnabled: true, // Enforce the scale
+        dpi: 96, // Set DPI, modify if needed for higher resolution
+        legendEnabled: true, // Set to false if you don't want a legend
+        northArrowEnabled: true, // Optional, adds a north arrow if available in the layout
+      });
+
       view.when(() => {
         const print = new Print({
           view: view,
           container: $("#PrintDiv")[0],
           templateOptions: {
-            scaleEnabled: true,
+            title: "Print Map at Scale 1:1200",
+            layout: "a4-portrait", // Use portrait orientation
+            scale: 1200,
+            scaleEnabled: true, // Enforce the scale
+            dpi: 96, // Set DPI, modify if needed for higher resolution
+            legendEnabled: true, // Set to false if you don't want a legend
+            northArrowEnabled: true,
           },
           allowedLayouts: [
             "letter-ansi-a-landscape",
@@ -625,6 +660,7 @@ require([
       let filterConfigurations;
       let multiFilterConfigurations;
       let filterConfigs;
+      let NoZoomDetails = true;
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -5397,7 +5433,7 @@ require([
       });
 
       function buildDetailsPanel(objectId, itemId, shouldZoomTo) {
-        !shouldZoomTo
+        !shouldZoomTo && NoZoomDetails == false
           ? $("#abutters-zoom").prop("disabled", true)
           : $("#abutters-zoom").prop("disabled", false);
         $("#select-button").prop("disabled", true);
@@ -5856,9 +5892,16 @@ require([
             });
 
             view.graphics.addMany([polygonGraphic]);
-            view.goTo({
-              target: polygonGraphic,
-            });
+            view
+              .goTo({
+                target: polygonGraphic,
+              })
+              .catch(function (error) {
+                if (error.name != "AbortError") {
+                  console.error(error);
+                  NoZoomDetails = true;
+                }
+              });
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
             let query = noCondosLayer.createQuery();
@@ -5874,9 +5917,16 @@ require([
               targetExtent = geometry;
               detailsGeometry = geometry;
 
-              view.goTo({
-                target: geometry,
-              });
+              view
+                .goTo({
+                  target: geometry,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                    NoZoomDetails = true;
+                  }
+                });
 
               const fillSymbol = {
                 type: "simple-fill",
@@ -5910,9 +5960,16 @@ require([
             ) {
               detailsGeometry = matchingObject[0].geometry;
 
-              view.goTo({
-                target: detailsGeometry,
-              });
+              view
+                .goTo({
+                  target: detailsGeometry,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                    NoZoomDetails = true;
+                  }
+                });
 
               const fillSymbol = {
                 type: "simple-fill",
@@ -5955,9 +6012,16 @@ require([
 
                 detailsGeometry = geometry;
 
-                view.goTo({
-                  target: geometry,
-                });
+                view
+                  .goTo({
+                    target: geometry,
+                  })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      NoZoomDetails = true;
+                    }
+                  });
 
                 const fillSymbol = {
                   type: "simple-fill",
@@ -5976,7 +6040,6 @@ require([
                 view.graphics.addMany([polygonGraphic]);
               });
             }
-            // });
           }
         }
         if (clickHandle) {
