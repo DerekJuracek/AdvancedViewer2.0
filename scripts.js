@@ -5509,9 +5509,14 @@ require([
       });
 
       function buildDetailsPanel(objectId, itemId, shouldZoomTo) {
-        !shouldZoomTo && NoZoomDetails == false
+        !shouldZoomTo
           ? $("#abutters-zoom").prop("disabled", true)
           : $("#abutters-zoom").prop("disabled", false);
+
+        !shouldZoomTo
+          ? $("#abutters-attributes").prop("disabled", true)
+          : $("#abutters-attributes").prop("disabled", false);
+
         $("#select-button").prop("disabled", true);
         $("#select-button").removeClass("btn-warning");
 
