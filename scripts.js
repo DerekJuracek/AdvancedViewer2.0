@@ -660,7 +660,7 @@ require([
       let filterConfigurations;
       let multiFilterConfigurations;
       let filterConfigs;
-      let NoZoomDetails = true;
+      // let NoZoomDetails = true;
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -1660,11 +1660,140 @@ require([
         "Select a Neighborhood"
       );
 
-      document
-        .getElementById("Print-selector")
-        .addEventListener("click", function () {
-          captureMap();
-        });
+      // document
+      //   .getElementById("Print-selector")
+      //   .addEventListener("click", function () {
+      //     captureMap();
+      //   });
+
+      // function captureMap() {
+      //   const printDPI = 300; // Standard print DPI
+      //   const pageWidthInInches = 8.5; // Width of the paper in inches
+      //   const pageHeightInInches = 11; // Height of the paper in inches
+      //   const mapWidthInInches = 8.8; // Slightly reduced width of the map on paper in inches
+      //   const mapHeightInInches = 7.7; // Slightly reduced height of the map on paper in inches
+      //   const mapWidthInPixels = mapWidthInInches * printDPI;
+      //   const mapHeightInPixels = mapHeightInInches * printDPI;
+      //   view
+      //     .takeScreenshot({
+      //       width: mapWidthInPixels,
+      //       height: mapHeightInPixels,
+      //     })
+      //     .then(function (screenshot) {
+      //       const title = "Map Title"; // Set your dynamic title here
+      //       const printWindow = window.open("", "_blank");
+      //       const scaleBar1 = document.getElementById("scale-value");
+      //       const scaleBarHTML = scaleBar1.innerHTML;
+      //       const currentDate = new Date().toLocaleString();
+      //       printWindow.document.write(`
+      //         <!DOCTYPE html>
+      //         <html lang="en">
+      //         <head>
+      //             <meta charset="UTF-8">
+      //             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      //             <title>Print Map</title>
+      //             <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+      //             <style>
+      //                 body {
+      //                     display: flex;
+      //                     flex-direction: column;
+      //                     align-items: center;
+      //                     justify-content: center;
+      //                     margin: 0;
+      //                     padding: 0;
+      //                 }
+      //                 .print-title {
+      //                     display: flex;
+      //                     align-items: center;
+      //                     justify-content: center;
+      //                     text-align: center;
+      //                     font-size: 24px;
+      //                     margin: 20px 0;
+      //                 }
+      //                 .print-scale {
+      //                     display: flex;
+      //                     align-items: center;
+      //                     justify-content: space-around;
+      //                     text-align: center;
+      //                     font-size: 14px;
+      //                     width: 100%;
+      //                     margin-left: 20px;
+      //                     margin-right: 20px;
+      //                 }
+      //                 .print-title img {
+      //                     margin-right: 20px;
+      //                 }
+      //                 .scale-bar-container {
+      //                     transform: scale(1.5);
+      //                     margin-right: 50px;
+      //                 }
+      //                 .print-scale-bar {
+      //                     width: 300px;
+      //                     height: 30px;
+      //                 }
+      //                 .info-writing-container {
+      //                     display: flex;
+      //                     justify-content: center;
+      //                     align-items: flex-start;
+      //                     width: 80%;
+      //                     margin: 20px auto;
+      //                 }
+      //                 .info-text {
+      //                     width: 20%;
+      //                     text-align: left;
+      //                     margin-right: 20px;
+      //                 }
+      //                 .writing-lines {
+      //                     width: 80%;
+      //                     text-align: center;
+      //                 }
+      //                 .writing-lines div {
+      //                     border-bottom: 1px solid black;
+      //                     margin: 10px 0;
+      //                     height: 20px;
+      //                 }
+      //                 @media print {
+      //                     body * {
+      //                         visibility: visible;
+      //                     }
+      //                 }
+      //             </style>
+      //         </head>
+      //         <body>
+      //             <div class="print-title" id="print-title">
+      //                 <img id="town-logo" src="${configVars.welcomeImage}" alt="Town Logo">
+      //                 <h1 id="title-text">${configVars.title}</h1>
+      //             </div>
+      //             <div class="print-map">
+      //                 <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: auto; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+      //             </div>
+      //             <div class="print-scale">
+      //                 <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
+      //                 <div id="to-scale" class="scale-bar-container"></div>
+      //                 <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
+      //             </div>
+      //             <div style="text-align: center; font-size: 12px; padding-left: 30px; padding-right: 30px;">
+      //                 <p>Disclaimer: This map is intended for reference and general informational purposes
+      //                 only and is not a legally recorded map or survey. While reasonable effort has been
+      //                 made to ensure the accuracy, correctness, and timeliness of materials presented,
+      //                 the map vendor and the municipality disclaim any and all liability and responsibility for
+      //                 any errors, omissions, or inaccuracies in the data provided, including without limitation
+      //                 any liability for direct, indirect, incidental, consequential, special, exemplary,
+      //                 punitive, or any other type of damages. Users are hereby notified that the primary
+      //                 information source should be consulted for verification of the data contained herein.
+      //                 Continued use of this map acknowledges acceptance of these terms.</p>
+      //             </div>
+      //             <script>
+      //                 window.onload = function() {
+      //                     window.print();
+      //                 };
+      //             </script>
+      //         </body>
+      //         </html>
+      //       `);
+      //       printWindow.document.close();
+      //     });
+      // }
 
       //     function captureViewDiv() {
       //       const viewDiv = document.getElementById("viewDiv"); // Assuming 'view' is your map container div
@@ -2874,25 +3003,49 @@ require([
         //   uniqueArray = uniqueArray.splice(-1, 1);
         // }
 
+        function checkObjectId(pointGraphic, pointGisLink) {
+          // if (sessionStorage.getItem("condos") == "no") {
+          //   const count = firstList.filter(
+          //     (g) => g.GIS_LINK === pointGisLink
+          //   ).length;
+
+          //   return count;
+          // } else {
+          const count = firstList.filter(
+            (g) => g.objectid === pointGraphic
+          ).length;
+          return count;
+          // }
+
+          // let exists = uniqueArray.some(
+          //   (item) => item.objectid != pointGraphic
+          // );
+        }
+
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
-          uniqueArray = uniqueArray.filter(
-            (item) => item.objectid != pointGraphic
-          );
-          uniqueArray = uniqueArray.filter(
-            (item) => item.location != pointLocation
-          );
-          firstList = firstList.filter((item) => item.objectid != pointGraphic);
-          firstList = firstList.filter(
-            (item) => item.location != pointLocation
-          );
+          if (sessionStorage.getItem("condos") == "yes") {
+            // losing the addition right here in uniquearray and firstlist
+            uniqueArray = uniqueArray.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            uniqueArray = uniqueArray.filter(
+              (item) => item.location != pointLocation
+            );
+            firstList = firstList.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            firstList = firstList.filter(
+              (item) => item.location != pointLocation
+            );
 
-          // here its removing it from the list
-          // whats the logic when you lasso a condomain, with no geom for all condos
-          // and you select other polygons too
-          // right now when you click two and unlick condomain, it wont make all of them dissapear
-          // need to fix this
+            // here its removing it from the list
+            // whats the logic when you lasso a condomain, with no geom for all condos
+            // and you select other polygons too
+            // right now when you click two and unlick condomain, it wont make all of them dissapear
+            // need to fix this
 
-          $(`li[object-id="${pointGraphic}"]`).remove();
+            $(`li[object-id="${pointGraphic}"]`).remove();
+          }
 
           if (sessionStorage.getItem("condos") == "no") {
             firstList = firstList.filter(
@@ -2908,7 +3061,10 @@ require([
         if (triggerfromNoCondos) {
           // removeSingle();
         } else {
-          removeDups(pointGraphic, pointLocation, pointGisLink);
+          // pointgraphic is objectid
+          if (checkObjectId(pointGraphic) > 1) {
+            removeDups(pointGraphic, pointLocation, pointGisLink);
+          }
         }
 
         const featureWidDiv = document.getElementById("featureWid");
@@ -3227,6 +3383,7 @@ require([
           ).length;
 
           if (count >= 1 || (count == 0 && countGisLinks >= 1)) {
+            createList(features);
             buildResultsPanel(
               features,
               polygonGraphics,
@@ -3830,7 +3987,7 @@ require([
               // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
-              triggerfromNoCondos = false;
+              // triggerfromNoCondos = false;
 
               // if no condos and coming from url search of condiminium like wilton
               if (triggerfromNoCondos) {
@@ -5539,7 +5696,7 @@ require([
 
         matchedObject = firstList.find(function (item) {
           return (
-            item.objectid === parseInt(objectId) && item.uniqueId === itemId
+            item.objectid === parseInt(objectId) && item.GIS_LINK === itemId
           );
         });
 
@@ -5980,7 +6137,7 @@ require([
               .catch(function (error) {
                 if (error.name != "AbortError") {
                   console.error(error);
-                  NoZoomDetails = true;
+                  // NoZoomDetails = true;
                 }
               });
           } else {
@@ -6005,7 +6162,7 @@ require([
                 .catch(function (error) {
                   if (error.name != "AbortError") {
                     console.error(error);
-                    NoZoomDetails = true;
+                    // NoZoomDetails = true;
                   }
                 });
 
@@ -6048,7 +6205,7 @@ require([
                 .catch(function (error) {
                   if (error.name != "AbortError") {
                     console.error(error);
-                    NoZoomDetails = true;
+                    // NoZoomDetails = true;
                   }
                 });
 
@@ -6100,7 +6257,7 @@ require([
                   .catch(function (error) {
                     if (error.name != "AbortError") {
                       console.error(error);
-                      NoZoomDetails = true;
+                      // NoZoomDetails = true;
                     }
                   });
 
@@ -8071,17 +8228,17 @@ require([
           $("#group-container-right").show();
         });
 
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#AddDataDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
+        $("#Print-selector").on("click", function () {
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#AddDataDiv").hide();
+          $("#ContactDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#PrintDiv").show();
+          $("#LegendDiv").hide();
+          $("#group-container-right").show();
+        });
 
         $("#Contact-selector").on("click", function () {
           $("#rightPanel").hide();
@@ -8116,19 +8273,19 @@ require([
           $("#group-container-right").show();
         });
 
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").hide();
-        //   $("#PrintDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#AddDataDiv").hide();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
+        $("#Print-selector").on("click", function () {
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").hide();
+          $("#PrintDiv").hide();
+          $("#ContactDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#AddDataDiv").hide();
+          $("#PrintDiv").show();
+          $("#LegendDiv").hide();
+          $("#group-container-right").show();
+        });
 
         $("#Legend-selector").on("click", function () {
           $("#rightPanel").hide();
