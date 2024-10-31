@@ -2927,25 +2927,49 @@ require([
         //   uniqueArray = uniqueArray.splice(-1, 1);
         // }
 
+        function checkObjectId(pointGraphic, pointGisLink) {
+          // if (sessionStorage.getItem("condos") == "no") {
+          //   const count = firstList.filter(
+          //     (g) => g.GIS_LINK === pointGisLink
+          //   ).length;
+
+          //   return count;
+          // } else {
+          const count = firstList.filter(
+            (g) => g.objectid === pointGraphic
+          ).length;
+          return count;
+          // }
+
+          // let exists = uniqueArray.some(
+          //   (item) => item.objectid != pointGraphic
+          // );
+        }
+
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
-          uniqueArray = uniqueArray.filter(
-            (item) => item.objectid != pointGraphic
-          );
-          uniqueArray = uniqueArray.filter(
-            (item) => item.location != pointLocation
-          );
-          firstList = firstList.filter((item) => item.objectid != pointGraphic);
-          firstList = firstList.filter(
-            (item) => item.location != pointLocation
-          );
+          if (sessionStorage.getItem("condos") == "yes") {
+            // losing the addition right here in uniquearray and firstlist
+            uniqueArray = uniqueArray.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            uniqueArray = uniqueArray.filter(
+              (item) => item.location != pointLocation
+            );
+            firstList = firstList.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            firstList = firstList.filter(
+              (item) => item.location != pointLocation
+            );
 
-          // here its removing it from the list
-          // whats the logic when you lasso a condomain, with no geom for all condos
-          // and you select other polygons too
-          // right now when you click two and unlick condomain, it wont make all of them dissapear
-          // need to fix this
+            // here its removing it from the list
+            // whats the logic when you lasso a condomain, with no geom for all condos
+            // and you select other polygons too
+            // right now when you click two and unlick condomain, it wont make all of them dissapear
+            // need to fix this
 
-          $(`li[object-id="${pointGraphic}"]`).remove();
+            $(`li[object-id="${pointGraphic}"]`).remove();
+          }
 
           if (sessionStorage.getItem("condos") == "no") {
             firstList = firstList.filter(
@@ -2961,7 +2985,10 @@ require([
         if (triggerfromNoCondos) {
           // removeSingle();
         } else {
-          removeDups(pointGraphic, pointLocation, pointGisLink);
+          // pointgraphic is objectid
+          if (checkObjectId(pointGraphic) > 1) {
+            removeDups(pointGraphic, pointLocation, pointGisLink);
+          }
         }
 
         const featureWidDiv = document.getElementById("featureWid");
@@ -3280,6 +3307,7 @@ require([
           ).length;
 
           if (count >= 1 || (count == 0 && countGisLinks >= 1)) {
+            createList(features);
             buildResultsPanel(
               features,
               polygonGraphics,
@@ -3883,7 +3911,7 @@ require([
               // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
-              triggerfromNoCondos = false;
+              // triggerfromNoCondos = false;
 
               // if no condos and coming from url search of condiminium like wilton
               if (triggerfromNoCondos) {
@@ -5587,7 +5615,7 @@ require([
 
         matchedObject = firstList.find(function (item) {
           return (
-            item.objectid === parseInt(objectId) && item.uniqueId === itemId
+            item.objectid === parseInt(objectId) && item.GIS_LINK === itemId
           );
         });
 
