@@ -222,7 +222,7 @@ width: 250px !important;
     border-right: white 1px solid !important;
     border-left: white 1px solid !important;
     border-top: 0px;
-    border-bottom: 0px;
+    border-bottom: #fff 1px solid !important;
   }
 
   .card-header {

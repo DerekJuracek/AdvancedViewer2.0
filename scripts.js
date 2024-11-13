@@ -1134,14 +1134,7 @@ require([
           </calcite-list-item>
       `);
 
-          // Append the item to the specified container
           container.append(item);
-
-          // // Optionally, you can add event listeners to handle the opacity change
-          // $(`#slider-${layer.id}`).on("calciteSliderChange", function (event) {
-          //   var opacityValue = event.target.value / 100; // Convert to 0-1 range for layer opacity
-          //   layer.opacity = opacityValue; // Assuming 'layer' has an 'opacity' property
-          // });
         }
       }
 
@@ -2825,6 +2818,8 @@ require([
         listGroup.classList.add("row", "list-group");
 
         uniqueArray.forEach(function (feature) {
+          // console.log(feature);
+
           let objectID = feature.objectid;
           let locationVal = feature.location;
           let locationUniqueId =
@@ -2837,10 +2832,6 @@ require([
           let locationMBL = feature.MBL;
           let locationGeom = feature.geometry;
           let propertyType = feature.Parcel_Type;
-          let streetName = feature.Street_Name;
-          let ImagePath = feature.Image_Path;
-          let VisionAct = feature.AcctNum === undefined ? "" : feature.AcctNum;
-          const imageUrl = `${configVars.imageUrl}${ImagePath}`;
 
           if (configVars.useUniqueIdforParcelMap === "yes") {
             zoomToItemId = locationUniqueId;
@@ -2849,6 +2840,13 @@ require([
             zoomToItemId = locationGISLINK;
             Id = locationGISLINK;
           }
+
+          let ImagePath = feature.Image_Path;
+          let VisionAct = feature.AcctNum === undefined ? "" : feature.AcctNum;
+          const imageUrl = `${configVars.imageUrl}${ImagePath}`;
+
+          listGroup.classList.add("row");
+          listGroup.classList.add("list-group");
 
           const listItem = document.createElement("li");
           const imageDiv = document.createElement("li");
@@ -2867,9 +2865,10 @@ require([
           } else {
             linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
           }
+
           // Conditionally add the "Permits" link if the variable allows it
           if (configVars.includePermitLink === "yes") {
-            linksHTML += `<a  target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId} ><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
           }
 
           // Closing the div
@@ -2883,10 +2882,17 @@ require([
           listItem.classList.add("search-list");
           imageDiv.setAttribute("object-id", objectID);
           imageDiv.setAttribute("data-id", locationGISLINK);
+
           imageDiv.classList.add("image-div", "col-3");
 
           let listItemHTML;
-          let displayNoGeometry = sessionStorage.getItem("condos") === "yes";
+          let displayNoGeometry;
+
+          if (sessionStorage.getItem(key2) === "yes") {
+            displayNoGeometry = true;
+          } else {
+            displayNoGeometry = false;
+          }
 
           if (!locationCoOwner && locationGeom) {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
@@ -2894,18 +2900,23 @@ require([
           } else if (!locationGeom) {
             listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
              </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItem.classList.add("no-zoomto");
           } else {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
             <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
           }
 
+          // Append the new list item to the list
           listItem.innerHTML += listItemHTML;
           listItem.setAttribute("object-id", objectID);
           listItem.setAttribute("data-id", locationGISLINK);
 
           listGroup.appendChild(imageDiv);
           listGroup.appendChild(listItem);
+          listGroup.appendChild(linksDiv);
         });
+
+        searchResults = uniqueArray.length;
 
         listGroup.addEventListener("click", function (event) {
           if (
@@ -5597,7 +5608,8 @@ require([
                 const newExtent = geometryExtent.expand(zoomOutFactor);
 
                 view.goTo({
-                  extent: newExtent,
+                  target: center,
+                  // extent: newExtent,
                 });
               });
             } else if (needToSearchGisLink) {
@@ -5622,7 +5634,7 @@ require([
 
                 view.goTo({
                   target: center,
-                  extent: newExtent,
+                  // extent: newExtent,
                 });
               });
             }
@@ -5672,7 +5684,7 @@ require([
 
               view.goTo({
                 target: center,
-                extent: newExtent,
+                // extent: newExtent,
               });
             });
           }
@@ -6065,11 +6077,18 @@ require([
           symbol: fillSymbol,
           id: bufferGraphicId,
         });
+        const zoomOutFactor = 3.0;
+        const newExtent = geometryExtent.expand(zoomOutFactor);
 
-        view.graphics.addMany([polygonGraphic]);
         view.goTo({
           target: polygonGraphic,
+          extent: newExtent,
         });
+
+        view.graphics.addMany([polygonGraphic]);
+        // view.goTo({
+        //   target: polygonGraphic,
+        // });
       }
 
       function zoomToParcel(gisLink) {
@@ -6086,9 +6105,17 @@ require([
 
           targetExtent = geometry;
 
+          const zoomOutFactor = 3.0;
+          const newExtent = geometryExtent.expand(zoomOutFactor);
+
           view.goTo({
             target: geometry,
+            extent: newExtent,
           });
+
+          // view.goTo({
+          //   target: geometry,
+          // });
         });
       }
 
