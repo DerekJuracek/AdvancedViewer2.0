@@ -502,6 +502,7 @@ require([
 
         // Check visibility of ortho layers at the start
         const orthoLayers = [
+          "Aerial-Ortho 2023",
           "Aerial-Ortho 2019",
           "Aerial-Ortho 2016",
           "Aerial-Ortho 2012",
