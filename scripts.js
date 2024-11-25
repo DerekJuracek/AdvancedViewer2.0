@@ -1358,9 +1358,6 @@ require([
         value2
       ) {
         try {
-          // Log the inputs for debugging
-          // console.log(`Querying ${fieldName} between ${value} and ${value2}`);
-
           let query = CondosTable.createQuery();
 
           if (Array.isArray(value) && value.length > 0 && !value2) {
@@ -1374,9 +1371,6 @@ require([
             query.where = `${fieldName} = '${value}'`;
           }
 
-          // query.where = `${fieldName} BETWEEN '${value}' AND '${value2}'`;
-          // console.log(`Query where clause: ${query.where}`);
-
           query.returnDistinctValues = true;
           query.returnGeometry = false;
           query.outFields = [outField];
@@ -1387,9 +1381,6 @@ require([
           let response = await CondosTable.queryFeatures(query);
           var features = response.features;
           let values = features.map((feature) => feature.attributes[outField]);
-
-          // Log the values for debugging
-          // console.log(`Queried values: ${values}`);
 
           // Find the max and min values
           let maxValue = Math.max(...values);
@@ -1476,11 +1467,6 @@ require([
       }
 
       function updateSliderInputs(queryField) {
-        // Filter the filterConfigs array based on your criteria
-        // var relevantFilters = filterConfigs.filter(
-        //   (slider) => slider.field !== queryField
-        // );
-
         const indexVal = filterConfigs.findIndex(
           (item) => item.field == queryField
         );
@@ -2754,7 +2740,7 @@ require([
               // Set the view to the new extent
               view.goTo({
                 target: center, // Center the view on the center of the geometry
-                extent: newExtent, // Set the extent to the new adjusted extent
+                // zoom: 14, // Set the extent to the new adjusted extent
               });
             });
           } else {
@@ -2783,7 +2769,7 @@ require([
               // Set the view to the new extent
               view.goTo({
                 target: center, // Center the view on the center of the geometry
-                extent: newExtent, // Set the extent to the new adjusted extent
+                // zoom: 14, // Set the extent to the new adjusted extent
               });
             });
           }
@@ -2818,8 +2804,6 @@ require([
         listGroup.classList.add("row", "list-group");
 
         uniqueArray.forEach(function (feature) {
-          // console.log(feature);
-
           let objectID = feature.objectid;
           let locationVal = feature.location;
           let locationUniqueId =
@@ -3023,10 +3007,6 @@ require([
           const ownerB = b.owner ? b.owner.toLowerCase() : "";
           return ownerA.localeCompare(ownerB);
         });
-
-        // function removeSingle(pointGraphic, pointLocation, pointGisLink) {
-        //   uniqueArray = uniqueArray.splice(-1, 1);
-        // }
 
         function checkObjectId(pointGraphic, pointGisLink) {
           // if (sessionStorage.getItem("condos") == "no") {
@@ -3638,11 +3618,6 @@ require([
         lassoGisLinks = true;
         let bufferResults = [];
 
-        let results = [];
-        let features = [];
-        let totalResults = [];
-        let graphicsLayer = view.graphics;
-
         function runCondoQuery() {
           let query2 = CondosLayer.createQuery();
           query2.geometry = lasso;
@@ -3689,38 +3664,6 @@ require([
           runNoCondosQuery();
         } else {
           runCondoQuery();
-        }
-
-        function addResultGraphics(finalResults) {
-          var fillSymbol = {
-            type: "simple-fill",
-            color: [127, 42, 145, 0.4],
-            outline: {
-              color: [127, 42, 145, 0.8],
-              width: 2,
-            },
-          };
-
-          // Map each geometry to a graphic
-          polygonGraphics = finalResults
-            .map(function (feature) {
-              if (!feature.geometry) {
-                console.error("Feature does not have geometry:", feature);
-                return null; // Skip this feature as it has no geometry
-              }
-              return new Graphic({
-                geometry: feature.geometry,
-                symbol: fillSymbol,
-                id: feature.attributes.OBJECTID,
-              });
-            })
-            .filter((graphic) => graphic !== null);
-
-          // Add all polygon graphics to the graphics layer
-          graphicsLayer.addMany(polygonGraphics);
-          sketchGL.removeAll();
-          processFeatures(finalResults, polygonGraphics);
-          lasso = false;
         }
       }
 
@@ -4269,11 +4212,11 @@ require([
         }
 
         if (sessionStorage.getItem("condos") === "no") {
-          let query = CondosLayer.createQuery();
+          let query = noCondosLayer.createQuery();
           query.geometry = event.mapPoint;
-          query.distance = 1;
-          query.units = "feet";
-          query.spatialRelationship = "within";
+          // query.distance = 1;
+          // query.units = "feet";
+          query.spatialRelationship = "intersects";
           query.returnGeometry = true;
           query.outFields = ["*"];
 
@@ -5097,8 +5040,6 @@ require([
 
             exportResults = bothResults;
 
-            let listItemHTML = "";
-
             exportCsv = foundLocs;
 
             // console.log(lastResults);
@@ -5164,7 +5105,6 @@ require([
 
             lastResults = finalResults;
             exportResults = bothResults;
-            let listItemHTML = "";
             exportCsv = foundLocs;
 
             foundLocs.forEach(function (feature) {
@@ -5243,7 +5183,6 @@ require([
 
       function runAttBuffer(value) {
         $("#abutters-spinner").show();
-        // console.log(detailsGeometry);
         if (value === 0) {
           value = -10;
         }
@@ -5254,10 +5193,8 @@ require([
 
         if (sessionStorage.getItem("condos") === "no") {
           bufferResults = geometryEngine.buffer(detailsGeometry, buffer, unit);
-          // console.log(`no condos buffer run`);
         } else {
           bufferResults = geometryEngine.buffer(detailsGeometry, buffer, unit);
-          // console.log(`condos buffer run`);
         }
 
         addOrUpdateBufferGraphic(bufferResults);
@@ -5266,7 +5203,6 @@ require([
 
       function runBuffer(value) {
         $("#abutters-spinner").show();
-        // console.log(detailsGeometry);
         let buffer = value;
         let unit = queryUnits;
         let bufferResults;
@@ -5295,7 +5231,6 @@ require([
         }
 
         let features = item[0].attributes;
-        // console.log(features);
         let Location = features.Location === undefined ? "" : features.Location;
         let locationUniqueId =
           features.Uniqueid === undefined ? "" : features.Uniqueid;
@@ -5327,19 +5262,6 @@ require([
           features.Building_Use_Code === undefined
             ? ""
             : features.Building_Use_Code;
-        let Parcel_Type =
-          features.Parcel_Type === undefined ? "" : features.Parcel_Type;
-        let Design_Type =
-          features.Design_Type === undefined ? "" : features.Design_Type;
-        let Zoning = features.Zoning === undefined ? "" : features.Zoning;
-        let Neighborhood =
-          features.Neighborhood === undefined ? "" : features.Neighborhood;
-        let Land_Type_Rate =
-          features.Land_Type_Rate === undefined ? "" : features.Land_Type_Rate;
-        let Functional_Obs =
-          features.Functional_Obs === undefined ? "" : features.Functional_Obs;
-        let External_Obs =
-          features.External_Obs === undefined ? "" : features.External_Obs;
         let orig_date = features.Sale_Date;
         let Sale_Date =
           features.Sale_Date === undefined ? "" : formatDate(orig_date);
@@ -5348,15 +5270,7 @@ require([
             ? ""
             : formatNumber(features.Assessed_Total);
         let Vol_Page = features.Vol_Page === undefined ? "" : features.Vol_Page;
-        // Usage example with your existing code
-        let Assessed_Total =
-          features.Assessed_Total === undefined
-            ? ""
-            : formatNumber(features.Assessed_Total);
-        let Appraised_Total =
-          features.Appraised_Total === undefined
-            ? ""
-            : formatNumber(features.Appraised_Total);
+
         let Prior_Appraised_Total =
           features.Prior_Appraised_Total === undefined
             ? ""
@@ -5399,11 +5313,8 @@ require([
         zoomToObjectID = objectID2;
         zoomToGisLink = locationGIS_LINK;
 
-        let ImagePath = features.Image_Path;
-        const imageUrl = `${configVars.imageUrl}${ImagePath}`;
-
+        const ImagePath = features.Image_Path;
         const detailsDiv = document.getElementById("detail-content");
-
         const details = document.createElement("div");
         details.innerHTML = "";
         details.classList.add("details");
@@ -5609,6 +5520,7 @@ require([
 
                 view.goTo({
                   target: center,
+                  // zoom: 14,
                   // extent: newExtent,
                 });
               });
@@ -5634,6 +5546,7 @@ require([
 
                 view.goTo({
                   target: center,
+                  zoom: 14,
                   // extent: newExtent,
                 });
               });
@@ -5684,6 +5597,7 @@ require([
 
               view.goTo({
                 target: center,
+                // zoom: 14,
                 // extent: newExtent,
               });
             });
@@ -5759,7 +5673,6 @@ require([
             ? ""
             : matchedObject.Total_Acres;
 
-        let AcreCheck = Number(Total_Acres);
         let Parcel_Primary_Use =
           matchedObject.Parcel_Primary_Use === undefined
             ? ""
@@ -5768,32 +5681,7 @@ require([
           matchedObject.Building_Use_Code === undefined
             ? ""
             : matchedObject.Building_Use_Code;
-        let Parcel_Type =
-          matchedObject.Parcel_Type === undefined
-            ? ""
-            : matchedObject.Parcel_Type;
-        let Design_Type =
-          matchedObject.Design_Type === undefined
-            ? ""
-            : matchedObject.Design_Type;
-        let Zoning =
-          matchedObject.Zoning === undefined ? "" : matchedObject.Zoning;
-        let Neighborhood =
-          matchedObject.Neighborhood === undefined
-            ? ""
-            : matchedObject.Neighborhood;
-        let Land_Type_Rate =
-          matchedObject.Land_Type_Rate === undefined
-            ? ""
-            : matchedObject.Land_Type_Rate;
-        let Functional_Obs =
-          matchedObject.Functional_Obs === undefined
-            ? ""
-            : matchedObject.Functional_Obs;
-        let External_Obs =
-          matchedObject.External_Obs === undefined
-            ? ""
-            : matchedObject.External_Obs;
+
         let Sale_Date =
           matchedObject.Sale_Date === undefined ? "" : matchedObject.Sale_Date;
 
@@ -5803,14 +5691,6 @@ require([
             : formatNumber(matchedObject.Sale_Price);
         let Vol_Page =
           matchedObject.Vol_Page === undefined ? "" : matchedObject.Vol_Page;
-        let Assessed_Total =
-          matchedObject.Assessed_Total === undefined
-            ? ""
-            : formatNumber(matchedObject.Assessed_Total);
-        let Appraised_Total =
-          matchedObject.Appraised_Total === undefined
-            ? ""
-            : formatNumber(matchedObject.Appraised_Total);
 
         let Prior_Appraised_Total =
           matchedObject.Prior_Appraised_Total === undefined
@@ -6091,34 +5971,6 @@ require([
         // });
       }
 
-      function zoomToParcel(gisLink) {
-        let whereClause = `GIS_LINK = '${gisLink}'`;
-        let query = noCondosLayer.createQuery();
-        query.where = whereClause;
-        query.returnGeometry = true;
-        query.returnHiddenFields = true; // Adjust based on your needs
-        query.outFields = ["*"];
-
-        noCondosLayer.queryFeatures(query).then((response) => {
-          let feature = response;
-          let geometry = feature.features[0].geometry;
-
-          targetExtent = geometry;
-
-          const zoomOutFactor = 3.0;
-          const newExtent = geometryExtent.expand(zoomOutFactor);
-
-          view.goTo({
-            target: geometry,
-            extent: newExtent,
-          });
-
-          // view.goTo({
-          //   target: geometry,
-          // });
-        });
-      }
-
       function zoomToFeature(objectid, notPolygonGraphics, gisLink) {
         detailsChanged = {
           isChanged: false,
@@ -6169,6 +6021,7 @@ require([
             view
               .goTo({
                 target: polygonGraphic,
+                // zoom: 15,
               })
               .catch(function (error) {
                 if (error.name != "AbortError") {
@@ -6194,6 +6047,7 @@ require([
               view
                 .goTo({
                   target: geometry,
+                  // zoom: 15,
                 })
                 .catch(function (error) {
                   if (error.name != "AbortError") {
@@ -6237,6 +6091,7 @@ require([
               view
                 .goTo({
                   target: detailsGeometry,
+                  // zoom: 15,
                 })
                 .catch(function (error) {
                   if (error.name != "AbortError") {
@@ -6289,6 +6144,7 @@ require([
                 view
                   .goTo({
                     target: geometry,
+                    // zoom: 15,
                   })
                   .catch(function (error) {
                     if (error.name != "AbortError") {
@@ -6653,13 +6509,6 @@ require([
           clearContents();
           alert("Search resulted in an error, please try again.");
         }
-
-        // NOT SURE IF NEEDED ANYMORE?
-        // if (searchTerm != undefined && search) {
-        //   let parcel = items.filter(
-        //     (item) => item.attributes.Uniqueid === searchTerm
-        //   );
-        // }
 
         let itemId = items[0].attributes.Uniqueid;
         let objectID = items[0].attributes.OBJECTID;
@@ -8091,70 +7940,11 @@ require([
           combobox7ID.empty();
           combobox8ID.empty();
 
-          // combobox1ID.selectedItems = [];
-          // combobox2ID.selectedItems = [];
-          // combobox3ID.selectedItems = [];
-          // combobox4ID.selectedItems = [];
-          // combobox5ID.selectedItems = [];
-          // combobox6ID.selectedItems = [];
-          // combobox7ID.selectedItems = [];
-          // combobox8ID.selectedItems = [];
-
-          // combobox1ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox2ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox3ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox4ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox5ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox6ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox7ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox8ID.filteredItems.forEach((item) => {
-          //   item.active = false;
-          //   item.selected = false;
-          // });
-
-          // combobox1ID.value = "";
-          // combobox2ID.value = "";
-          // combobox3ID.value = "";
-          // combobox4ID.value = "";
-          // combobox5ID.value = "";
-          // combobox6ID.value = "";
-          // combobox7ID.value = "";
-          // combobox8ID.value = "";
-
           soldOnLowest.value = "";
           soldOnHighest.value = "";
           soldOnLowest.activeDate = null;
           soldOnHighest.activeDate = null;
-          // Usage of the generalized function
-          // Usage of the generalized function
+
           generateFilter(
             CondosLayer,
             "Street_Name",
