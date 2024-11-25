@@ -3327,6 +3327,7 @@ require([
               let Lon = feature.attributes["Lon"];
               let Image_Path = feature.attributes["Image_Path"];
               let AcctNum = feature.attributes["AcctNum"];
+              let Match_Status = feature.attributes["Match_Status"];
 
               firstList.push(
                 new Parcel(
@@ -3368,7 +3369,8 @@ require([
                   Lat,
                   Lon,
                   Image_Path,
-                  AcctNum
+                  AcctNum,
+                  Match_Status
                 )
               );
             }
@@ -3837,7 +3839,8 @@ require([
           Lat,
           Lon,
           Image_Path,
-          AcctNum
+          AcctNum,
+          Match_Status
         ) {
           this.objectid = objectid;
           this.location = location;
@@ -3878,6 +3881,7 @@ require([
           this.LON = Lon;
           this.Image_Path = Image_Path;
           this.AcctNum = AcctNum;
+          this.Match_Status = Match_Status;
         }
       }
 
@@ -6082,8 +6086,6 @@ require([
           );
 
           if (matchingObject) {
-            // matchingObject.forEach(function (feature) {
-            // console.log(feature);
             if (
               matchingObject[0].geometry != null &&
               matchingObject[0].geometry != ""
@@ -6098,7 +6100,6 @@ require([
                 .catch(function (error) {
                   if (error.name != "AbortError") {
                     console.error(error);
-                    // NoZoomDetails = true;
                   }
                 });
 
@@ -6130,6 +6131,13 @@ require([
               } else {
                 whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
               }
+              // if (match.length > 0) {
+              //   whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
+              // } else {
+              //   return;
+              // }
+
+              // }
 
               let query = noCondosLayer.createQuery();
               query.where = whereClause;
@@ -6422,6 +6430,7 @@ require([
                     let Lon = feature.attributes["Lon"];
                     let Image_Path = feature.attributes["Image_Path"];
                     let AcctNum = feature.attributes["AcctNum"];
+                    let Match_Status = feature.attributes["Match_Status"];
 
                     firstList.push(
                       new Parcel(
@@ -6463,7 +6472,8 @@ require([
                         Lat,
                         Lon,
                         Image_Path,
-                        AcctNum
+                        AcctNum,
+                        Match_Status
                       )
                     );
                   }
