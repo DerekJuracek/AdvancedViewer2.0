@@ -4233,9 +4233,10 @@ require([
         } else {
           let query2 = CondosLayer.createQuery();
           query2.geometry = event.mapPoint;
-          query2.distance = 1;
-          query2.units = "feet";
-          query2.spatialRelationship = "within";
+          query2.spatialRelationship = "intersects";
+          // query2.distance = 1;
+          // query2.units = "feet";
+          // query2.spatialRelationship = "within";
           query2.returnGeometry = true;
           query2.outFields = ["*"];
 
