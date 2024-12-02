@@ -3010,22 +3010,10 @@ require([
         });
 
         function checkObjectId(pointGraphic, pointGisLink) {
-          // if (sessionStorage.getItem("condos") == "no") {
-          //   const count = firstList.filter(
-          //     (g) => g.GIS_LINK === pointGisLink
-          //   ).length;
-
-          //   return count;
-          // } else {
           const count = firstList.filter(
             (g) => g.objectid === pointGraphic
           ).length;
           return count;
-          // }
-
-          // let exists = uniqueArray.some(
-          //   (item) => item.objectid != pointGraphic
-          // );
         }
 
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
@@ -5963,7 +5951,9 @@ require([
           symbol: fillSymbol,
           id: bufferGraphicId,
         });
-        const zoomOutFactor = 3.0;
+
+        const geometryExtent = targetExtent.extent;
+        const zoomOutFactor = 2.0;
         const newExtent = geometryExtent.expand(zoomOutFactor);
 
         view.goTo({
@@ -6017,6 +6007,15 @@ require([
               },
             };
 
+            const geometryExtent = targetExtent.extent;
+            const zoomOutFactor = 2.0;
+            const newExtent = geometryExtent.expand(zoomOutFactor);
+
+            // view.goTo({
+            //   target: polygonGraphic,
+            //   extent: newExtent,
+            // });
+
             const polygonGraphic = new Graphic({
               geometry: targetExtent,
               symbol: fillSymbol,
@@ -6027,6 +6026,7 @@ require([
             view
               .goTo({
                 target: polygonGraphic,
+                extent: newExtent,
                 // zoom: 15,
               })
               .catch(function (error) {
@@ -6050,9 +6050,14 @@ require([
               targetExtent = geometry;
               detailsGeometry = geometry;
 
+              const geometryExtent = targetExtent.extent;
+              const zoomOutFactor = 2.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
               view
                 .goTo({
                   target: geometry,
+                  extent: newExtent,
                   // zoom: 15,
                 })
                 .catch(function (error) {
