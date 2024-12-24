@@ -27,7 +27,7 @@
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Woodbridge",
   "pdf_demographics": "https://s3-us-west-2.amazonaws.com/cerc-pdfs/2024/Woodbridge.pdf",
   "useVisionForTaxBillUrl": "no",
-  "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=columbia",
+  "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=woodbridge",
   "taxMapUrl": "https://mapxpress.s3.us-east-1.amazonaws.com/woodbridge/parcelmaps/",
   "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
