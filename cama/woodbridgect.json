@@ -17,7 +17,7 @@
   "customDisclaimerMessage": "Please read and accept or else.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Woodbridge_CT.png",
   "customWelcomePage": "yes",
-  "customWelcomeMessage": "Still is a custom site and may not have full fucntionality",
+  "customWelcomeMessage": "This custom site was created for the First Selectman and the Assessor’s Office. Please note that not all links and features may be available. Full functionality is reserved for Terreno GIS clients.",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Marsha Benno – Assessor <br>    - Tracie Toudle - Senior Clerk",
