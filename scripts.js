@@ -4104,11 +4104,7 @@ require([
         select = false;
       }
 
-      function handleDetailsClick(event) {
-        if (clickHandle) {
-          clickHandle?.remove();
-          clickHandle = null;
-        }
+      function DetailsPanel() {
         $("#details-spinner").show();
         $("#featureWid").hide();
         $("#result-btns").hide();
@@ -4128,13 +4124,48 @@ require([
         $("#backButton-div").css("padding-top", "0px");
         $("#abutters-attributes").prop("disabled", false);
         $("#abutters-zoom").prop("disabled", false);
+      }
+
+      function DetailsErrorMessage() {
+        console.log("trigger error message");
+        $("#results-div").css("height", "300px");
+        $("#backButton-div").css("padding-top", "0px");
+        $(".center-container").hide();
+        $("#layerListDiv").hide();
+        $("#details-spinner").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#abutters-content").hide();
+        $("#details-btns").show();
+        $("#abut-mail").show();
+        $("#detailBox").show();
+        $("#backButton").show();
+        $("#detailsButton").hide();
+        $("#detail-content").html(
+          `<h5 style="color: red;">Issue selecting Parcel. Please make another selection.</h5>`
+        );
+        $("#abutters-attributes").prop("disabled", true);
+        $("#abutters-zoom").prop("disabled", true);
+        $("#selected-feature").empty();
+        $("#exportSearch").hide();
+        $("#exportButtons").hide();
+
+        return;
+      }
+
+      function handleDetailsClick(event) {
+        if (clickHandle) {
+          clickHandle?.remove();
+          clickHandle = null;
+        }
+        DetailsPanel();
 
         if (sessionStorage.getItem("condos") === "no") {
-          let query = CondosLayer.createQuery();
+          let query = noCondosLayer.createQuery();
           query.geometry = event.mapPoint;
-          query.distance = 1;
-          query.units = "feet";
-          query.spatialRelationship = "within";
+          query.spatialRelationship = "intersects";
           query.returnGeometry = true;
           query.outFields = ["*"];
 
@@ -4147,40 +4178,13 @@ require([
               zoomToDetail(objID, geom, item);
               clickDetailsPanel(totalResults);
             } else {
-              $("#results-div").css("height", "300px");
-              $("#backButton-div").css("padding-top", "0px");
-              $(".center-container").hide();
-              $("#layerListDiv").hide();
-              $("#details-spinner").hide();
-              $("#featureWid").hide();
-              $("#result-btns").hide();
-              $("#total-results").hide();
-              $("#ResultDiv").hide();
-              $("#abutters-content").hide();
-              $("#details-btns").show();
-              $("#abut-mail").show();
-              $("#detailBox").show();
-              $("#backButton").show();
-              $("#detailsButton").hide();
-              $("#detail-content").html(
-                `<h5 style="color: red;">Issue selecting Parcel. Please make another selection.</h5>`
-              );
-
-              $("#abutters-attributes").prop("disabled", true);
-              $("#abutters-zoom").prop("disabled", true);
-              $("#selected-feature").empty();
-              $("#exportSearch").hide();
-              $("#exportButtons").hide();
-
-              return;
+              DetailsErrorMessage();
             }
           });
         } else {
           let query2 = CondosLayer.createQuery();
           query2.geometry = event.mapPoint;
-          query2.distance = 1;
-          query2.units = "feet";
-          query2.spatialRelationship = "within";
+          query2.spatialRelationship = "intersects";
           query2.returnGeometry = true;
           query2.outFields = ["*"];
 
@@ -4193,30 +4197,7 @@ require([
               zoomToDetail(objID, geom, item);
               clickDetailsPanel(totalResults);
             } else {
-              $("#details-spinner").hide();
-              $("#featureWid").hide();
-              $("#result-btns").hide();
-              $("#total-results").hide();
-              $("#ResultDiv").hide();
-              $("#abutters-content").hide();
-              $("#details-btns").show();
-              $("#abut-mail").show();
-              $("#detailBox").show();
-              $("#backButton").show();
-              $("#detailsButton").hide();
-              $("#detail-content").html(
-                `<h5 style="color: red;">Issue selecting Parcel. Please make another selection.</h5>`
-              );
-              $("#abutters-attributes").prop("disabled", true);
-              $("#abutters-zoom").prop("disabled", true);
-              $("#selected-feature").empty();
-              $("#exportSearch").hide();
-              $("#exportButtons").hide();
-              $("#results-div").css("height", "300px");
-              $("#backButton-div").css("padding-top", "0px");
-
-              // alert("Error: please select parcel within town boundary");
-              return;
+              DetailsErrorMessage();
             }
           });
         }
@@ -4224,7 +4205,6 @@ require([
 
       function handleClick(event) {
         detailsHandleUsed = "click";
-        // console.log(event);
         triggerfromNoCondos = false;
 
         isClickEvent = true;
@@ -4236,8 +4216,6 @@ require([
         if (sessionStorage.getItem("condos") === "no") {
           let query = noCondosLayer.createQuery();
           query.geometry = event.mapPoint;
-          // query.distance = 1;
-          // query.units = "feet";
           query.spatialRelationship = "intersects";
           query.returnGeometry = true;
           query.outFields = ["*"];
@@ -4270,7 +4248,103 @@ require([
         }
       }
 
-      // items on the left panel
+      function backButtonPanelShowSelect() {
+        $("#WelcomeBox").hide();
+        $("#select-button").prop("disabled", false);
+        $("#detailBox").hide();
+        $("#filterDiv").hide();
+        $("#layerListDiv").hide();
+        $("#featureWid").show();
+        $("#total-results").show();
+        $("#ResultDiv").show();
+        $("#details-btns").hide();
+        $("#abut-mail").hide();
+        $("#detail-content").empty();
+        $("#backButton").hide();
+        $("#detailsButton").hide();
+        $("#abutters-content").hide();
+        $("#selected-feature").empty();
+        $("#parcel-feature").empty();
+        $("#exportResults").hide();
+        $("#csvExportResults").hide();
+        $("#csvExportSearch").show();
+        $("#exportButtons").show();
+        $("#exportSearch").show();
+        $("#results-div").css("height", "300px");
+        $(".center-container").show();
+      }
+
+      function backButtonPanelShowHomePage() {
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#abut-mail").hide();
+        $("#backButton").hide();
+        $("#details-btns").hide();
+        $("#detailBox").hide();
+        $("#filterDiv").hide();
+        $("#layerListDiv").hide();
+        $("#dropdown").show();
+        $(".center-container").show();
+        $("#WelcomeBox").show();
+        return;
+      }
+
+      function backButtonClickSelectorLogic() {
+        // clickHandle = view.on("click", handleClick);
+        if (!lasso && !select) {
+          // add details and remove when search and no lasso
+          if (DetailsHandle) {
+            DetailsHandle?.remove();
+            DetailsHandle = null;
+          }
+
+          if (clickHandle) {
+            clickHandle?.remove();
+            clickHandle = null;
+          }
+
+          if (clickHandle && select) {
+            clickHandle?.remove();
+            clickHandle = null;
+          }
+          $("#select-button").removeClass("btn-warning");
+          DetailsHandle = view.on("click", handleDetailsClick);
+        } else if ((!lasso && select) || (!select && lasso)) {
+          if (clickHandle) {
+            clickHandle.remove();
+          }
+          if (DetailsHandle) {
+            DetailsHandle?.remove();
+            DetailsHandle = null;
+          }
+          $("#select-button").addClass("btn-warning");
+          clickHandle = view.on("click", handleClick);
+        } else if (lasso && !select) {
+          if (clickHandle) {
+            clickHandle?.remove();
+            clickHandle = null;
+          }
+          if (DetailsHandle) {
+            DetailsHandle?.remove();
+            DetailsHandle = null;
+          }
+          clickHandle = view.on("click", handleClick);
+          $("#select-button").addClass("btn-warning");
+        } else {
+          // else add the select click, not the details
+          // DetailsHandle = view.on("click", handleDetailsClick);
+          if (clickHandle) {
+            clickHandle?.remove();
+            clickHandle = null;
+          }
+          if (DetailsHandle) {
+            DetailsHandle?.remove();
+            DetailsHandle = null;
+          }
+          $("#select-button").addClass("btn-warning");
+          clickHandle = view.on("click", handleClick);
+        }
+      }
 
       $(document).ready(function () {
         $("#backButton").on("click", function () {
@@ -4279,129 +4353,47 @@ require([
             urlBackButton === true ||
             firstList.length > 0
           ) {
-            $("#WelcomeBox").hide();
-            $("#select-button").prop("disabled", false);
-            $("#detailBox").hide();
-            $("#filterDiv").hide();
-            $("#layerListDiv").hide();
-            $("#featureWid").show();
-            $("#total-results").show();
-            $("#ResultDiv").show();
-            $("#details-btns").hide();
-            $("#abut-mail").hide();
-            $("#detail-content").empty();
-            $("#backButton").hide();
-            $("#detailsButton").hide();
-            $("#abutters-content").hide();
-            $("#selected-feature").empty();
-            $("#parcel-feature").empty();
-            $("#exportResults").hide();
-            $("#csvExportResults").hide();
-            $("#csvExportSearch").show();
-            $("#exportButtons").show();
-            $("#exportSearch").show();
-            $("#results-div").css("height", "300px");
-            $(".center-container").show();
+            backButtonPanelShowSelect();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
             view.goTo(polygonGraphics);
           } else {
-            $("#total-results").hide();
-            $("#ResultDiv").hide();
-            $("#abut-mail").hide();
-            $("#backButton").hide();
-            $("#details-btns").hide();
-            $("#detailBox").hide();
-            $("#filterDiv").hide();
-            $("#layerListDiv").hide();
-            $("#dropdown").show();
-            $(".center-container").show();
-            $("#WelcomeBox").show();
-            return;
+            backButtonPanelShowHomePage();
           }
-          // clickHandle = view.on("click", handleClick);
-          if (!lasso && !select) {
-            // add details and remove when search and no lasso
-            if (DetailsHandle) {
-              DetailsHandle?.remove();
-              DetailsHandle = null;
-            }
-
-            if (clickHandle) {
-              clickHandle?.remove();
-              clickHandle = null;
-            }
-
-            if (clickHandle && select) {
-              clickHandle?.remove();
-              clickHandle = null;
-            }
-            $("#select-button").removeClass("btn-warning");
-            DetailsHandle = view.on("click", handleDetailsClick);
-          } else if ((!lasso && select) || (!select && lasso)) {
-            if (clickHandle) {
-              clickHandle.remove();
-            }
-            if (DetailsHandle) {
-              DetailsHandle?.remove();
-              DetailsHandle = null;
-            }
-            $("#select-button").addClass("btn-warning");
-            clickHandle = view.on("click", handleClick);
-          } else if (lasso && !select) {
-            if (clickHandle) {
-              clickHandle?.remove();
-              clickHandle = null;
-            }
-            if (DetailsHandle) {
-              DetailsHandle?.remove();
-              DetailsHandle = null;
-            }
-            clickHandle = view.on("click", handleClick);
-            $("#select-button").addClass("btn-warning");
-          } else {
-            // else add the select click, not the details
-            // DetailsHandle = view.on("click", handleDetailsClick);
-            if (clickHandle) {
-              clickHandle?.remove();
-              clickHandle = null;
-            }
-            if (DetailsHandle) {
-              DetailsHandle?.remove();
-              DetailsHandle = null;
-            }
-            $("#select-button").addClass("btn-warning");
-            clickHandle = view.on("click", handleClick);
-          }
+          backButtonClickSelectorLogic();
         });
       });
 
+      function loadDetailsIntialPanel() {
+        $("#detailBox").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#filterDiv").hide();
+        $("#layerListDiv").hide();
+        $("#details-btns").show();
+        $("#abut-mail").show();
+        $("#detail-content").show();
+        $("#detailBox").show();
+        $("#backButton").show();
+        $("#detailsButton").hide();
+        $("#abutters-content").hide();
+        $("#selected-feature").empty();
+        $("#parcel-feature").empty();
+        $("#exportResults").hide();
+        $("#csvExportResults").hide();
+        $("#csvExportSearch").hide();
+        $("#exportSearch").hide();
+        $("#exportButtons").hide();
+        $("#abutters-title").html(`Abutting Parcels (0)`);
+        $("#backButton-div").css("padding-top", "0px");
+        $("#results-div").css("height", "300px");
+      }
+
       $(document).ready(function () {
         $("#detailsButton").on("click", function () {
-          $("#detailBox").hide();
-          $("#featureWid").hide();
-          $("#result-btns").hide();
-          $("#total-results").hide();
-          $("#ResultDiv").hide();
-          $("#filterDiv").hide();
-          $("#layerListDiv").hide();
-          $("#details-btns").show();
-          $("#abut-mail").show();
-          $("#detail-content").show();
-          $("#detailBox").show();
-          $("#backButton").show();
-          $("#detailsButton").hide();
-          $("#abutters-content").hide();
-          $("#selected-feature").empty();
-          $("#parcel-feature").empty();
-          $("#exportResults").hide();
-          $("#csvExportResults").hide();
-          $("#csvExportSearch").hide();
-          $("#exportSearch").hide();
-          $("#exportButtons").hide();
-          $("#abutters-title").html(`Abutting Parcels (0)`);
-          $("#backButton-div").css("padding-top", "0px");
-          $("#results-div").css("height", "300px");
+          loadDetailsIntialPanel();
           if (DetailsHandle) {
             DetailsHandle?.remove();
             DetailsHandle = null;
@@ -4417,9 +4409,34 @@ require([
         });
       });
 
+      function loadAbuttersIntitialPanel() {
+        $("#results-div").css("height", "300px");
+        $("#exportButtons").show();
+        $("#exportResults").show();
+        $("#exportSearch").hide();
+        $("#csvExportResults").show();
+        $("#csvExportSearch").hide();
+        $("#WelcomeBox").hide();
+        $("#detailBox").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#details-btns").hide();
+        $("#abut-mail").hide();
+        $("#filterDiv").hide();
+        $("#layerListDiv").hide();
+        $("#abutters-content").show();
+        $("#selected-feature").empty();
+        $("#backButton").show();
+        $("#detailsButton").show();
+        $("#parcel-feature").empty();
+        $("#backButton-div").css("padding-top", "78px");
+        $("#abutters-title").html(`Abutting Parcels (0)`);
+      }
+
       $(document).ready(function () {
         $("#abutters").on("click", function (e) {
-          // clickHandle.remove();
           if (DetailsHandle) {
             DetailsHandle?.remove();
             DetailsHandle = null;
@@ -4428,35 +4445,39 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          $("#results-div").css("height", "300px");
-          $("#exportButtons").show();
-          $("#exportResults").show();
-          $("#exportSearch").hide();
-          $("#csvExportResults").show();
-          $("#csvExportSearch").hide();
-          $("#WelcomeBox").hide();
-          $("#detailBox").hide();
-          $("#featureWid").hide();
-          $("#result-btns").hide();
-          $("#total-results").hide();
-          $("#ResultDiv").hide();
-          $("#details-btns").hide();
-          $("#abut-mail").hide();
-          $("#filterDiv").hide();
-          $("#layerListDiv").hide();
-          $("#abutters-content").show();
-          $("#selected-feature").empty();
-          $("#backButton").show();
-          $("#detailsButton").show();
-          $("#parcel-feature").empty();
-          $("#backButton-div").css("padding-top", "78px");
-          $("#abutters-title").html(`Abutting Parcels (0)`);
+          loadAbuttersIntitialPanel();
           buildAbuttersPanel(e);
           value.value = 100;
           runBuffer("100");
         });
       });
 
+      function loadAbuttersAttrIntitialPanel() {
+        $("#results-div").css("height", "300px");
+        $("#exportButtons").show();
+        $("#exportResults").show();
+        $("#exportButtons").show();
+        $("#exportSearch").hide();
+        $("#csvExportResults").show();
+        $("#csvExportSearch").hide();
+        $("#WelcomeBox").hide();
+        $("#detailBox").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#details-btns").hide();
+        $("#abut-mail").hide();
+        $("#filterDiv").hide();
+        $("#layerListDiv").hide();
+        $("#abutters-content").show();
+        $("#selected-feature").empty();
+        $("#backButton").show();
+        $("#detailsButton").show();
+        $("#parcel-feature").empty();
+        $("#backButton-div").css("padding-top", "78px");
+        $("#abutters-title").html(`Abutting Parcels (0)`);
+      }
       $(document).ready(function () {
         $("#abutters-attributes").on("click", function (e) {
           // clickHandle.remove();
@@ -4468,69 +4489,50 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          $("#results-div").css("height", "300px");
-          $("#exportButtons").show();
-          $("#exportResults").show();
-          $("#exportButtons").show();
-          $("#exportSearch").hide();
-          $("#csvExportResults").show();
-          $("#csvExportSearch").hide();
-          $("#WelcomeBox").hide();
-          $("#detailBox").hide();
-          $("#featureWid").hide();
-          $("#result-btns").hide();
-          $("#total-results").hide();
-          $("#ResultDiv").hide();
-          $("#details-btns").hide();
-          $("#abut-mail").hide();
-          $("#filterDiv").hide();
-          $("#layerListDiv").hide();
-          $("#abutters-content").show();
-          $("#selected-feature").empty();
-          $("#backButton").show();
-          $("#detailsButton").show();
-          $("#parcel-feature").empty();
-          $("#backButton-div").css("padding-top", "78px");
-          $("#abutters-title").html(`Abutting Parcels (0)`);
+          loadAbuttersAttrIntitialPanel();
           buildAbuttersPanel(e);
           value.value = 100;
           runAttBuffer("100");
         });
       });
 
+      function loadFilterPanel() {
+        $("#WelcomeBox").hide();
+        $("#exportResults").hide();
+        $("#csvExportResults").hide();
+        $("#detailBox").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#details-btns").hide();
+        $("#abut-mail").hide();
+        $("#exportSearch").hide();
+        $("#csvExportSearch").hide();
+        $("#abutters-content").hide();
+        $("#layerListDiv").hide();
+        $("#selected-feature").empty();
+        $("#backButton").hide();
+        $("#detailsButton").hide();
+        $("#dropdown").show();
+        $("#filterDiv").show();
+        $("#dropdown").toggleClass("expanded");
+        $("#sidebar2").css("left", "0px");
+        $("#sidebar2").addClass("collapsed");
+        $("#results-div").css("left", "350px");
+        $("#left-arrow-2").show();
+        $("#right-arrow-2").hide();
+        $("#results-div").css("height", "300px");
+        $("#parcel-feature").empty();
+        $("#backButton").show();
+        $("#backButton-div").css("padding-top", "0px");
+        $("#abutters-title").html(`Abutting Parcels (0)`);
+        $(".center-container").show();
+      }
+
       $(document).ready(function () {
         $("#filterButton").on("click", function () {
-          $("#WelcomeBox").hide();
-          $("#exportResults").hide();
-          $("#csvExportResults").hide();
-          $("#detailBox").hide();
-          $("#featureWid").hide();
-          $("#result-btns").hide();
-          $("#total-results").hide();
-          $("#ResultDiv").hide();
-          $("#details-btns").hide();
-          $("#abut-mail").hide();
-          $("#exportSearch").hide();
-          $("#csvExportSearch").hide();
-          $("#abutters-content").hide();
-          $("#layerListDiv").hide();
-          $("#selected-feature").empty();
-          $("#backButton").hide();
-          $("#detailsButton").hide();
-          $("#dropdown").show();
-          $("#filterDiv").show();
-          $("#dropdown").toggleClass("expanded");
-          $("#sidebar2").css("left", "0px");
-          $("#sidebar2").addClass("collapsed");
-          $("#results-div").css("left", "350px");
-          $("#left-arrow-2").show();
-          $("#right-arrow-2").hide();
-          $("#results-div").css("height", "300px");
-          $("#parcel-feature").empty();
-          $("#backButton").show();
-          $("#backButton-div").css("padding-top", "0px");
-          $("#abutters-title").html(`Abutting Parcels (0)`);
-          $(".center-container").show();
+          loadFilterPanel();
         });
       });
 
@@ -4565,7 +4567,6 @@ require([
           $("#right-arrow-2").hide();
           $("#results-div").css("height", "300px");
           $("#layerListDiv").show();
-          // $("#detailsButton").show();
           $("#parcel-feature").empty();
           $("#backButton-div").css("padding-top", "0px");
           $("#abutters-title").html(`Abutting Parcels (0)`);
@@ -4952,8 +4953,6 @@ require([
           CondosTable.queryFeatures(query).then((response) => {
             if (lasso) {
               runQuery("", "", query);
-              // processFeatures(response.features);
-              // addPolygons(response, view.graphics);
             } else {
               buildPanel(response);
             }
@@ -6736,14 +6735,7 @@ require([
 
           $("#dropdown").show();
           $("#WelcomeBox").show();
-          // $("#select-button").attr("title", "Add to Selection Enabled");
           $(".center-container").show();
-
-          // clickHandle = view.on("click", handleClick);
-          // $("#lasso").removeClass("btn-warning");
-          // $("#select-button").addClass("btn-warning");
-          // select = true;
-          // lasso = false;
 
           let suggestionsContainer = document.getElementById("suggestions");
           suggestionsContainer.innerHTML = "";
