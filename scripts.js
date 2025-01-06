@@ -1585,7 +1585,6 @@ require([
         CondosTable.queryFeatures(query).then(function (response) {
           var features = response.features;
           var count = response.features.length;
-          console.log(`${fieldName} had ${count} records`);
           var comboBox = $(comboBoxSelector);
 
           features.forEach(function (feature) {
@@ -3019,18 +3018,45 @@ require([
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
           if (sessionStorage.getItem("condos") == "yes") {
             // losing the addition right here in uniquearray and firstlist
-            uniqueArray = uniqueArray.filter(
-              (item) => item.objectid != pointGraphic
-            );
-            uniqueArray = uniqueArray.filter(
-              (item) => item.location != pointLocation
-            );
-            firstList = firstList.filter(
-              (item) => item.objectid != pointGraphic
-            );
-            firstList = firstList.filter(
-              (item) => item.location != pointLocation
-            );
+
+            //             const array1 = [5, 12, 8, 130, 44];
+
+            // const isLargeNumber = (element) => element > 13;
+            const objIdCheck = (item) => item.objectid == pointGraphic;
+            const locCheck = (item) => item.location == pointLocation;
+
+            // console.log(array1.findIndex(isLargeNumber));
+            console.log(uniqueArray);
+            const objToSplice = uniqueArray.findIndex(objIdCheck);
+            uniqueArray.splice(objToSplice, 1);
+            console.log(uniqueArray);
+            if (objToSplice == -1) {
+              const locToSplice = uniqueArray.findIndex(locCheck);
+              uniqueArray.splice(locToSplice, 1);
+              console.log(uniqueArray);
+            }
+
+            const firstListToSpliceObj = firstList.findIndex(objIdCheck);
+            console.log(firstList);
+            firstList.splice(firstListToSpliceObj, 1);
+            console.log(firstList);
+
+            const firstListToSpliceLoc = firstList.findIndex(locCheck);
+            firstList.splice(firstListToSpliceLoc, 1);
+            console.log(firstList);
+
+            // uniqueArray = uniqueArray.filter(
+            //   (item) => item.objectid != pointGraphic
+            // );
+            // uniqueArray = uniqueArray.filter(
+            //   (item) => item.location != pointLocation
+            // );
+            // firstList = firstList.filter(
+            //   (item) => item.objectid != pointGraphic
+            // );
+            // firstList = firstList.filter(
+            //   (item) => item.location != pointLocation
+            // );
 
             // here its removing it from the list
             // whats the logic when you lasso a condomain, with no geom for all condos
@@ -3066,6 +3092,8 @@ require([
 
         let zoomToItemId;
         let Id;
+
+        console.log(uniqueArray);
 
         uniqueArray.forEach(function (feature) {
           // console.log(feature);
@@ -4226,9 +4254,6 @@ require([
           let query2 = CondosLayer.createQuery();
           query2.geometry = event.mapPoint;
           query2.spatialRelationship = "intersects";
-          // query2.distance = 1;
-          // query2.units = "feet";
-          // query2.spatialRelationship = "within";
           query2.returnGeometry = true;
           query2.outFields = ["*"];
 
