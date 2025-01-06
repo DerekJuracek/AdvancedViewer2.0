@@ -3569,6 +3569,7 @@ require([
             if (polygonGraphics2.length >= 1) {
               graphicsLayer.addMany(polygonGraphics2);
             }
+
             view.goTo(polygonGraphics);
           } else {
             let graphic3;
@@ -5509,7 +5510,6 @@ require([
       `;
 
         details.innerHTML = detailsHTML;
-
         $("#details-spinner").hide();
         detailsDiv.appendChild(details);
       }
@@ -5983,7 +5983,6 @@ require([
 
         view.goTo({
           target: polygonGraphic,
-          extent: newExtent,
         });
 
         view.graphics.addMany([polygonGraphic]);
@@ -6161,13 +6160,6 @@ require([
               } else {
                 whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
               }
-              // if (match.length > 0) {
-              //   whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
-              // } else {
-              //   return;
-              // }
-
-              // }
 
               let query = noCondosLayer.createQuery();
               query.where = whereClause;
