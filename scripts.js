@@ -3023,41 +3023,41 @@ require([
             //             const array1 = [5, 12, 8, 130, 44];
 
             // const isLargeNumber = (element) => element > 13;
-            const objIdCheck = (item) => item.objectid == pointGraphic;
-            const locCheck = (item) => item.location == pointLocation;
+            // const objIdCheck = (item) => item.objectid == pointGraphic;
+            // const locCheck = (item) => item.location == pointLocation;
 
-            // console.log(array1.findIndex(isLargeNumber));
-            console.log(uniqueArray);
-            const objToSplice = uniqueArray.findIndex(objIdCheck);
-            uniqueArray.splice(objToSplice, 1);
-            console.log(uniqueArray);
-            if (objToSplice == -1) {
-              const locToSplice = uniqueArray.findIndex(locCheck);
-              uniqueArray.splice(locToSplice, 1);
-              console.log(uniqueArray);
-            }
+            // // console.log(array1.findIndex(isLargeNumber));
+            // console.log(uniqueArray);
+            // const objToSplice = uniqueArray.findIndex(objIdCheck);
+            // uniqueArray.splice(objToSplice, 1);
+            // console.log(uniqueArray);
+            // if (objToSplice == -1) {
+            //   const locToSplice = uniqueArray.findIndex(locCheck);
+            //   uniqueArray.splice(locToSplice, 1);
+            //   console.log(uniqueArray);
+            // }
 
-            const firstListToSpliceObj = firstList.findIndex(objIdCheck);
-            console.log(firstList);
-            firstList.splice(firstListToSpliceObj, 1);
-            console.log(firstList);
+            // const firstListToSpliceObj = firstList.findIndex(objIdCheck);
+            // console.log(firstList);
+            // firstList.splice(firstListToSpliceObj, 1);
+            // console.log(firstList);
 
-            const firstListToSpliceLoc = firstList.findIndex(locCheck);
-            firstList.splice(firstListToSpliceLoc, 1);
-            console.log(firstList);
+            // const firstListToSpliceLoc = firstList.findIndex(locCheck);
+            // firstList.splice(firstListToSpliceLoc, 1);
+            // console.log(firstList);
 
-            // uniqueArray = uniqueArray.filter(
-            //   (item) => item.objectid != pointGraphic
-            // );
-            // uniqueArray = uniqueArray.filter(
-            //   (item) => item.location != pointLocation
-            // );
-            // firstList = firstList.filter(
-            //   (item) => item.objectid != pointGraphic
-            // );
-            // firstList = firstList.filter(
-            //   (item) => item.location != pointLocation
-            // );
+            uniqueArray = uniqueArray.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            uniqueArray = uniqueArray.filter(
+              (item) => item.location != pointLocation
+            );
+            firstList = firstList.filter(
+              (item) => item.objectid != pointGraphic
+            );
+            firstList = firstList.filter(
+              (item) => item.location != pointLocation
+            );
 
             // here its removing it from the list
             // whats the logic when you lasso a condomain, with no geom for all condos
