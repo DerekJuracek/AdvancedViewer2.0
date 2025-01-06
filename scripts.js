@@ -62,6 +62,7 @@ require([
     "wiltonct",
     "wiltoncttest",
     "wolcottct",
+    "woodbridgect",
   ];
 
   // Create a regex pattern to match allowed config file names
