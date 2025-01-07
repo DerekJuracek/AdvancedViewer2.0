@@ -3978,10 +3978,11 @@ require([
               // then gets condo main from layer with gis_link
               triggerUrl = result.features;
               noCondosParcelGeom = result.features;
-              // triggerfromNoCondos = false;
 
               // if no condos and coming from url search of condiminium like wilton
               if (triggerfromNoCondos) {
+                let triggerCondo = "";
+                let triggerCondoMain = "";
                 const firstQuery = noCondosTable.createQuery();
                 firstQuery.where = query.where;
                 firstQuery.returnGeometry = false;
@@ -3991,6 +3992,7 @@ require([
                   .queryFeatures(firstQuery)
                   .then(function (result) {
                     console.log(result);
+                    triggerCondo = result.features;
                     let data = result.features[0].attributes;
                     const gis_link = data.GIS_LINK;
 
@@ -4004,11 +4006,12 @@ require([
                   })
                   .then(function (response) {
                     triggerUrl = response.features;
+                    triggerCondoMain = response.features;
                     noCondosParcelGeom = response.features;
                     addPolygons(response, view.graphics, "");
                     processFeatures(response.features);
                     if (urlSearch) {
-                      triggerListGroup(triggerUrl, searchTerm);
+                      triggerListGroup(triggerCondo, triggerCondoMain, searchTerm);
                     }
                   })
                   .catch(function (error) {
@@ -6535,8 +6538,33 @@ require([
         }
       };
 
-      function triggerListGroup(results, searchTerm) {
+      function triggerListDetails() {
+         // zoomToFeature(objectID, polygonGraphics, itemId);
+         $("#details-spinner").show();
+         $("#WelcomeBox").hide();
+         $("#featureWid").hide();
+         $("#result-btns").hide();
+         $("#abutters-content").hide();
+         $("#details-btns").show();
+         $("#abut-mail").show();
+         $("#detailBox").show();
+         $("#backButton").show();
+         $("#detailsButton").hide();
+         $("#detail-content").empty();
+         $("#selected-feature").empty();
+         $("#exportButtons").hide();
+         $("#exportSearch").hide();
+         $("#exportResults").hide();
+         $("#csvExportResults").hide();
+         $("#csvExportSearch").hide();
+         $(".center-container").hide();
+         $("#results-div").css("height", "300px");
+         $("#backButton-div").css("padding-top", "0px");
+      }
+
+      function triggerListGroup(results, main, searchTerm) {
         let items = results;
+        let condoMain = main;
         changeAbuttersZoom = true;
 
         if (items.length <= 0) {
@@ -6546,34 +6574,15 @@ require([
 
         let itemId = items[0].attributes.Uniqueid;
         let objectID = items[0].attributes.OBJECTID;
-        let geometry = items[0].attributes.geometry;
+        let objectIDMain = condoMain[0].attributes.OBJECTID;
 
-        // zoomToFeature(objectID, polygonGraphics, itemId);
-        $("#details-spinner").show();
-        $("#WelcomeBox").hide();
-        $("#featureWid").hide();
-        $("#result-btns").hide();
-        $("#abutters-content").hide();
-        $("#details-btns").show();
-        $("#abut-mail").show();
-        $("#detailBox").show();
-        $("#backButton").show();
-        $("#detailsButton").hide();
-        $("#detail-content").empty();
-        $("#selected-feature").empty();
-        $("#exportButtons").hide();
-        $("#exportSearch").hide();
-        $("#exportResults").hide();
-        $("#csvExportResults").hide();
-        $("#csvExportSearch").hide();
-        $(".center-container").hide();
-        $("#results-div").css("height", "300px");
-        $("#backButton-div").css("padding-top", "0px");
+        triggerListDetails()
         document.getElementById("total-results").style.display = "none";
         buildDetailsPanel(objectID, itemId);
-        zoomToFeature(objectID, polygonGraphics, itemId);
+        zoomToFeature(objectIDMain, polygonGraphics, itemId);
         $("#total-results").hide();
         $("#ResultDiv").hide();
+        
         urlBackButton = true;
         triggerfromNoCondos = false;
         urlSearchUniqueId = false;
