@@ -3018,52 +3018,16 @@ require([
 
         function removeDups(pointGraphic, pointLocation, pointGisLink) {
           if (sessionStorage.getItem("condos") == "yes") {
-            // losing the addition right here in uniquearray and firstlist
-
-            //             const array1 = [5, 12, 8, 130, 44];
-
-            // const isLargeNumber = (element) => element > 13;
-            // const objIdCheck = (item) => item.objectid == pointGraphic;
-            // const locCheck = (item) => item.location == pointLocation;
-
-            // // console.log(array1.findIndex(isLargeNumber));
-            // console.log(uniqueArray);
-            // const objToSplice = uniqueArray.findIndex(objIdCheck);
-            // uniqueArray.splice(objToSplice, 1);
-            // console.log(uniqueArray);
-            // if (objToSplice == -1) {
-            //   const locToSplice = uniqueArray.findIndex(locCheck);
-            //   uniqueArray.splice(locToSplice, 1);
-            //   console.log(uniqueArray);
-            // }
-
-            // const firstListToSpliceObj = firstList.findIndex(objIdCheck);
-            // console.log(firstList);
-            // firstList.splice(firstListToSpliceObj, 1);
-            // console.log(firstList);
-
-            // const firstListToSpliceLoc = firstList.findIndex(locCheck);
-            // firstList.splice(firstListToSpliceLoc, 1);
-            // console.log(firstList);
+            // Removes duplicates by uniqueid only
+            // if uniqueid not unique, will delete multiple
 
             uniqueArray = uniqueArray.filter(
               (item) => item.objectid != pointGraphic
             );
-            uniqueArray = uniqueArray.filter(
-              (item) => item.location != pointLocation
-            );
+
             firstList = firstList.filter(
               (item) => item.objectid != pointGraphic
             );
-            firstList = firstList.filter(
-              (item) => item.location != pointLocation
-            );
-
-            // here its removing it from the list
-            // whats the logic when you lasso a condomain, with no geom for all condos
-            // and you select other polygons too
-            // right now when you click two and unlick condomain, it wont make all of them dissapear
-            // need to fix this
 
             $(`li[object-id="${pointGraphic}"]`).remove();
           }
@@ -3094,11 +3058,7 @@ require([
         let zoomToItemId;
         let Id;
 
-        console.log(uniqueArray);
-
         uniqueArray.forEach(function (feature) {
-          // console.log(feature);
-
           let objectID = feature.objectid;
           let locationVal = feature.location;
           let locationUniqueId =
@@ -6582,7 +6542,7 @@ require([
         zoomToFeature(objectIDMain, polygonGraphics, itemId);
         $("#total-results").hide();
         $("#ResultDiv").hide();
-        
+
         urlBackButton = true;
         triggerfromNoCondos = false;
         urlSearchUniqueId = false;
