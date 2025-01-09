@@ -183,7 +183,6 @@ require([
         },
         layers: [searchGraphicsLayers],
       });
-      console.log(webmap);
 
       // Create LODs from level 0 to 31
       const tileInfo = TileInfo.create({
@@ -259,7 +258,7 @@ require([
                 );
 
                 webmap.layers.on("change", function (event) {
-                  console.log(event);
+                  // console.log(event);
                   console.log(event, " layer was added/removed from the map.");
                 });
 
@@ -304,7 +303,7 @@ require([
                 );
 
                 webmap.layers.on("change", function (event) {
-                  console.log(event);
+                  // console.log(event);
                   console.log(event, " layer was added/removed from the map.");
                 });
 
@@ -350,7 +349,7 @@ require([
                 );
 
                 webmap.layers.on("change", function (event) {
-                  console.log(event);
+                  // console.log(event);
                   console.log(event, " layer was added/removed from the map.");
                 });
 
@@ -1950,9 +1949,9 @@ require([
       // const scale = this.view.scale;
       // console.log(scale);
 
-      console.log(view.height);
-      console.log(view.width);
-      console.log(view);
+      // console.log(view.height);
+      // console.log(view.width);
+      // console.log(view);
 
       let het;
       let wid;
@@ -2740,7 +2739,8 @@ require([
 
               // Set the view to the new extent
               view.goTo({
-                target: center, // Center the view on the center of the geometry
+                target: geometry,
+                // Center the view on the center of the geometry
                 // zoom: 14, // Set the extent to the new adjusted extent
               });
             });
@@ -2769,7 +2769,7 @@ require([
 
               // Set the view to the new extent
               view.goTo({
-                target: center, // Center the view on the center of the geometry
+                target: geometry, // Center the view on the center of the geometry
                 // zoom: 14, // Set the extent to the new adjusted extent
               });
             });
@@ -3530,7 +3530,11 @@ require([
               graphicsLayer.addMany(polygonGraphics2);
             }
 
-            view.goTo(polygonGraphics);
+            view.goTo({
+              target: polygonGraphics,
+              zoom: 18,
+              // extent: newExtent,
+            });
           } else {
             let graphic3;
             regSearch = true;
@@ -3550,9 +3554,46 @@ require([
               })
               .filter((graphic) => graphic !== null);
 
-            if (polygonGraphics2.length >= 1) {
+            if (polygonGraphics2.length == 1) {
               graphicsLayer.addMany(polygonGraphics2);
-              view.goTo(polygonGraphics2);
+              console.log(features)
+
+              let geometry = features[0].geometry;
+              const geometryExtent = geometry.extent;
+              const center = geometryExtent.center;
+              const zoomOutFactor = 2.0; // Adjust as needed
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view.goTo({
+                target: polygonGraphics2,
+                // zoom: 11,
+                extent: newExtent,
+              });
+            } else {
+              graphicsLayer.addMany(polygonGraphics2);
+              console.log(features);
+              
+              if (polygonGraphics2.length > 0) {
+                // Step 1: Extract extents of all polygon graphics
+                const extents = polygonGraphics2.map(graphic => graphic.geometry.extent);
+              
+                // Step 2: Combine all extents into a single full extent
+                const fullExtent = extents.reduce((acc, extent) => acc.union(extent), extents[0]);
+              
+                // Step 3: Expand the full extent by the zoom-out factor
+                const zoomOutFactor = 3.0; // Adjust as needed
+                const newExtent = fullExtent.expand(zoomOutFactor);
+              
+                // Step 4: Zoom the view to the expanded extent
+                view.goTo({
+                  target: newExtent
+                }).catch(err => {
+                  console.error("Error zooming to extent:", err);
+                });
+              } else {
+                console.warn("No graphics available to calculate extent.");
+              }
+              
             }
           }
         }
@@ -3951,7 +3992,6 @@ require([
                 noCondosTable
                   .queryFeatures(firstQuery)
                   .then(function (result) {
-                    console.log(result);
                     triggerCondo = result.features;
                     let data = result.features[0].attributes;
                     const gis_link = data.GIS_LINK;
@@ -4091,7 +4131,6 @@ require([
       }
 
       function DetailsErrorMessage() {
-        console.log("trigger error message");
         $("#results-div").css("height", "300px");
         $("#backButton-div").css("padding-top", "0px");
         $(".center-container").hide();
@@ -4320,7 +4359,63 @@ require([
             backButtonPanelShowSelect();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
-            view.goTo(polygonGraphics);
+            console.log(polygonGraphics)
+
+            // detailsGeometry = geom;
+
+            // const polygonGraphic = new Graphic({
+            //   geometry: targetExtent,
+            //   symbol: fillSymbol,
+            //   id: bufferGraphicId,
+            // });
+    
+            // const geometryExtent = targetExtent.extent;
+            // const zoomOutFactor = 2.0;
+            // const newExtent = geometryExtent.expand(zoomOutFactor);
+    
+            // view.graphics.addMany([polygonGraphic]);
+            // view.goTo({
+            //   target: polygonGraphic,
+            //   extent: newExtent
+            // });
+            if (polygonGraphics.length > 1) {
+
+
+
+                // Step 1: Extract extents of all polygon graphics
+                const extents = polygonGraphics.map(graphic => graphic.geometry.extent);
+
+                // Step 2: Combine all extents into a single full extent
+                const fullExtent = extents.reduce((acc, extent) => acc.union(extent), extents[0]);
+
+                // Step 3: Expand the full extent by the zoom-out factor
+                const zoomOutFactor = 3.0; // Adjust as needed
+                const newExtent = fullExtent.expand(zoomOutFactor);
+
+                // Step 4: Zoom the view to the expanded extent
+                view.goTo({
+                  target: newExtent
+                }).catch(err => {
+                  console.error("Error zooming to extent:", err);
+                });
+
+
+              // view.goTo(polygonGraphics);
+            } else {
+              const geometry = polygonGraphics[0].geometry
+              const geometryExtent = geometry.extent;
+              const zoomOutFactor = 2.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+    
+
+              view.goTo({
+                target: polygonGraphics,
+                extent: newExtent
+              });
+            }
+
+
+     
           } else {
             backButtonPanelShowHomePage();
           }
@@ -5944,14 +6039,11 @@ require([
         const zoomOutFactor = 2.0;
         const newExtent = geometryExtent.expand(zoomOutFactor);
 
+        view.graphics.addMany([polygonGraphic]);
         view.goTo({
           target: polygonGraphic,
+          extent: newExtent
         });
-
-        view.graphics.addMany([polygonGraphic]);
-        // view.goTo({
-        //   target: polygonGraphic,
-        // });
       }
 
       function zoomToFeature(objectid, notPolygonGraphics, gisLink) {
@@ -6083,10 +6175,14 @@ require([
               matchingObject[0].geometry != ""
             ) {
               detailsGeometry = matchingObject[0].geometry;
+              const geometryExtent = detailsGeometry.extent;
+              const zoomOutFactor = 2.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
                 .goTo({
                   target: detailsGeometry,
+                  extent: newExtent,
                   // zoom: 15,
                 })
                 .catch(function (error) {
@@ -6136,11 +6232,20 @@ require([
 
                 detailsGeometry = geometry;
 
-                view
-                  .goTo({
-                    target: geometry,
-                    // zoom: 15,
-                  })
+         
+
+              targetExtent = geometry;
+
+              const geometryExtent = targetExtent.extent;
+              const zoomOutFactor = 2.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view
+                .goTo({
+                  target: geometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
                   .catch(function (error) {
                     if (error.name != "AbortError") {
                       console.error(error);
@@ -6618,13 +6723,8 @@ require([
                   triggerfromNoCondos = true;
                 }
                 runQuery(null, query);
-
-                console.log(response);
               });
             }
-
-            // This function runs when the view is fully ready
-            console.log("The view is ready.");
 
             query = CondosTable.createQuery();
             query.where = whereClause;
@@ -8158,7 +8258,7 @@ require([
           var selectedScale = parseInt(event.target.value);
           var selectedText = event.target.innerHTML;
 
-          console.log("Selected Scale (inches):", selectedScale);
+          // console.log("Selected Scale (inches):", selectedScale);
 
           if (selectedScale) {
             view.scale = selectedScale; // Set the map view scale
@@ -8170,8 +8270,8 @@ require([
 
       // Inside captureMap function, ensure scale is correctly used
       const actualScaleInFeet = Math.round(view.scale / 12); // Ensure proper conversion
-      console.log("Current View Scale (inches):", view.scale);
-      console.log("Converted Scale (feet):", actualScaleInFeet);
+      // console.log("Current View Scale (inches):", view.scale);
+      // console.log("Converted Scale (feet):", actualScaleInFeet);
 
       view.ui.add(scaleDropdown);
 
@@ -8181,7 +8281,7 @@ require([
         ([stationary, scale]) => {
           // Only print the new scale value when the view is stationary
           if (stationary) {
-            console.log(scale);
+            // console.log(scale);
             // console.log(`Change in scale level: ${scale}`);
             updateScaleDropdown(scale);
           }
