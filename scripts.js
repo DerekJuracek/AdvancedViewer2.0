@@ -1531,7 +1531,7 @@ require([
           let whereClauses = value.map((val) => `${fieldName} = '${val}'`);
           query.where = whereClauses.join(" OR ");
         } else if (value && value2) {
-          query.where = `${fieldName} BETWEEN '${value}' AND '${value2}'`;
+          query.where = `${fieldName} >= '${value}' AND ${fieldName} <= '${value2}'`;
         } else {
           // Construct the WHERE clause for a single value
           query.where = `${fieldName} = '${value}'`;
