@@ -15,7 +15,7 @@
   "showDisclaimer": "no",
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "Please read and accept or else.",
-  "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Columbia_CT.png",
+  "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Newington_CT.png",
   "customWelcomePage": "yes",
   "customWelcomeMessage": "Contact me if any issues",
   "DetailLinks": ["links", "ids", "vals", "sales"],
