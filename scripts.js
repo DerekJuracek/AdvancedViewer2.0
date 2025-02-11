@@ -7166,6 +7166,7 @@ require([
             queryParts.push(
               `Sale_Date >= '${queryParameters.soldOnMin}' AND Sale_Date <= '${queryParameters.soldOnMax}'`
             );
+            console.log(queryParameters.soldOnMin)
           }
 
           if (
@@ -7178,6 +7179,7 @@ require([
           }
 
           let queryString = queryParts.join(" AND ");
+          console.log(queryString)
 
           if (sessionStorage.getItem("condos") === "no") {
             let query = noCondosTable.createQuery();
@@ -7468,9 +7470,11 @@ require([
         });
 
         $("#acres-val-min, #acres-val-max").on("input", function () {
-          // Get and parse the input values
-          var minVal = parseInt($("#acres-val-min").val(), 10);
-          var maxVal = parseInt($("#acres-val-max").val(), 10);
+          var minVal = parseFloat($("#acres-val-min").val());
+          var maxVal = parseFloat($("#acres-val-max").val());
+          
+          console.log(minVal); // Will retain decimals
+          console.log(maxVal);
 
           // Convert values to strings and check their lengths
           var minValStr = $("#acres-val-min").val().trim();
@@ -7530,31 +7534,20 @@ require([
             formattedDateValueMin,
             formattedDateValueMax
           );
-          // checkVals();
         });
 
         let previousState = null;
 
         function checkVals() {
           const elementIds = [
-            // "#sold_calendar_lowest",
-            // "#sold_calendar_highest",
-            // "#acres-val-min",
-            // "#acres-val-max",
             "#designTypeFilter",
             "#buildingUseFilter",
             "#buildingFilter",
             "#neighborhoodFilter",
             "#zoningFilter",
             "#propertyFilter",
-            // "#assess-val-min",
-            // "#assess-val-max",
-            // "#app-val-min",
-            // "#app-val-max",
             "#ownerFilter",
             "#streetFilter",
-            // "#saleP-val-min",
-            // "#saleP-val-max",
           ];
 
           const values = elementIds.map((id) => $(id).val());
@@ -7565,14 +7558,10 @@ require([
 
           const allEmpty = values.every(isEmpty);
 
-          // Check if the state has changed
           if (previousState !== allEmpty) {
             onStateChange(allEmpty);
             previousState = allEmpty;
           }
-
-          // console.log(values); // This will log the values of all the elements
-          // console.log(allEmpty); // This will log true if all values are empty, false otherwise
 
           return allEmpty;
         }
@@ -7582,42 +7571,31 @@ require([
         }
 
         function onStateChange(newState) {
-          // console.log("State changed to:", newState);
-          // Add your code to handle the state change here
           if (newState) {
-            // Perform actions when all values are empty
-            // console.log("All values are empty.");
             triggerReset();
           } else {
-            // Perform actions when there is at least one non-empty value
-            // console.log("There are some non-empty values.");
           }
         }
 
-        // Initialize previousState to the current state of the inputs
+
         document.addEventListener("DOMContentLoaded", () => {
-          previousState = checkVals(); // Set the initial state without triggering state change actions
+          previousState = checkVals(); 
         });
 
         $("#saleP-val-min, #saleP-val-max").on("input", function () {
           var minValStr = $("#saleP-val-min").val();
           var maxValStr = $("#saleP-val-max").val();
 
-          // Remove the dollar sign and any commas
           minValStr = minValStr.replace(/^\$/, "").replace(/,/g, "");
           maxValStr = maxValStr.replace(/^\$/, "").replace(/,/g, "");
 
-          // Parse the values as integers
           var minVal = parseInt(minValStr, 10);
           var maxVal = parseInt(maxValStr, 10);
 
-          // Check if the parsed values are valid numbers
           if (!isNaN(minVal) && !isNaN(maxVal)) {
-            // Format the parsed values with commas for display
             var formattedMinVal = minVal.toLocaleString();
             var formattedMaxVal = maxVal.toLocaleString();
 
-            // Update the input fields with the formatted values and dollar signs
             $("#saleP-val-min").val("$" + formattedMinVal);
             $("#saleP-val-max").val("$" + formattedMaxVal);
 
@@ -7627,7 +7605,6 @@ require([
             triggerMultiFilter("Sale_Price", minVal, maxVal);
             triggerMultiDates("Sale_Price", minVal, maxVal);
           } else {
-            // If the values are not valid numbers, handle accordingly (e.g., set to NaN)
             console.log("Invalid input");
           }
         });
@@ -7636,14 +7613,12 @@ require([
           const sliderVals = [
             {
               fieldName: "Appraised_Total",
-              // slider: "app-val-slider",
               minInput: "#app-val-min",
               maxInput: "#app-val-max",
               index: 0,
             },
             {
               fieldName: "Assessed_Total",
-              // slider: "assess-val-slider",
               minInput: "#assess-val-min",
               maxInput: "#assess-val-max",
               index: 1,
@@ -7651,7 +7626,6 @@ require([
 
             {
               fieldName: "Total_Acres",
-              // slider: "acres-val-slider",
               minInput: "#acres-val-min",
               maxInput: "#acres-val-max",
               index: 2,
@@ -7664,7 +7638,6 @@ require([
             },
             {
               fieldName: "Sale_Price",
-              // slider: "saleP-val-slider",
               minInput: "#saleP-val-min",
               maxInput: "#saleP-val-max",
               index: 4,
@@ -7676,36 +7649,27 @@ require([
               const sliderInputMin = $(slider.minInput);
               const sliderInputMax = $(slider.maxInput);
 
-              // const sliderInputMin = document.getElementById(slider.minInput);
-              // const sliderInputMax = document.getElementById(slider.maxInput);
-
               showWaiting(slider.minInput);
               showWaiting(slider.maxInput);
 
-              // var sliderInputMin = $(sliderInputMin);
-              // var sliderInputMax = $(sliderInputMax);
               sliderInputMin.empty();
               sliderInputMax.empty();
 
               var minstr = vals[slider.index][slider.fieldName].min;
               var maxstr = vals[slider.index][slider.fieldName].max;
 
-              // Create a Date object
               let dateL = new Date(minstr);
               let dateM = new Date(maxstr);
 
-              // Extract the components
               let yearL = dateL.getFullYear();
-              let monthL = ("0" + (dateL.getMonth() + 1)).slice(-2); // Months are zero-indexed
+              let monthL = ("0" + (dateL.getMonth() + 1)).slice(-2); 
               let dayL = ("0" + dateL.getDate()).slice(-2);
 
               let yearM = dateM.getFullYear();
-              let monthM = ("0" + (dateM.getMonth() + 1)).slice(-2); // Months are zero-indexed
+              let monthM = ("0" + (dateM.getMonth() + 1)).slice(-2);
               let dayM = ("0" + dateM.getDate()).slice(-2);
 
-              // Format the date as yyyy-MM-dd
               let formattedDateL = `${yearL}-${monthL}-${dayL}`;
-              // Format the date as yyyy-MM-dd
               let formattedDateM = `${yearM}-${monthM}-${dayM}`;
 
               sliderInputMin.val(formattedDateL);
@@ -7776,10 +7740,6 @@ require([
               if (field === "Sale_Date") {
                 let max = new Date(response.features[0].attributes.maxValue);
                 let min = new Date(response.features[0].attributes.minValue);
-                // console.log(max);
-                // console.log(min);
-                // console.log(min.getFullYear());
-                // console.log(max.getFullYear());
                 valPair = {
                   [field]: {
                     min: min,
@@ -7803,7 +7763,6 @@ require([
           }
 
           changeSliderValues(queryValues);
-          // console.log(queryValues);
         }
 
         buildQueries();
@@ -7816,15 +7775,11 @@ require([
           dontTriggerMultiQuery = true;
           previousState = null;
           $("#lasso").removeClass("btn-warning");
-          // $("#select-button").removeClass("btn-warning");
           $("#searchInput ul").remove();
           $("#searchInput").val = "";
-          // $("#side-Exp2").addClass("disabled");
 
-          // Get a reference to the search input field
           const searchInput = document.getElementById("searchInput");
 
-          // To clear the text in the input field, set its value to an empty string
           searchInput.value = "";
           runQuerySearchTerm = "";
           searchTerm = "";
@@ -8237,7 +8192,7 @@ require([
         });
       });
 
-      // Scale mapping
+
       var scaleMapping = {
         240: "1 inch = 20 feet",
         600: "1 inch = 50 feet",
@@ -8251,7 +8206,7 @@ require([
         144000: "1 inch = 12000 feet",
       };
 
-      // Add event listener for scale selection
+
       var scaleDropdown = document.getElementById("scale-dropdown");
 
       document.querySelectorAll(".scale-select").forEach(function (button) {
@@ -8282,8 +8237,6 @@ require([
         ([stationary, scale]) => {
           // Only print the new scale value when the view is stationary
           if (stationary) {
-            // console.log(scale);
-            // console.log(`Change in scale level: ${scale}`);
             updateScaleDropdown(scale);
           }
         }
@@ -8299,7 +8252,6 @@ require([
       }
 
       function getScaleText(scale) {
-        // Find the closest scale in the mapping
         var closestScale = Object.keys(scaleMapping).reduce(function (
           prev,
           curr
@@ -8310,7 +8262,6 @@ require([
         return scaleMapping[closestScale];
       }
 
-      // view.add(scaleDropdown, "bottom-right");
 
       $(document).ready(function () {
         $("#popoverButton").popover({
@@ -8381,7 +8332,6 @@ require([
         }
       }
 
-      // Watch for changes in the zoom level
       view.watch("zoom", function (newValue, oldValue) {
         if (newValue !== oldValue) {
           clickRefreshButton();
