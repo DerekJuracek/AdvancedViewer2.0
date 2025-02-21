@@ -51,6 +51,7 @@ require([
 
   const configFiles = [
     "columbiact",
+    "columbiactnew",
     "haddamct",
     "northcanaanct",
     "roxburyct",
@@ -152,7 +153,6 @@ require([
 
       document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
-      // configVars.homeExtent = config.homeExtent;
       document.getElementById("title").innerHTML = configVars.title;
       document.getElementById("print-title").innerHTML = configVars.title;
       document.getElementById("imageContainer").src = configVars.welcomeImage;
@@ -169,9 +169,7 @@ require([
 
       // Key to check in sessionStorage
       const key = "condos";
-      const key2 = "No geometry"; // no condos default
-
-      // Check if the key exists in sessionStorage
+      const key2 = "No geometry";
 
       sessionStorage.setItem(key, configVars.isCondosLayer);
 
@@ -201,11 +199,11 @@ require([
         ui: {
           components: ["attribution"],
         },
-        constraints: {
-          lods: lods,
-          minScale: 240,
-          maxScale: 170000,
-        },
+        // constraints: {
+        //   lods: lods,
+        //   minScale: 240,
+        //   maxScale: 180000,
+        // },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
@@ -259,7 +257,6 @@ require([
                 );
 
                 webmap.layers.on("change", function (event) {
-                  // console.log(event);
                   console.log(event, " layer was added/removed from the map.");
                 });
 
@@ -395,13 +392,10 @@ require([
         });
       });
 
-      // let basemapDiv = $("#BookmarksDiv");
-
       view.when(() => {
         const bookmarks = new Bookmarks({
           view: view,
           container: $("#BookmarksDiv")[0],
-          // allows bookmarks to be added, edited, or deleted
           dragEnabled: true,
         });
       });
@@ -8192,18 +8186,22 @@ require([
         });
       });
 
-
       var scaleMapping = {
         240: "1 inch = 20 feet",
         600: "1 inch = 50 feet",
         1200: "1 inch = 100 feet",
+        1800: "1 inch = 150 feet",
         2400: "1 inch = 200 feet",
-        6000: "1 inch = 500 feet",
+        3600: "1 inch = 300 feet",
+        4800: "1 inch = 400 feet",
         9600: "1 inch = 800 feet",
+        12000: "1 inch = 1000 feet",
         18000: "1 inch = 1500 feet",
+        24000: "1 inch = 2000 feet",
         36000: "1 inch = 3000 feet",
         72000: "1 inch = 6000 feet",
         144000: "1 inch = 12000 feet",
+        180000: "1 inch = 15000 feet",
       };
 
 
@@ -8211,13 +8209,16 @@ require([
 
       document.querySelectorAll(".scale-select").forEach(function (button) {
         button.addEventListener("click", function (event) {
+       
           var selectedScale = parseInt(event.target.value);
+          console.log('selected scale', selectedScale)
           var selectedText = event.target.innerHTML;
 
           // console.log("Selected Scale (inches):", selectedScale);
 
           if (selectedScale) {
             view.scale = selectedScale; // Set the map view scale
+            console.log('current map scale:', view.scale)
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
@@ -8248,6 +8249,7 @@ require([
 
         if (scaleText) {
           $("#scale-value").val(roundedScale).html(scaleText);
+          console.log(roundedScale, scaleText)
         }
       }
 
