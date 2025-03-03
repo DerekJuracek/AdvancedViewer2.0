@@ -22,6 +22,7 @@
   "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Hollie Rapp, CCMC | Assessor  <br>    - Tom Hefele | Deputy Assessor",
   "includePermitLink": "no",
+  "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=161&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Wilton",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Wilton_Demographics_2024.pdf",

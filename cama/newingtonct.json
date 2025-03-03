@@ -23,6 +23,7 @@
   "accessorName": "- Fauna Eller – Assessor",
   "includePermitLink": "no",
   "permitLink": "http://permitlinkusa-online.com/csp/columbiact/DocumentLink.PublicDLinkHome.cls",
+  "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=094&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Newington",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Newington_Demographics_2024.pdf",
