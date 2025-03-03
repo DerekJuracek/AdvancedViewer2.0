@@ -23,6 +23,7 @@
   "accessorName": "- Marsha Benno – Assessor <br>    - Tracie Toudle - Senior Clerk",
   "includePermitLink": "yes",
   "permitLink": "http://permitlinkusa-online.com/csp/woodbridgect/DocumentLink.PublicDLinkHome.cls",
+  "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=167&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Woodbridge",
   "pdf_demographics": "https://s3-us-west-2.amazonaws.com/cerc-pdfs/2024/Woodbridge.pdf",

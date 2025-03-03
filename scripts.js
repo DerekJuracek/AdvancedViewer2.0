@@ -113,6 +113,7 @@ require([
       configVars.taxMap_Url = config.taxMapUrl;
       configVars.parcelMapUrl = config.parcelMapUrl;
       configVars.housingUrl = config.housingUrl;
+      configVars.propertyCardPdf = config.propertyCardPdf;
       configVars.propertyCard = config.propertyCard;
       configVars.tax_bill = config.tax_bill;
       configVars.useVisionForTaxBillUrl = config.useVisionForTaxBillUrl;
@@ -2841,11 +2842,18 @@ require([
 
           // Creating the new li for links that will span the full width (col-12)
           linksDiv.classList.add("col-12", "list-group-item");
+  
 
           // Constructing the initial part of the inner HTML
           let linksHTML = `<div class="extra-links">
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>`
+            if (configVars.propertyCardPdf == "yes") {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}.PDF><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            } else {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            }
+
+
 
           if (configVars.useVisionForTaxBillUrl === "yes") {
             linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${VisionAct}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
@@ -3096,10 +3104,14 @@ require([
           // Creating the new li for links that will span the full width (col-12)
           linksDiv.classList.add("col-12", "list-group-item");
 
-          // Constructing the initial part of the inner HTML
-          let linksHTML = `<div class="extra-links">
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>
-            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            // Constructing the initial part of the inner HTML
+            let linksHTML = `<div class="extra-links">
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>`
+            if (configVars.propertyCardPdf == "yes") {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}.PDF><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            } else {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            }
 
           if (configVars.useVisionForTaxBillUrl === "yes") {
             linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${VisionAct}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
@@ -5452,62 +5464,64 @@ require([
 
         detailsHTML += `
         <table style="width: 100%; font-family: Tahoma; font-size: 12px; border-collapse: collapse; text-align: left;">
-  <tr>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${TaxId}">
-        <strong>Tax Bills</strong>
-      </a>
-    </td>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}">
-        <strong>Property Card</strong>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf">
-        <strong>Parcel Map</strong>
-      </a>
-    </td>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.taxMap_Url}${map_pdf}.pdf">
-        <strong>Tax Map</strong>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2">
-        <strong>Google Maps</strong>
-      </a>
-    </td>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0">
-        <strong>Bing Maps</strong>
-      </a>
-    </td>
-  </tr>
-  <tr><td colspan="2"> &nbsp </td></tr>
-  <tr>
-    <td colspan="2">
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.pdf_demo}">
-        <strong>Demographics Profile</strong>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.housingUrl}">
-        <strong>Housing Profile</strong>
-      </a>
-    </td>
-  </tr>
-</table>
+          <tr>
+            <td>
+              <a target="_blank" rel="noopener noreferrer" href="${configVars.tax_bill}&uniqueId=${TaxId}">
+                <strong>Tax Bills</strong>
+              </a>
+            </td>
+            <td>`
 
-            </div>
-          </div>
-        </div>
+          if (configVars.propertyCardPdf == "yes") {
+            detailsHTML += `<a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}.PDF"><strong>Property Card</strong></a>`;
+          } else {
+            detailsHTML += `<a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}"><strong>Property Card</strong></a>`;
+          }
+      detailsHTML += `</td>
+        </tr>
+        <tr>
+          <td>
+            <a target="_blank" rel="noopener noreferrer" href="https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf">
+              <strong>Parcel Map</strong>
+            </a>
+          </td>
+          <td>
+            <a target="_blank" rel="noopener noreferrer" href="${configVars.taxMap_Url}${map_pdf}.pdf">
+              <strong>Tax Map</strong>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/@${Lat},${Lon},17z/@${Lat},${Lon},17z/data=!5m1!1e2">
+              <strong>Google Maps</strong>
+            </a>
+          </td>
+          <td>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.bing.com/maps?cp=${Lat}~${Lon}&lvl=17.0">
+              <strong>Bing Maps</strong>
+            </a>
+          </td>
+        </tr>
+        <tr><td colspan="2"> &nbsp </td></tr>
+        <tr>
+          <td colspan="2">
+            <a target="_blank" rel="noopener noreferrer" href="${configVars.pdf_demo}">
+              <strong>Demographics Profile</strong>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <a target="_blank" rel="noopener noreferrer" href="${configVars.housingUrl}">
+              <strong>Housing Profile</strong>
+            </a>
+          </td>
+        </tr>
+      </table>
+      </div>
+      </div>
+      </div>
           <div class="card " id="ids" style="display:${panels[1].ids.show}">
               <div class="card-header" id="headingTwo">
               <h5 class="mb-0">
@@ -5657,11 +5671,7 @@ require([
                   .then((response) => {
                     feature = response;
                     geometry = feature.features[0].geometry;
-
-                    // Get the extent of the geometry
                     geometryExtent = geometry.extent;
-
-                    // Calculate the center of the geometry
                     center = geometryExtent.center;
                   });
               } else {
@@ -5671,13 +5681,8 @@ require([
                 center = geometryExtent.center;
               }
 
-              const zoomOutFactor = 3.0;
-              const newExtent = geometryExtent.expand(zoomOutFactor);
-
               view.goTo({
                 target: center,
-                // zoom: 14,
-                // extent: newExtent,
               });
             });
           }
@@ -5889,11 +5894,14 @@ require([
         <strong>Tax Bills</strong>
       </a>
     </td>
-    <td>
-      <a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}">
-        <strong>Property Card</strong>
-      </a>
-    </td>
+     <td>`
+
+          if (configVars.propertyCardPdf == "yes") {
+            detailsHTML += `<a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}.PDF"><strong>Property Card</strong></a>`;
+          } else {
+            detailsHTML += `<a target="_blank" rel="noopener noreferrer" href="${configVars.propertyCard}${locationUniqueId}"><strong>Property Card</strong></a>`;
+          }
+  detailsHTML += `</td>
   </tr>
   <tr>
     <td>

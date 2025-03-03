@@ -22,6 +22,7 @@
   "DetailLinksToInclude": ["links", "ids", "vals", "sales"],
   "accessorName": "- Mary F. Hawley, CCMA II | Assessor",
   "includePermitLink": "no",
+  "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=123&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Scotland",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Scotland_Demographics_2024.pdf",
