@@ -3551,7 +3551,6 @@ require([
 
             if (polygonGraphics2.length == 1) {
               graphicsLayer.addMany(polygonGraphics2);
-              console.log(features)
 
               let geometry = features[0].geometry;
               const geometryExtent = geometry.extent;
@@ -3566,7 +3565,6 @@ require([
               });
             } else {
               graphicsLayer.addMany(polygonGraphics2);
-              console.log(features);
               
               if (polygonGraphics2.length > 0) {
                 // Step 1: Extract extents of all polygon graphics
@@ -4063,9 +4061,6 @@ require([
                       triggerListGroup(triggerUrl, uniId);
                     }
                   })
-                  .then(function (result) {
-                    console.log(result);
-                  });
               }
             }
           });
@@ -4354,7 +4349,6 @@ require([
             backButtonPanelShowSelect();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
-            console.log(polygonGraphics)
 
             // detailsGeometry = geom;
 
@@ -6365,8 +6359,6 @@ require([
         }
 
         const abuttersDiv = document.getElementById("selected-feature");
-        // console.log("After selecting: ", featureWidDiv);
-
         const listGroup = document.createElement("ul");
         listGroup.classList.add("row");
         listGroup.classList.add("list-group");
@@ -6838,7 +6830,6 @@ require([
                 "Owner",
                 "GIS_LINK",
               ].forEach((fieldName) => {
-                // console.log("Processing field:", fieldName);
                 let value = feature.attributes[fieldName];
                 if (
                   value &&
@@ -6979,7 +6970,6 @@ require([
         };
 
         function updateQuery() {
-          // console.log(queryParameters);
           let queryParts = [];
           if (
             queryParameters.streetName !== null &&
@@ -7160,7 +7150,6 @@ require([
             queryParts.push(
               `Sale_Date >= '${queryParameters.soldOnMin}' AND Sale_Date <= '${queryParameters.soldOnMax}'`
             );
-            console.log(queryParameters.soldOnMin)
           }
 
           if (
@@ -7173,7 +7162,6 @@ require([
           }
 
           let queryString = queryParts.join(" AND ");
-          console.log(queryString)
 
           if (sessionStorage.getItem("condos") === "no") {
             let query = noCondosTable.createQuery();
@@ -7466,9 +7454,6 @@ require([
         $("#acres-val-min, #acres-val-max").on("input", function () {
           var minVal = parseFloat($("#acres-val-min").val());
           var maxVal = parseFloat($("#acres-val-max").val());
-          
-          console.log(minVal); // Will retain decimals
-          console.log(maxVal);
 
           // Convert values to strings and check their lengths
           var minValStr = $("#acres-val-min").val().trim();
@@ -8211,24 +8196,15 @@ require([
         button.addEventListener("click", function (event) {
        
           var selectedScale = parseInt(event.target.value);
-          console.log('selected scale', selectedScale)
           var selectedText = event.target.innerHTML;
 
-          // console.log("Selected Scale (inches):", selectedScale);
-
           if (selectedScale) {
-            view.scale = selectedScale; // Set the map view scale
-            console.log('current map scale:', view.scale)
+            view.scale = selectedScale;
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
         });
       });
-
-      // Inside captureMap function, ensure scale is correctly used
-      const actualScaleInFeet = Math.round(view.scale / 12); // Ensure proper conversion
-      // console.log("Current View Scale (inches):", view.scale);
-      // console.log("Converted Scale (feet):", actualScaleInFeet);
 
       view.ui.add(scaleDropdown);
 
@@ -8236,7 +8212,6 @@ require([
       const handle = reactiveUtils.watch(
         () => [view.stationary, view.scale],
         ([stationary, scale]) => {
-          // Only print the new scale value when the view is stationary
           if (stationary) {
             updateScaleDropdown(scale);
           }
@@ -8249,7 +8224,6 @@ require([
 
         if (scaleText) {
           $("#scale-value").val(roundedScale).html(scaleText);
-          console.log(roundedScale, scaleText)
         }
       }
 
