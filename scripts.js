@@ -51,6 +51,7 @@ require([
 
   const configFiles = [
     "columbiact",
+    "columbiactnew",
     "durhamct",
     "haddamct",
     "northcanaanct",
@@ -154,7 +155,6 @@ require([
 
       document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
-      // configVars.homeExtent = config.homeExtent;
       document.getElementById("title").innerHTML = configVars.title;
       document.getElementById("print-title").innerHTML = configVars.title;
       document.getElementById("imageContainer").src = configVars.welcomeImage;
@@ -171,9 +171,7 @@ require([
 
       // Key to check in sessionStorage
       const key = "condos";
-      const key2 = "No geometry"; // no condos default
-
-      // Check if the key exists in sessionStorage
+      const key2 = "No geometry";
 
       sessionStorage.setItem(key, configVars.isCondosLayer);
 
@@ -203,11 +201,11 @@ require([
         ui: {
           components: ["attribution"],
         },
-        constraints: {
-          lods: lods,
-          minScale: 240,
-          maxScale: 170000,
-        },
+        // constraints: {
+        //   lods: lods,
+        //   minScale: 240,
+        //   maxScale: 180000,
+        // },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
@@ -261,7 +259,6 @@ require([
                 );
 
                 webmap.layers.on("change", function (event) {
-                  // console.log(event);
                   console.log(event, " layer was added/removed from the map.");
                 });
 
@@ -397,13 +394,10 @@ require([
         });
       });
 
-      // let basemapDiv = $("#BookmarksDiv");
-
       view.when(() => {
         const bookmarks = new Bookmarks({
           view: view,
           container: $("#BookmarksDiv")[0],
-          // allows bookmarks to be added, edited, or deleted
           dragEnabled: true,
         });
       });
@@ -3570,7 +3564,6 @@ require([
 
             if (polygonGraphics2.length == 1) {
               graphicsLayer.addMany(polygonGraphics2);
-              console.log(features)
 
               let geometry = features[0].geometry;
               const geometryExtent = geometry.extent;
@@ -3585,7 +3578,6 @@ require([
               });
             } else {
               graphicsLayer.addMany(polygonGraphics2);
-              console.log(features);
               
               if (polygonGraphics2.length > 0) {
                 // Step 1: Extract extents of all polygon graphics
@@ -4082,9 +4074,6 @@ require([
                       triggerListGroup(triggerUrl, uniId);
                     }
                   })
-                  .then(function (result) {
-                    console.log(result);
-                  });
               }
             }
           });
@@ -4373,7 +4362,6 @@ require([
             backButtonPanelShowSelect();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
-            console.log(polygonGraphics)
 
             // detailsGeometry = geom;
 
@@ -6380,8 +6368,6 @@ require([
         }
 
         const abuttersDiv = document.getElementById("selected-feature");
-        // console.log("After selecting: ", featureWidDiv);
-
         const listGroup = document.createElement("ul");
         listGroup.classList.add("row");
         listGroup.classList.add("list-group");
@@ -6853,7 +6839,6 @@ require([
                 "Owner",
                 "GIS_LINK",
               ].forEach((fieldName) => {
-                // console.log("Processing field:", fieldName);
                 let value = feature.attributes[fieldName];
                 if (
                   value &&
@@ -6994,7 +6979,6 @@ require([
         };
 
         function updateQuery() {
-          // console.log(queryParameters);
           let queryParts = [];
           if (
             queryParameters.streetName !== null &&
@@ -7175,7 +7159,6 @@ require([
             queryParts.push(
               `Sale_Date >= '${queryParameters.soldOnMin}' AND Sale_Date <= '${queryParameters.soldOnMax}'`
             );
-            console.log(queryParameters.soldOnMin)
           }
 
           if (
@@ -7188,7 +7171,6 @@ require([
           }
 
           let queryString = queryParts.join(" AND ");
-          console.log(queryString)
 
           if (sessionStorage.getItem("condos") === "no") {
             let query = noCondosTable.createQuery();
@@ -7481,9 +7463,6 @@ require([
         $("#acres-val-min, #acres-val-max").on("input", function () {
           var minVal = parseFloat($("#acres-val-min").val());
           var maxVal = parseFloat($("#acres-val-max").val());
-          
-          console.log(minVal); // Will retain decimals
-          console.log(maxVal);
 
           // Convert values to strings and check their lengths
           var minValStr = $("#acres-val-min").val().trim();
@@ -8201,18 +8180,22 @@ require([
         });
       });
 
-
       var scaleMapping = {
         240: "1 inch = 20 feet",
         600: "1 inch = 50 feet",
         1200: "1 inch = 100 feet",
+        1800: "1 inch = 150 feet",
         2400: "1 inch = 200 feet",
-        6000: "1 inch = 500 feet",
+        3600: "1 inch = 300 feet",
+        4800: "1 inch = 400 feet",
         9600: "1 inch = 800 feet",
+        12000: "1 inch = 1000 feet",
         18000: "1 inch = 1500 feet",
+        24000: "1 inch = 2000 feet",
         36000: "1 inch = 3000 feet",
         72000: "1 inch = 6000 feet",
         144000: "1 inch = 12000 feet",
+        180000: "1 inch = 15000 feet",
       };
 
 
@@ -8220,23 +8203,17 @@ require([
 
       document.querySelectorAll(".scale-select").forEach(function (button) {
         button.addEventListener("click", function (event) {
+       
           var selectedScale = parseInt(event.target.value);
           var selectedText = event.target.innerHTML;
 
-          // console.log("Selected Scale (inches):", selectedScale);
-
           if (selectedScale) {
-            view.scale = selectedScale; // Set the map view scale
+            view.scale = selectedScale;
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
         });
       });
-
-      // Inside captureMap function, ensure scale is correctly used
-      const actualScaleInFeet = Math.round(view.scale / 12); // Ensure proper conversion
-      // console.log("Current View Scale (inches):", view.scale);
-      // console.log("Converted Scale (feet):", actualScaleInFeet);
 
       view.ui.add(scaleDropdown);
 
@@ -8244,7 +8221,6 @@ require([
       const handle = reactiveUtils.watch(
         () => [view.stationary, view.scale],
         ([stationary, scale]) => {
-          // Only print the new scale value when the view is stationary
           if (stationary) {
             updateScaleDropdown(scale);
           }
