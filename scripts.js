@@ -196,16 +196,17 @@ require([
         container: "viewDiv",
         map: webmap,
         units: "imperial",
-        zoom: `${configVars.zoom}`,
+        scale: 72000,
+        // zoom: `${configVars.zoom}`,
         popupEnabled: false,
         ui: {
           components: ["attribution"],
         },
-        constraints: {
-          lods: lods,
-          minScale: 240,
-          maxScale: 180000,
-        },
+        // constraints: {
+        //   lods: lods,
+        //   minScale: 240,
+        //   maxScale: 170000,
+        // },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
@@ -8209,6 +8210,7 @@ require([
 
           if (selectedScale) {
             view.scale = selectedScale;
+            console.log(view.scale)
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
