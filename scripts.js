@@ -201,11 +201,11 @@ require([
         ui: {
           components: ["attribution"],
         },
-        // constraints: {
-        //   lods: lods,
-        //   minScale: 240,
-        //   maxScale: 180000,
-        // },
+        constraints: {
+          lods: lods,
+          minScale: 240,
+          maxScale: 180000,
+        },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
