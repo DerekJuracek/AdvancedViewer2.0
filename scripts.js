@@ -186,13 +186,6 @@ require([
         layers: [searchGraphicsLayers],
       });
 
-      // Create LODs from level 0 to 31
-      const tileInfo = TileInfo.create({
-        numLODs: 30,
-      });
-
-      const lods = tileInfo.lods;
-      // console.log(lods);
       var view = new MapView({
         container: "viewDiv",
         map: webmap,
@@ -203,11 +196,6 @@ require([
         ui: {
           components: ["attribution"],
         },
-        // constraints: {
-        //   lods: lods,
-        //   minScale: 240,
-        //   maxScale: 170000,
-        // },
       });
       view.when(() => {
         configVars.homeExtent = view.extent;
@@ -215,8 +203,7 @@ require([
 
       if (configVars.includeFilter === "no") {
         $("#filterButton").remove();
-      } else {
-      }
+      } 
 
       view.when(() => {
         if (
@@ -1750,7 +1737,6 @@ require([
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
                     <div id="to-scale" class="scale-bar-container"></div>
-                    <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
                 </div>
                 <div style="text-align: center; font-size: 12px; padding-left: 30px; padding-right: 30px;">
                     <p>Disclaimer: This map is intended for reference and general informational purposes
