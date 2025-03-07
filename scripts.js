@@ -134,6 +134,7 @@ require([
       configVars.DetailLinks = config.DetailLinks;
       configVars.DetailLinksToInclude = config.DetailLinksToInclude;
       configVars.includePermitLink = config.includePermitLink;
+      configVars.scale = config.scale;
 
       if (configVars.showDisclaimer === "no") {
         sessionStorage.setItem("agreedToDisclaimer", "yes");
@@ -196,8 +197,8 @@ require([
         container: "viewDiv",
         map: webmap,
         units: "imperial",
-        scale: 72000,
-        // zoom: `${configVars.zoom}`,
+        scale: configVars.scale,
+        //zoom: `${configVars.zoom}`,
         popupEnabled: false,
         ui: {
           components: ["attribution"],
