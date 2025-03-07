@@ -4497,23 +4497,6 @@ require([
         $("#abutters-title").html(`Abutting Parcels (0)`);
       }
 
-      $(document).ready(function () {
-        $("#abutters").on("click", function (e) {
-          if (DetailsHandle) {
-            DetailsHandle?.remove();
-            DetailsHandle = null;
-          }
-          if (clickHandle) {
-            clickHandle?.remove();
-            clickHandle = null;
-          }
-          loadAbuttersIntitialPanel();
-          buildAbuttersPanel(e);
-          value.value = 100;
-          runBuffer("100");
-        });
-      });
-
       function loadAbuttersAttrIntitialPanel() {
         $("#results-div").css("height", "300px");
         $("#exportButtons").show();
@@ -5273,29 +5256,16 @@ require([
         let targetExtent;
 
         if (sessionStorage.getItem("condos") === "no") {
-          bufferResults = geometryEngine.buffer(detailsGeometry, buffer, unit);
+          console.log(detailsGeometry, buffer, unit)
+          bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
+          
         } else {
-          bufferResults = geometryEngine.buffer(detailsGeometry, buffer, unit);
+          console.log(detailsGeometry, buffer, unit)
+          bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
         }
 
         addOrUpdateBufferGraphic(bufferResults);
         queryAttDetailsBuffer(bufferResults);
-      }
-
-      function runBuffer(value) {
-        $("#abutters-spinner").show();
-        let buffer = value;
-        let unit = queryUnits;
-        let bufferResults;
-
-        if (sessionStorage.getItem("condos") == "no") {
-          bufferResults = geometryEngine.buffer(targetExtent, buffer, unit);
-        } else {
-          bufferResults = geometryEngine.buffer(detailsGeometry, buffer, unit);
-        }
-
-        addOrUpdateBufferGraphic(bufferResults);
-        queryDetailsBuffer(bufferResults);
       }
 
       function clickDetailsPanel(item) {
