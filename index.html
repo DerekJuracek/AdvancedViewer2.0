@@ -9,7 +9,6 @@
     <title id="tab-title">Advanced CAMA</title>
 <!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVSDZNZVFS"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BVSDZNZVFS'); </script>
 
-    <!-- Bootstrap CSS CDN -->
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -30,7 +29,6 @@
       href="https://js.arcgis.com/calcite-components/1.10.0/calcite.css"
     />
 
-    <!-- Your Custom CSS -->
     <link rel="stylesheet" href="styles.min.css?v=1.0.0" />
     <script
       type="module"
@@ -41,18 +39,11 @@
       type="text/css"
       href="https://js.arcgis.com/calcite-components/2.6.0/calcite.css"
     />
-    <!-- <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
   </head>
 
   <body class="custom-example-theme" id="whole-app" style="display: none;">
@@ -127,25 +118,10 @@
         </div>
       </div>
     </div>
-    <!-- <div id="viewport-size"></div>
-    <script>
-      function updateViewportSize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        document.getElementById('viewport-size').innerText = `Viewport size: ${width}px x ${height}px`;
-      }
-  
-      // Update the size on load
-      updateViewportSize();
-  
-      // Update the size on resize
-      window.addEventListener('resize', updateViewportSize);
-    </script> -->
     <nav
       class="navbar navbar-dark bg-dark justify-content-between custom-navbar"
     >
       <div class="col-md" id="search-title">
-        <!-- <div class="row" style="padding-left: 50px;"> -->
         <div class="col-12">
           <span class="navbar-brand mb-0 h1" id="title"
             >Town of Washington, CT</span
@@ -266,23 +242,6 @@
               <p>Clear</p>
             </div>
             </div>
-            <!-- </div> -->
-            <!-- <div id="sketch-widget">
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M22.82 28.8C20.7336 28.7596 18.6893 28.2067 16.867 27.19C15.2293 26.2647 13.3902 25.7539 11.51 25.702C10.9704 25.709 10.4316 25.745 9.89595 25.81C9.47384 25.8626 9.04925 25.893 8.62395 25.901C7.11595 25.901 3.19995 24.777 3.19995 20.556C3.29643 19.4213 3.80809 18.362 4.63695 17.581C6.33575 15.7208 7.29909 13.3057 7.34695 10.787C7.39158 8.701 8.27437 6.72085 9.79612 5.29336C11.3179 3.86588 13.3503 3.11134 15.435 3.20001C21.8899 3.20001 28.8 10.256 28.8 20.76C28.8 23.178 28.217 28.8 22.82 28.8ZM27.8 20.759C27.8 10.854 21.406 4.20001 15.435 4.20001C13.6095 4.12023 11.8289 4.77895 10.4949 6.02753C9.16091 7.27611 8.38596 9.00932 8.34495 10.836C8.28497 13.567 7.24423 16.1851 5.41295 18.212C4.61595 19.197 4.19995 19.749 4.19995 20.556C4.19995 24.164 7.68995 24.901 8.62495 24.901C9.02451 24.8924 9.42336 24.8634 9.81995 24.814C10.3808 24.7459 10.945 24.7086 11.51 24.702C13.5435 24.7514 15.534 25.2977 17.308 26.293C18.9943 27.2387 20.887 27.7562 22.82 27.8C27.152 27.8 27.8 23.389 27.8 20.759Z"
-                  fill="#6A6A6A"
-                />
-              </svg>
-            </div> -->
             <div
               id="suggestions"
               class="list-group mt-2 suggestions-dropdown"
@@ -505,17 +464,14 @@
               Filters
             </h5>
             <div id="filterScrollableContainer">
-              <!-- Dropdown 1 -->
               <div class="filterContainer">
                 <div class="filterLabel green-class">Street Name is</div>
                 <calcite-combobox id="streetFilter" placeholder="Select a Street Name" scale="m" max-items="5">
-                  <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
                 <div class="filterLabel green-class">Owner is</div>
                 <calcite-combobox id="ownerFilter" placeholder="Select a Owner" scale="m" max-items="5">
-                  <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -537,26 +493,8 @@
                     ></calcite-input-text>
                   </div>
                 </div>
-                <!-- <calcite-label>
-                  Appraised Value: -->
-                <!-- <calcite-slider
-                  id="app-val-slider"
-                  class="calcite-mode-dark custom-example-theme"
-                  min-value="10000"
-                  max-value="250000"
-                  min="10000"
-                  max="20000000"
-                  precise
-                  label-ticks
-                  label-handles
-                  max-label="Lowest Price"
-                  min-label="Highest Price"
-                  style="color: white; width: 90%; padding-left: 20px;"
-                ></calcite-slider> -->
-                <!-- dynamically created -->
               </div>
               <div class="filterContainer">
-                <!-- <div class="filterLabel">Assessed Value is</div> -->
                 <div class="filterLabel green-class">Assessed Value</div>
                 <calcite-label>
                   <div class="filterInputDiv">
@@ -576,21 +514,6 @@
                       ></calcite-input-text>
                     </div>
                   </div>
-                  <!-- Assessed Value: -->
-                  <!-- <calcite-slider
-                    id="assess-val-slider"
-                    class="calcite-mode-dark"
-                    min-value="10000"
-                    max-value="250000"
-                    min="10000"
-                    max="20000000"
-                    precise
-                    label-ticks
-                    label-handles
-                    max-label="Lowest Price"
-                    min-label="Highest Price"
-                    style="color: white; width: 90%; padding-left: 20px"
-                  ></calcite-slider> -->
                 </calcite-label>
               </div>
               <div class="filterContainer">
@@ -601,7 +524,6 @@
                   scale="m"
                   max-items="5"
                 >
-                  <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -612,7 +534,6 @@
                   placeholder="Select a Neighborhood"
                   scale="m"
                 >
-                  <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div cl
@@ -624,7 +545,6 @@
                   placeholder="Select a Property Type"
                   scale="m"
                 >
-                  <!-- dynamically populated -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -635,7 +555,6 @@
                   placeholder="Select a Building Type"
                   scale="m"
                 >
-                  <!-- dynamically created -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -646,7 +565,6 @@
                   placeholder="Select a Building Use Type"
                   scale="m"
                 >
-                  <!-- dynamically created -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -657,7 +575,6 @@
                   placeholder="Select a Design Type"
                   scale="m"
                 >
-                  <!-- dynamically created -->
                 </calcite-combobox>
               </div>
               <div class="filterContainer">
@@ -680,21 +597,6 @@
                       ></calcite-input-text>
                     </div>
                   </div>
-                  <!-- Acres: -->
-                  <!-- <calcite-slider
-                    id="acres-val-slider"
-                    class="calcite-mode-dark"
-                    min-value="1"
-                    max-value="20"
-                    min="0"
-                    max="100"
-                    precise
-                    label-ticks
-                    label-handles
-                    max-label="Acres"
-                    min-label="Acres"
-                    style="width: 90%; padding-left: 20px"
-                  ></calcite-slider> -->
                 </calcite-label>
               </div>
               <div class="filterContainer">
@@ -733,21 +635,6 @@
                       ></calcite-input-text>
                     </div>
                   </div>
-                  <!-- Sale Price: -->
-                  <!-- <calcite-slider
-                    id="saleP-val-slider"
-                    class="calcite-mode-dark"
-                    min-value="10000"
-                    max-value="250000"
-                    min="10000"
-                    max="20000000"
-                    precise
-                    label-ticks
-                    label-handles
-                    max-label="Lowest Price"
-                    min-label="Highest Price"
-                    style="color: white; width: 90%; padding-left: 20px"
-                  ></calcite-slider> -->
                 </calcite-label>
               </div>
             </div>
@@ -776,8 +663,6 @@
             </div>
             <div style="color: white; height: 20px; padding-top: 5px; text-align: center;">Click on search results for details.</div>
           </div>
-
-        
           <div id="featureWid" class="content" style="display: none;"></div>
           <div
             id="WelcomeBox"
@@ -810,7 +695,6 @@
                     ><strong>Report an Issue</strong></a
                   >
                   &nbsp; &nbsp;
-                  <!-- <a href="mailto:mgonzalez@qds.biz" target="_blank"><strong>Contact</strong></a> -->
               </div>
             </div>
           </div>
@@ -917,7 +801,6 @@
                     >
                       meters
                     </button>
-                    <!-- Dropdown menu links -->
                   </div>
                   <div id="submitDiv">
                     <button id="submit" class="btn btn-sm btn-info">
@@ -953,8 +836,6 @@
           type="button"
           class="btn btn-info btn-sm; left: 0px;"
         >
-          <!-- $("#results-div").css("left", "350px");
-        $("#sidebar2").css("left", "0px"); -->
           <svg
             id="left-arrow-2"
             title="expand"
@@ -990,7 +871,6 @@
         </button>
 
         <div class="btn-group-vertical">
-       
           <button
             type="button"
             id="filterButton"
@@ -1002,18 +882,6 @@
             data-content="Use filter to search for parcels by attributes."
           >
           Filter
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-funnel"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"
-              />
-            </svg> -->
           </button>
           <button
           type="button"
@@ -1025,30 +893,11 @@
           data-html="true"
           data-content="Use layer list to toggle layers visibility."
         >Layers
-          <!-- <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-stack"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"
-            />
-            <path
-              d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z"
-            />
-          </svg> -->
         </button>
       
           <div class="dropdown">
             <button class="btn bg-light vertical-text" id="exportButtons" type="button" data-toggle="dropdown" aria-expanded="false" style="display: none; width: 43px; border-radius: 5px 5px 0px 0px; font-weight: bolder; border: solid;">
               Mailing
-              <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"></path>
-                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
-            </svg> -->
             </button>
             <div class="dropdown-menu">
               <a class="dropdown-item" id="exportResults" title="Export to Mailing List">Export Results to Mailing List</a>
@@ -1131,19 +980,6 @@
             </div>
           </div>
           <div id="PrintDiv" style="display: none; color: white">
-            
-            <!-- <div style="padding-bottom: 10px;">
-              <label for="scaleSelect">Set Map Scale:</label>
-              <select id="scaleSelect" class="form-control form-control-sm">
-                <option value="">Select scale</option>
-                <option value="600">1 inch = 50 feet</option>
-                <option value="1200">1 inch = 100 feet</option>
-                <option value="2400">1 inch = 200 feet</option>
-                <option value="12000">1 inch = 1000 feet</option>
-                <option value="24000">1 inch = 2000 feet</option>
-                <option value="60000">1 inch = 5000 feet</option>
-              </select>
-            </div> -->
           </div>
           <div id="AddDataDiv" style="display: none;">
             <div>
@@ -1156,9 +992,6 @@
             <div style="position: absolute; right: 0; padding-top: 10px; padding-right: 10px;">
                 <button style="color: white" class="btn btn-info" id="urlButton">Add</button>
             </div>
-                <!-- <p style="color: white; font-size: 12px;" id="urlText"><strong>Url Examples:</strong> 
-                  https://gis.mta.info/agencies/rest/services/DOS_EAMPRD_EQUIPMENT/Deep_Wells/MapServer/0
-                </p> -->
               </div>
               <div style="padding-top: 40px;">
                 <label style="color: white">Imagery Service URL:</label>
@@ -1170,9 +1003,6 @@
           <div style="position: absolute; right: 0; padding-top: 10px; padding-right: 10px;">
               <button style="color: white" class="btn btn-info" id="urlButtonImagery">Add</button>
           </div>
-              <!-- <p style="color: white; font-size: 12px;" id="urlText"><strong>Url Examples:</strong> 
-                https://gis.mta.info/agencies/rest/services/DOS_EAMPRD_EQUIPMENT/Deep_Wells/MapServer/0
-              </p> -->
             </div>
 
             <div style="padding-top: 40px;">
@@ -1185,27 +1015,8 @@
         <div style="position: absolute; right: 0; padding-top: 10px; padding-right: 10px;">
             <button style="color: white" class="btn btn-info" id="urlButtonMapService">Add</button>
         </div>
-            <!-- <p style="color: white; font-size: 12px;" id="urlText"><strong>Url Examples:</strong> 
-              https://gis.mta.info/agencies/rest/services/DOS_EAMPRD_EQUIPMENT/Deep_Wells/MapServer/0
-            </p> -->
           </div>
               </div>
-          <!-- <div
-            id="ContactDiv"
-            style="
-              display: none;
-              color: white;
-              text-align: center;
-              align-content: center;
-            "
-          >
-            <h5>Contact Information</h5>
-            <div style="align-items: center">
-              <img class="image" src="images/clipboard-1.png" />
-              <span>Marwin Gonzalez GIS Division</span>
-              <span>Email: mgonzalez@qds.biz</span>
-            </div>
-          </div> -->
         </div>
         <div id="rightPanel">
           <ul style="padding-top: 20px" class="list-right">
@@ -1278,12 +1089,6 @@
                 >Report an Issue</a
               >
             </li>
-            <!-- <li
-              id="Contact-selector"
-              class="list-group-item list-group-item-info options-bar-li"
-            >
-              Contact Information
-            </li> -->
           </ul>
         </div>
       </div>
@@ -1306,7 +1111,6 @@
               d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"
             />
           </svg>
-          <!-- Right Arrow (hidden by default) -->
           <svg
             id="right-arrow"
             title="collapse"
@@ -1440,42 +1244,14 @@
         data-content="Measure an area, start by clicking on map and double click to close the polygon."
       ></button>
         </div>
-        <!-- <div id="sidebar" class="esri-widget"> -->
-        <!-- <div id="topbar">
-          <button
-            class="action-button esri-icon-measure-line btn bg-info"
-            id="distanceButton"
-            type="button"
-            size="l"
-            style="width: 40px; height: 35px; color: white"
-            data-toggle="popover"
-            data-placement="top"
-            data-html="true"
-            data-content="Measure distance between two or more points, start by clicking on map and double click to end your line."
-          ></button>
-          <button
-            class="action-button esri-icon-measure-area btn bg-info"
-            id="areaButton"
-            type="button"
-            style="width: 40px; height: 35px; color: white"
-            data-toggle="popover"
-            data-placement="top"
-            data-html="true"
-            data-content="Measure an area, start by clicking on map and double click to close the polygon."
-          ></button>
-        </div> -->
-        <!-- </div> -->
       </div>
     </div>
   
-    <div id="new-print-container"></div> <!-- New container for print content -->
+    <div id="new-print-container"></div> 
     <div id="print-container">
         <div class="print-title" id="print-title">Map Title</div>
         <div class="print-map" style="padding-top: 50px;">
           <img id="print-image"  alt="town logo"></img>
-            
-            <!-- <div id="print-legend" class="print-legend"></div>
-            <div id="print-scale-bar" class="print-scale-bar"></div> -->
         </div>
         <div id="map-div" style="padding-top: 50px;">
           <img id="print-map-image" alt="Map Image" style="width: 1275px; height: 500px;"></img>
