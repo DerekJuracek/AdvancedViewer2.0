@@ -5256,11 +5256,8 @@ require([
         let targetExtent;
 
         if (sessionStorage.getItem("condos") === "no") {
-          console.log(detailsGeometry, buffer, unit)
           bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
-          
         } else {
-          console.log(detailsGeometry, buffer, unit)
           bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
         }
 
