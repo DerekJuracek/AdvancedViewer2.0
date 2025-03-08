@@ -38,7 +38,7 @@
   "noCondoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Roxbury_Adv_Viewer_Parcels/FeatureServer/1",
   "parcelServiceTitle": "Parcel Boundaries",
   "zoom": "13",
-  "parcelZoom": 13,
+  "parcelZoom": 2,
   "scale": 72000,
   "layers": [
     {
