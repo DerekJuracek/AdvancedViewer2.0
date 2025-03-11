@@ -1733,7 +1733,7 @@ require([
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
                     <div id="to-scale" class="scale-bar-container"></div>
-                        <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML}</div>
+                        <div id="print-scale-bar" class="scale-bar-container">${scaleBarHTML} (approximate)</div>
                 </div>
                 <div style="text-align: center; font-size: 12px; padding-left: 30px; padding-right: 30px;">
                     <p>Disclaimer: This map is intended for reference and general informational purposes
