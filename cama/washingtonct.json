@@ -32,7 +32,7 @@
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Washington",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
-  "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Washington_Housing_2022.pdf",
+  "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Washington_Housing_2024.pdf",
   "masterTable": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Washington_Adv_Viewer_Parcels/FeatureServer/0",
   "condoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Washington_Adv_Viewer_Parcels/FeatureServer/1",
   "noCondoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Washington_Adv_Viewer_Parcels/FeatureServer/1",
