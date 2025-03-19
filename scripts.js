@@ -3285,10 +3285,6 @@ require([
                 }
                 triggerfromNoCondos = false;
               }
-
-              // view.goTo({
-              //   target: result.features,
-              // });
             } else if (result.features.length === 1 && firstList.length > 2) {
               const firstQuery = noCondosTable.createQuery();
               firstQuery.where = whereClause;
@@ -3313,10 +3309,6 @@ require([
                   .queryFeatures(firstQuery)
                   .then(function (result) {
                     triggerUrl = result.features;
-                    // if (result.features.length <= 0) {
-                    //   clearContents();
-                    //   alert("Search resulted in an error, please try again.");
-                    // }
                     GISLINK = result.features[0].attributes.GIS_LINK;
                     let uniId = result.features[0].attributes.Uniqueid;
                     noCondosParcelGeom = result.features;
@@ -3333,14 +3325,19 @@ require([
         } else {
           CondosLayer.queryFeatures(query).then(function (result) {
             triggerUrl = result.features;
-            const getId = result.features[0].attributes.Uniqueid;
-            if (result.features) {
-              addPolygons(result, view.graphics, "");
-              processFeatures(result.features);
-              if (urlSearch) {
-                triggerListGroup(triggerUrl, getId);
-              }
+            // dont add polygons if not geometry 
+            if (result.features.length > 0) {
+              const getId = result.features[0].attributes.Uniqueid;
+                addPolygons(result, view.graphics, "");
+                if (urlSearch) {
+                  triggerListGroup(triggerUrl, getId);
+                }
             }
+
+            processFeatures(result.features);
+           
+ 
+          
           });
         }
         if (clickHandle) {
@@ -5446,6 +5443,7 @@ require([
 
               noCondosLayer.queryFeatures(query).then((response) => {
                 let feature = response;
+              
                 let geometry = feature.features[0].geometry;
 
                 detailsGeometry = geometry;
