@@ -7312,17 +7312,17 @@ require([
           $("#group-container-right").show();
         });
 
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#AddDataDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
+        $("#Print-Esri").on("click", function () {
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#AddDataDiv").hide();
+          $("#ContactDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#PrintDiv").show();
+          $("#LegendDiv").hide();
+          $("#group-container-right").show();
+        });
 
         $("#Contact-selector").on("click", function () {
           $("#rightPanel").hide();
