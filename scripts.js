@@ -786,7 +786,7 @@ require([
           case "area":
             activeWidget1 = new AreaMeasurement2D({
               view: view,
-              unit: "square-us-feet",
+              unit: "acres",
             });
 
             activeWidget1.viewModel.start();
