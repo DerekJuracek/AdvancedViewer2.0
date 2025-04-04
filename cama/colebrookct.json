@@ -29,7 +29,7 @@
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Colebrook_Demographics_2024.pdf",
   "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=colebrook",
-  "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Colebrook/Tax_Maps/Colebrook_TaxMap",
+  "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Colebrook/Tax_Maps/Colebrook_TaxMap_",
   "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Colebrook",
