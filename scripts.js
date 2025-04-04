@@ -50,8 +50,8 @@ require([
   let configUrl = urlParams.get("viewer");
 
   const configFiles = [
+    "colebrookct",
     "columbiact",
-    "columbiactnew",
     "durhamct",
     "haddamct",
     "northcanaanct",
@@ -62,10 +62,7 @@ require([
     "warrenctassessor",
     "washingtonct",
     "wiltonct",
-    "wiltoncttest",
     "wolcottct",
-    "woodbridgect",
-    "newingtonct",
   ];
 
   // Create a regex pattern to match allowed config file names
