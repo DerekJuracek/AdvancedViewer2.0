@@ -1629,9 +1629,9 @@ require([
         });
 
       function captureMap() {
-        const printDPI = 300; // Standard print DPI
+        const printDPI = 600; // Standard print DPI
         const mapWidthInInches = 8.0; 
-        const mapHeightInInches = 7.8; 
+        const mapHeightInInches = 8.0; 
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
