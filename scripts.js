@@ -1630,7 +1630,7 @@ require([
 
       function captureMap() {
         const printDPI = 300; // Standard print DPI
-        const mapWidthInInches = 7.8; 
+        const mapWidthInInches = 8.0; 
         const mapHeightInInches = 7.8; 
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
@@ -1725,7 +1725,7 @@ require([
                     <h1 id="title-text">${configVars.title}</h1>
                 </div>
                 <div class="print-map">
-                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; height: ${mapHeightInInches}in; border: 3px solid #A9A9A9; margin: 0 0.75in;">
+                    <img id="print-map-image" src="${screenshot.dataUrl}" alt="Map Image" style="width: ${mapWidthInInches}in; border: 3px solid #A9A9A9; margin: 0 0.75in;">
                 </div>
                 <div class="print-scale">
                     <div class="print-date" style="font-size: 12px;">Date Printed: ${currentDate}</div>
