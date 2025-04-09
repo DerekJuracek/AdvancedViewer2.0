@@ -51,6 +51,7 @@ require([
 
   const configFiles = [
     "colebrookct",
+    "colebrookctassessor",
     "columbiact",
     "durhamct",
     "haddamct",
