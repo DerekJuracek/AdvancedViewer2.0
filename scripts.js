@@ -5813,6 +5813,7 @@ require([
         console.log(main)
 
         let parcelGeometry = results[0].geometry;
+        let GIS_LINK = results[0].attributes.GIS_LINK;
 
         if (parcelGeometry) {
 
@@ -5850,246 +5851,57 @@ require([
               // id: bufferGraphicId,
             });
             view.graphics.addMany([polygonGraphic]);
-        }
-
-        
-        //comes in with geometry
-        // zoom to it
-        // if not other logic
-
-
-
-
-
-
-        // detailsChanged = {
-        //   isChanged: false,
-        //   item: "",
-        // };
-        //isGisLink = [];
-        // let bufferGraphicId = "uniqueBufferGraphicId";
-    
-
-        // const existingBufferGraphicIndex = view.graphics.items.findIndex(
-        //   (g) => g.id === bufferGraphicId
-        // );
-
-        // if (existingBufferGraphicIndex > -1) {
-        //   view.graphics.removeAt(existingBufferGraphicIndex);
-        // }
-
-        //isGisLink = firstList.filter((obj) => obj.GIS_LINK == gisLink);
-
-        // if "no condos" and GIS_LINK is equal to firstlist(means its searched by GIS_LINK)
-        // and GIS_LINK > 1( not searched on one uniqueid w/ no geometry) or will error
-        // so say selected a condomain with 111 condos, checks against 1st list
-        // if (
-        //   sessionStorage.getItem("condos") == "no" &&
-        //   isGisLink.length == firstList.length &&
-        //   isGisLink.length > 1
-        // ) {
-        //   if (noCondosParcelGeom) {
-        //     CondoBuffer = false;
-        //     targetExtent = noCondosParcelGeom[0].geometry;
-        //     detailsGeometry = noCondosParcelGeom[0].geometry;
-        //     const fillSymbol = {
-        //       type: "simple-fill",
-        //       color: [0, 0, 0, 0.1],
-        //       outline: {
-        //         color: [145, 199, 61, 1],
-        //         width: 4,
-        //       },
-        //     };
-
-        //     const geometryExtent = targetExtent.extent;
-        //     const zoomOutFactor = 2.0;
-        //     const newExtent = geometryExtent.expand(zoomOutFactor);
-
-
-        //     const polygonGraphic = new Graphic({
-        //       geometry: targetExtent,
-        //       symbol: fillSymbol,
-        //       id: bufferGraphicId,
-        //     });
-
-        //     view.graphics.addMany([polygonGraphic]);
-        //     view
-        //       .goTo({
-        //         target: polygonGraphic,
-        //         extent: newExtent,
-        //         // zoom: 15,
-        //       })
-        //       .catch(function (error) {
-        //         if (error.name != "AbortError") {
-        //           console.error(error);
-        //           // NoZoomDetails = true;
-        //         }
-        //       });
-        //   } else {
-        //     let whereClause = `GIS_LINK = '${gisLink}'`;
-        //     let query = noCondosLayer.createQuery();
-        //     query.where = whereClause;
-        //     query.returnGeometry = true;
-        //     query.returnHiddenFields = true; // Adjust based on your needs
-        //     query.outFields = ["*"];
-
-        //     noCondosLayer.queryFeatures(query).then((response) => {
-        //       let feature = response;
-        //       let geometry = feature.features[0].geometry;
-
-        //       targetExtent = geometry;
-        //       detailsGeometry = geometry;
-
-        //       const geometryExtent = targetExtent.extent;
-        //       const zoomOutFactor = 2.0;
-        //       const newExtent = geometryExtent.expand(zoomOutFactor);
-
-        //       view
-        //         .goTo({
-        //           target: geometry,
-        //           extent: newExtent,
-        //           // zoom: 15,
-        //         })
-        //         .catch(function (error) {
-        //           if (error.name != "AbortError") {
-        //             console.error(error);
-        //             // NoZoomDetails = true;
-        //           }
-        //         });
-
-        //       const fillSymbol = {
-        //         type: "simple-fill",
-        //         color: [0, 0, 0, 0.1],
-        //         outline: {
-        //           color: [145, 199, 61, 1],
-        //           width: 4,
-        //         },
-        //       };
-
-        //       const polygonGraphic = new Graphic({
-        //         geometry: detailsGeometry,
-        //         symbol: fillSymbol,
-        //         id: bufferGraphicId,
-        //       });
-        //       view.graphics.addMany([polygonGraphic]);
-        //     });
-        //   }
-        // } else {
-        //   CondoBuffer = true;
-        //   let matchingObject
-        //   if (triggerList) {
-        //     matchingObject = firstList.filter(
-        //       (obj) =>obj.uniqueId == objectid
-        //     );
-        //   } else {
-        //     matchingObject = firstList.filter(
-        //       (obj) =>obj.objectid == objectid
-        //     );
-        //   }
-        
-        //   // this is where its actually working on click
-        //   // not on uniqueid search
-        //   // whats the difference?
-        //   if (matchingObject.length > 0) {
-        //     if (
-        //       matchingObject[0].geometry != null &&
-        //       matchingObject[0].geometry != ""
-        //     ) {
-        //       detailsGeometry = matchingObject[0].geometry;
-        //       const geometryExtent = detailsGeometry.extent;
-        //       const zoomOutFactor = 2.0;
-        //       const newExtent = geometryExtent.expand(zoomOutFactor);
-
-        //       view
-        //         .goTo({
-        //           target: detailsGeometry,
-        //           extent: newExtent,
-        //           // zoom: 15,
-        //         })
-        //         .catch(function (error) {
-        //           if (error.name != "AbortError") {
-        //             console.error(error);
-        //           }
-        //         });
-
-        //       const fillSymbol = {
-        //         type: "simple-fill",
-        //         color: [0, 0, 0, 0.1],
-        //         outline: {
-        //           color: [145, 199, 61, 1],
-        //           width: 4,
-        //         },
-        //       };
-
-        //       const polygonGraphic = new Graphic({
-        //         geometry: detailsGeometry,
-        //         symbol: fillSymbol,
-        //         id: bufferGraphicId,
-        //       });
-        //       view.graphics.addMany([polygonGraphic]);
-        //     } else {
-        //       let whereClause;
-        //       CondoBuffer = false;
-
-        //       let match = matchingObject.filter((item) => {
-        //         item.GIS_LINK === gisLink;
-        //       });
-
-        //       if (match) {
-        //         whereClause = `GIS_LINK = '${gisLink}'`;
-        //       } else {
-        //         whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
-        //       }
-
-        //       let query = noCondosLayer.createQuery();
-        //       query.where = whereClause;
-        //       query.returnGeometry = true;
-        //       query.returnHiddenFields = true; // Adjust based on your needs
-        //       query.outFields = ["*"];
-
-        //       noCondosLayer.queryFeatures(query).then((response) => {
-        //         let feature = response;
-        //         let geometry = feature.features[0].geometry;
-
-        //         detailsGeometry = geometry;
-        //         targetExtent = geometry;
-
-        //         const geometryExtent = targetExtent.extent;
-        //         const zoomOutFactor = 2.0;
-        //         const newExtent = geometryExtent.expand(zoomOutFactor);
-
-        //       view
-        //         .goTo({
-        //           target: geometry,
-        //           extent: newExtent,
-        //           // zoom: 15,
-        //         })
-        //           .catch(function (error) {
-        //             if (error.name != "AbortError") {
-        //               console.error(error);
-        //               // NoZoomDetails = true;
-        //             }
-        //           });
-
-        //         const fillSymbol = {
-        //           type: "simple-fill",
-        //           color: [0, 0, 0, 0.1],
-        //           outline: {
-        //             color: [145, 199, 61, 1],
-        //             width: 4,
-        //           },
-        //         };
-
-        //         const polygonGraphic = new Graphic({
-        //           geometry: detailsGeometry,
-        //           symbol: fillSymbol,
-        //           id: bufferGraphicId,
-        //         });
-        //         view.graphics.addMany([polygonGraphic]);
-        //       });
-        //     }
-          // }
-        // }
+        } else {
+          // for condos with no footprints
+              let whereClause = `GIS_LINK = '${GIS_LINK}'`;
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+  
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+  
+                targetExtent = geometry;
+                detailsGeometry = geometry;
+  
+                const geometryExtent = targetExtent.extent;
+                const zoomOutFactor = 2.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
+  
+                view
+                  .goTo({
+                    target: geometry,
+                    extent: newExtent,
+                    // zoom: 15,
+                  })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      // NoZoomDetails = true;
+                    }
+                  });
+  
+                const fillSymbol = {
+                  type: "simple-fill",
+                  color: [0, 0, 0, 0.1],
+                  outline: {
+                    color: [145, 199, 61, 1],
+                    width: 4,
+                  },
+                };
+  
+                const polygonGraphic = new Graphic({
+                  geometry: detailsGeometry,
+                  symbol: fillSymbol,
+                  id: bufferGraphicId,
+                });
+                view.graphics.addMany([polygonGraphic]);
+              });
+            }
+          
         if (clickHandle) {
           clickHandle?.remove();
           clickHandle = null;
@@ -6099,7 +5911,6 @@ require([
           DetailsHandle = null;
         }
         DetailsHandle = view.on("click", handleDetailsClick);
-
       }
 
       function triggerListGroup(results, main, searchTerm) {
