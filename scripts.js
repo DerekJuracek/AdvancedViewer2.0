@@ -51,7 +51,6 @@ require([
 
   const configFiles = [
     "colebrookct",
-    "colebrookctassessor",
     "columbiact",
     "durhamct",
     "haddamct",
@@ -596,18 +595,14 @@ require([
       let zoomToGisLink;
       let lassoGisLinks = false;
       let urlSearchUniqueId;
-      let scaleBar;
       let runQuerySearchTerm;
       let clickedToggle;
       let detailSelected = [];
       let firstList = [];
       let detailsGeometry;
-      let CondoBuffer = false;
       let targetExtent;
       let queryUnits = "feet";
-      let exportResults;
       let uniqueArray;
-      let highlightResponse;
       let searchResults;
       let lasso = false;
       let select = false;
@@ -622,30 +617,23 @@ require([
       };
       let DetailsHandle;
       let clickHandle;
-      let removeFromList;
       let regSearch = false;
 
       let value = document.getElementById("buffer-value");
       const clearBtn1 = document.getElementById("clear-btn1");
       const clearBtn2 = document.getElementById("clear-btn2");
-
       let oldExtent = view.extent;
       let oldScale = view.scale;
       let oldZoom = view.zoom;
-      let valueToRemove;
       let handleUsed;
       let detailsHandleUsed;
       let exportCsv;
-      let queryValues = [];
-      let zoomToItemId;
       let zoomToObjectID;
       let overRide;
-      let dontTriggerMultiQuery;
       let queryParameters;
       let filterConfigurations;
       let multiFilterConfigurations;
       let filterConfigs;
-      // let NoZoomDetails = true;
 
       reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -2184,7 +2172,7 @@ require([
           // Now you can handle the click event as you would in the individual event listener
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
-          zoomToFeature(objectID, polygonGraphics, itemId);
+          zoomToFeature(objectID,itemId);
           $("#details-spinner").show();
           $("#WelcomeBox").hide();
           $("#featureWid").hide();
@@ -2415,11 +2403,12 @@ require([
         });
 
         searchResults = uniqueArray.length;
-
-        // $(document).ready(function () {
+        $("#total-results").html(searchResults + " results returned");
+       
+        if (!urlSearchUniqueId) {
         $("#total-results").show();
         $("#ResultDiv").show();
-        $("#total-results").html(searchResults + " results returned");
+      
         $("#backButton").hide();
         $("#detailsButton").hide();
         $("#filterDiv").hide();
@@ -2447,6 +2436,7 @@ require([
         $(".spinner-container").hide();
         $(`li[object-id="${pointGraphic}"]`).remove();
         triggerfromNoCondos = false;
+        }
 
         listGroup.addEventListener("click", function (event) {
           let shouldZoomTo = true;
@@ -2473,7 +2463,7 @@ require([
           // Now you can handle the click event as you would in the individual event listener
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
-          zoomToFeature(objectID, polygonGraphics, itemId);
+          zoomToFeature(objectID,  itemId);
           $("#details-spinner").show();
           $("#WelcomeBox").hide();
           $("#featureWid").hide();
@@ -2510,7 +2500,7 @@ require([
         lassoGisLinks = false;
       }
 
-      function processFeatures(features, polygonGraphics, e, removeFromList) {
+      function processFeatures(features, polygonGraphics, e, silentMode) {
         let pointGraphic;
         let pointLocation;
         let pointGisLink;
@@ -2659,11 +2649,6 @@ require([
           return;
         } else {
           // this logic needs to be sorted, no condos are searched on here
-          //
-          //triggerfromNoCondos = true;
-          // pointGraphic = features[0].attributes.OBJECTID;
-          // pointLocation = features[0].attributes.Location;
-          // pointGisLink = features[0].attributes.GIS_LINK;
           // where no geom on condos are building results panel and passing in undefined values
           // only features is not empty
 
@@ -3197,7 +3182,6 @@ require([
         }
 
         $(".spinner-container").show();
-        const tableSearch = true;
 
         let whereClause;
 
@@ -3212,6 +3196,7 @@ require([
       `;
 
         let query;
+        let triggerUrl;
 
         if (filterQuery) {
           query = filterQuery;
@@ -3221,11 +3206,8 @@ require([
         } else if (urlSearchUniqueId) {
           query = filterQuery;
           tableSearch = true;
-        } else {
-        }
+        } 
 
-        let GISLINK;
-        let triggerUrl;
 
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.queryFeatures(query).then(function (result) {
@@ -3266,9 +3248,16 @@ require([
                     triggerCondoMain = response.features;
                     noCondosParcelGeom = response.features;
                     addPolygons(response, view.graphics, "");
-                    processFeatures(response.features);
+                    // if (!urlSearch) {
+                      processFeatures(response.features);
+                    // } else {
+                    //   processFeatures(response.features);
+                    // }
+                    
                     if (urlSearch) {
-                      triggerListGroup(triggerCondo, triggerCondoMain, searchTerm);
+                      setTimeout(() => {
+                        triggerListGroup(triggerCondo, triggerCondoMain, searchTerm);
+                      }, 200)
                     }
                   })
                   .catch(function (error) {
@@ -3279,7 +3268,9 @@ require([
                 addPolygons(result, view.graphics, "");
                 processFeatures(result.features);
                 if (urlSearch) {
+                  setTimeout(() => {
                   triggerListGroup(triggerUrl, searchTerm);
+                }, 200)
                 }
                 triggerfromNoCondos = false;
               }
@@ -3293,7 +3284,9 @@ require([
                 addPolygons(result.features);
                 processFeatures();
                 if (urlSearch) {
+                  setTimeout(() => {
                   triggerListGroup(triggerUrl, searchTerm);
+                  }, 200)
                 }
               });
             } else {
@@ -3313,8 +3306,10 @@ require([
                     addPolygons(result, view.graphics);
                     processFeatures(result.features);
                     if (urlSearch) {
+                      setTimeout(() => {
                       needToSearchGisLink = true;
                       triggerListGroup(triggerUrl, uniId);
+                      }, 200)
                     }
                   })
               }
@@ -3328,13 +3323,13 @@ require([
               const getId = result.features[0].attributes.Uniqueid;
                 addPolygons(result, view.graphics, "");
                 if (urlSearch) {
+                  setTimeout(() => {
                   triggerListGroup(triggerUrl, getId);
+                  }, 200)
                 }
             }
 
             processFeatures(result.features);
-           
- 
           
           });
         }
@@ -3610,28 +3605,7 @@ require([
             backButtonPanelShowSelect();
             view.graphics.removeAll();
             view.graphics.addMany(polygonGraphics);
-
-            // detailsGeometry = geom;
-
-            // const polygonGraphic = new Graphic({
-            //   geometry: targetExtent,
-            //   symbol: fillSymbol,
-            //   id: bufferGraphicId,
-            // });
-    
-            // const geometryExtent = targetExtent.extent;
-            // const zoomOutFactor = 2.0;
-            // const newExtent = geometryExtent.expand(zoomOutFactor);
-    
-            // view.graphics.addMany([polygonGraphic]);
-            // view.goTo({
-            //   target: polygonGraphic,
-            //   extent: newExtent
-            // });
             if (polygonGraphics.length > 1) {
-
-
-
                 // Step 1: Extract extents of all polygon graphics
                 const extents = polygonGraphics.map(graphic => graphic.geometry.extent);
 
@@ -3657,15 +3631,11 @@ require([
               const zoomOutFactor = 2.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
     
-
               view.goTo({
                 target: polygonGraphics,
                 extent: newExtent
               });
             }
-
-
-     
           } else {
             backButtonPanelShowHomePage();
           }
@@ -4520,10 +4490,7 @@ require([
         $("#selected-feature").empty();
         $(".center-container").hide();
         $("#layerListDiv").hide();
-        function formatNumber(value) {
-          if (value === undefined) return "";
-          return new Intl.NumberFormat("en-US").format(value);
-        }
+       
 
         let features = item[0].attributes;
         let Location = features.Location === undefined ? "" : features.Location;
@@ -4891,6 +4858,10 @@ require([
           }
         });
       });
+      function formatNumber(value) {
+        if (value === undefined) return "";
+        return new Intl.NumberFormat("en-US").format(value);
+      }
 
       function buildDetailsPanel(objectId, itemId, shouldZoomTo) {
         !shouldZoomTo
@@ -4899,10 +4870,6 @@ require([
         $("#select-button").prop("disabled", true);
         $("#select-button").removeClass("btn-warning");
 
-        function formatNumber(value) {
-          if (value === undefined) return "";
-          return new Intl.NumberFormat("en-US").format(value);
-        }
 
         if (clickHandle) {
           clickHandle?.remove();
@@ -5259,14 +5226,16 @@ require([
         });
       }
 
-      function zoomToFeature(objectid, notPolygonGraphics, gisLink) {
+      function zoomToFeature(objectid, gisLink, triggerList) {
+        view.graphics.removeAll(polygonGraphics);
+
         detailsChanged = {
           isChanged: false,
           item: "",
         };
         isGisLink = [];
         let bufferGraphicId = "uniqueBufferGraphicId";
-        view.graphics.removeAll(polygonGraphics);
+    
 
         const existingBufferGraphicIndex = view.graphics.items.findIndex(
           (g) => g.id === bufferGraphicId
@@ -5303,10 +5272,6 @@ require([
             const zoomOutFactor = 2.0;
             const newExtent = geometryExtent.expand(zoomOutFactor);
 
-            // view.goTo({
-            //   target: polygonGraphic,
-            //   extent: newExtent,
-            // });
 
             const polygonGraphic = new Graphic({
               geometry: targetExtent,
@@ -5378,11 +5343,21 @@ require([
           }
         } else {
           CondoBuffer = true;
-          let matchingObject = firstList.filter(
-            (obj) => obj.uniqueId == objectid
-          );
-
-          if (matchingObject) {
+          let matchingObject
+          if (triggerList) {
+            matchingObject = firstList.filter(
+              (obj) =>obj.uniqueId == objectid
+            );
+          } else {
+            matchingObject = firstList.filter(
+              (obj) =>obj.objectid == objectid
+            );
+          }
+        
+          // this is where its actually working on click
+          // not on uniqueid search
+          // whats the difference?
+          if (matchingObject.length > 0) {
             if (
               matchingObject[0].geometry != null &&
               matchingObject[0].geometry != ""
@@ -5441,18 +5416,14 @@ require([
 
               noCondosLayer.queryFeatures(query).then((response) => {
                 let feature = response;
-              
                 let geometry = feature.features[0].geometry;
 
                 detailsGeometry = geometry;
+                targetExtent = geometry;
 
-         
-
-              targetExtent = geometry;
-
-              const geometryExtent = targetExtent.extent;
-              const zoomOutFactor = 2.0;
-              const newExtent = geometryExtent.expand(zoomOutFactor);
+                const geometryExtent = targetExtent.extent;
+                const zoomOutFactor = 2.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
                 .goTo({
@@ -5501,9 +5472,6 @@ require([
         $("#abutters-title").html("Abutters");
 
         let itemSelected = detailSelected;
-
-        let locationMaillingAddress;
-        let locationUniqueId;
         let locationGISLINK;
         let locationOwner;
         let locationCoOwner;
@@ -5665,8 +5633,6 @@ require([
             query.returnHiddenFields = true; // Adjust based on your needs
             query.outFields = ["*"];
           }
-          // THIS NEEDS TO BE FIXEDDDDDDD
-          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           CondosTable.queryFeatures(query)
             .then((response) => {
               if (response.features.length > 0) {
@@ -5816,55 +5782,167 @@ require([
       };
 
       function triggerListDetails() {
-         // zoomToFeature(objectID, polygonGraphics, itemId);
-         $("#details-spinner").show();
-         $("#WelcomeBox").hide();
-         $("#featureWid").hide();
-         $("#result-btns").hide();
-         $("#abutters-content").hide();
-         $("#details-btns").show();
-         $("#abut-mail").show();
-         $("#detailBox").show();
-         $("#backButton").show();
-         $("#detailsButton").hide();
-         $("#detail-content").empty();
-         $("#selected-feature").empty();
-         $("#exportButtons").hide();
-         $("#exportSearch").hide();
-         $("#exportResults").hide();
-         $("#csvExportResults").hide();
-         $("#csvExportSearch").hide();
-         $(".center-container").hide();
-         $("#results-div").css("height", "300px");
-         $("#backButton-div").css("padding-top", "0px");
+        $("#details-spinner").show();
+        $("#WelcomeBox").hide();
+        $("#featureWid").hide();
+        $("#result-btns").hide();
+        $("#total-results").hide();
+        $("#ResultDiv").hide();
+        $("#abutters-content").hide();
+        $("#details-btns").show();
+        $("#abut-mail").show();
+        $("#detailBox").show();
+        $("#backButton").show();
+        $("#detailsButton").hide();
+        $("#detail-content").empty();
+        $("#selected-feature").empty();
+        $("#exportButtons").hide();
+        $("#exportSearch").hide();
+        $("#exportResults").hide();
+        $("#csvExportResults").hide();
+        $("#csvExportSearch").hide();
+        $("#results-div").css("height", "300px");
+        $("#backButton-div").css("padding-top", "0px");
+        $(".center-container").hide();
+      }
+
+      function triggerDetailsZoom(results, main,) {
+        view.graphics.removeAll(polygonGraphics);
+
+        console.log(results)
+        console.log(main)
+
+        let parcelGeometry = results[0].geometry;
+        let GIS_LINK = results[0].attributes.GIS_LINK;
+
+        if (parcelGeometry) {
+
+          targetExtent = parcelGeometry;
+          detailsGeometry = parcelGeometry;
+
+          const geometryExtent = targetExtent.extent;
+          const zoomOutFactor = 2.0;
+          const newExtent = geometryExtent.expand(zoomOutFactor);
+          view
+            .goTo({
+              target: parcelGeometry,
+              extent: newExtent,
+              //  zoom: 15,
+            })
+              .catch(function (error) {
+                if (error.name != "AbortError") {
+                  console.error(error);
+                  // NoZoomDetails = true;
+                }
+              });
+
+            const fillSymbol = {
+              type: "simple-fill",
+              color: [0, 0, 0, 0.1],
+              outline: {
+                color: [145, 199, 61, 1],
+                width: 4,
+              },
+            };
+
+            const polygonGraphic = new Graphic({
+              geometry: parcelGeometry,
+              symbol: fillSymbol,
+              // id: bufferGraphicId,
+            });
+            view.graphics.addMany([polygonGraphic]);
+        } else {
+          // for condos with no footprints
+              let whereClause = `GIS_LINK = '${GIS_LINK}'`;
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+  
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+  
+                targetExtent = geometry;
+                detailsGeometry = geometry;
+  
+                const geometryExtent = targetExtent.extent;
+                const zoomOutFactor = 2.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
+  
+                view
+                  .goTo({
+                    target: geometry,
+                    extent: newExtent,
+                    // zoom: 15,
+                  })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      // NoZoomDetails = true;
+                    }
+                  });
+  
+                const fillSymbol = {
+                  type: "simple-fill",
+                  color: [0, 0, 0, 0.1],
+                  outline: {
+                    color: [145, 199, 61, 1],
+                    width: 4,
+                  },
+                };
+  
+                const polygonGraphic = new Graphic({
+                  geometry: detailsGeometry,
+                  symbol: fillSymbol,
+                  id: bufferGraphicId,
+                });
+                view.graphics.addMany([polygonGraphic]);
+              });
+            }
+          
+        if (clickHandle) {
+          clickHandle?.remove();
+          clickHandle = null;
+        }
+        if (DetailsHandle) {
+          DetailsHandle?.remove();
+          DetailsHandle = null;
+        }
+        DetailsHandle = view.on("click", handleDetailsClick);
       }
 
       function triggerListGroup(results, main, searchTerm) {
         let items = results;
         let condoMain = main;
-        changeAbuttersZoom = true;
-
+      
         if (items.length <= 0) {
           clearContents();
           alert("Search resulted in an error, please try again.");
+          return;
         }
-
+      
         let itemId = items[0].attributes.Uniqueid;
         let objectID = items[0].attributes.OBJECTID;
-        // let objectIDMain = condoMain[0].attributes.OBJECTID;
-        let objectIDMain = condoMain
+      
 
-        triggerListDetails()
-        document.getElementById("total-results").style.display = "none";
-        buildDetailsPanel(objectID, itemId);
-        zoomToFeature(objectIDMain, polygonGraphics, itemId);
-        $("#total-results").hide();
-        $("#ResultDiv").hide();
+      
+      // Set UI to details panel state
+  triggerListDetails();
 
-        urlBackButton = true;
-        triggerfromNoCondos = false;
-        urlSearchUniqueId = false;
-        urlSearch = false;
+  // Zoom to the parcel
+  triggerDetailsZoom(items, condoMain);
+
+  // Populate details panel
+  buildDetailsPanel(objectID, itemId);
+
+  // Reset flags
+  urlBackButton = true;
+  triggerfromNoCondos = false;
+  urlSearchUniqueId = false;
+
+  $(".spinner-container").hide();
       }
 
       // Helper function to parse and modify URL query parameters
@@ -5911,11 +5989,7 @@ require([
       let whereClause = `Uniqueid = '${uniqueId}'`; // Ensure this key matches your URL parameter
 
       if (uniqueId) {
-        // Assuming the layer name and field name are known and static
-        const layerName = "Parcel Boundaries";
-        const fieldName = "UniqueId";
         urlSearchUniqueId = true;
-        let urlSearch = true;
 
         view
           .when(function () {
@@ -5928,7 +6002,6 @@ require([
 
               noCondosTable.queryFeatures(query).then((response) => {
                 let data = response.features[0].attributes;
-                let uID = data.Uniqueid;
                 let type = data.Building_Type;
                 let misMatch = data.Match_Status;
 
@@ -5946,11 +6019,6 @@ require([
             query.outFields = ["*"];
 
             checkQueryVal();
-
-            // Place your function call or code here
-            // queryUrlUniqueId(uniqueId, urlSearch);
-
-            // queryUrlUniqueId(uniqueId, urlSearch);
           })
           .catch(function (error) {
             console.error("Error occurred while the view was loading: ", error);
