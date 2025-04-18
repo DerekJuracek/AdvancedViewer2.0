@@ -342,18 +342,13 @@ div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
   background-color: rgba(127, 42, 145, 1) !important;
 }
 
-/* .clear-btn:hover {
-  box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
-  border-color: transparent;
-}  */
 
-#distanceButton, #areaButton {
+#distanceButton, #areaButton, #clearMeasurement {
   border-color: white !important;
   background-color: rgba(127, 42, 145, 1) !important;
 } 
 
-
-#distanceButton:hover, #areaButton:hover {
+#distanceButton:hover, #areaButton:hover, #clearMeasurement:hover {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
   border-color: transparent;
   background-color: rgba(127, 42, 145, 1) !important; 
@@ -364,22 +359,17 @@ div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
   background-color: rgba(127, 42, 145, 1) !important;
   outline: none;
   border-color: transparent;
-  /* border: none;  */
-
 } 
 .action-button:hover {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
   background-color: rgba(127, 42, 145, 1) !important;
   outline: none;
   border-color: none;
-
 }
 
 .btn-info:active {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
-
 } 
-
 
 .btn.focus, .btn:focus {
   outline: 0;
@@ -387,7 +377,6 @@ div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
 }
 .active {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
-
 }
 
 .bg-info:hover {
@@ -761,7 +750,7 @@ ul {
   border-bottom-left-radius: 10px;
   top: 8%;
   right: 250px; /* the width of #sidebar */
-  height: 350px;
+  height: 400px;
   width: 55px;
   background-color: var(--background-color) !important;
   transition: right 0.5s;

@@ -710,12 +710,14 @@ require([
           setActiveWidget(null);
           if (!this.classList.contains("active")) {
             setActiveWidget("area");
-            // $("#areaButton").addClass("btn-warning");
           } else {
             setActiveButton(null);
-            // $("#areaButton").removeClass("btn-warning");
           }
         });
+
+        
+
+        
 
       function setActiveWidget(type) {
         switch (type) {
@@ -832,19 +834,14 @@ require([
       }
 
       function setActiveButton(selectedButton) {
-        // focus the view to activate keyboard shortcuts for sketching
         view.focus();
-        // detailsHandleUsed == "";
         let elements = Array.from(document.getElementsByClassName("active"));
         for (let i = 0; i < elements.length; i++) {
           elements[i].classList.remove("active", "btn-warning");
-          // elements[i].classList.remove("btn-warning");
-          // elements[i].classList.add("bg-info");
         }
         if (selectedButton) {
           selectedButton.classList.add("active", "btn-warning");
           selectedButton.classList.remove("bg-info");
-          // selectedButton.classList.add("btn-warning");
         }
       }
 
@@ -874,6 +871,24 @@ require([
 
       webmap.add(noCondosLayer);
       webmap.add(CondosLayer);
+
+      document
+      .getElementById("clearMeasurement")
+      .addEventListener("click", function () {
+        if (activeWidget1 && activeWidget1.viewModel) {
+          // Remove handles during measurement to avoid interference
+          if (clickHandle) {
+            clickHandle.remove();
+            clickHandle = null;
+          }
+          if (DetailsHandle) {
+            DetailsHandle.remove();
+            DetailsHandle = null;
+          }
+          activeWidget1.viewModel.clear();
+          activeWidget1.viewModel.start();
+        }
+      });
 
       multiFilterConfigurations = [
         {
@@ -7590,6 +7605,12 @@ require([
 
       $(document).ready(function () {
         $("#areaButton").popover({
+          trigger: "hover",
+        });
+      });
+
+      $(document).ready(function () {
+        $("#clearMeasurement").popover({
           trigger: "hover",
         });
       });
