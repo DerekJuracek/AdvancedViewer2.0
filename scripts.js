@@ -1634,8 +1634,8 @@ require([
 
       function captureMap() {
         const printDPI = 600; // Standard print DPI
-        const mapWidthInInches = 8.0; 
-        const mapHeightInInches = 8.0; 
+        const mapWidthInInches = 8.8; 
+        const mapHeightInInches = 8.8; 
         const mapWidthInPixels = mapWidthInInches * printDPI;
         const mapHeightInPixels = mapHeightInInches * printDPI;
 
@@ -1673,7 +1673,7 @@ require([
                         align-items: center;
                         justify-content: center;
                         text-align: center;
-                        font-size: 22px;
+                        font-size: 18px;
                     }
                     .print-scale {
                         display: flex;
@@ -1687,6 +1687,8 @@ require([
                     }
                     .print-title img {
                         margin-right: 20px;
+                        height: 60px !important;
+                        width: 60px !important;
                     }
                     .scale-bar-container {
                         margin-right: 50px;
