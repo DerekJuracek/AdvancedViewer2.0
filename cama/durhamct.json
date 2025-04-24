@@ -13,7 +13,7 @@
   "condos": "yes",
   "imageUrl": "https://publicweb-gis.s3.amazonaws.com/Images/Bldg_Photos/Durham_CT/",
   "showDisclaimer": "yes",
-  "customDisclaimerPage": "yes",
+  "customDisclaimerPage": "no",
   "customDisclaimerMessage": "The GIS website is currently available with limited functionality as we transition through the CAMA conversion process. The data displayed is static as of February 24, 2025, and will not be updated until the conversion is complete. Once the new CAMA system is live, we will implement automated nightly transfers to ensure up-to-date information. Thank you for your patience during this transition.",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Durham_CT.png",
   "customWelcomePage": "no",
