@@ -1897,6 +1897,13 @@ require([
         polygonGraphics = [];
       }
 
+      $(document).on("click", "#condomain-show-all", function (event) {
+        let targetElement = event.target;
+        let gisLink = targetElement.getAttribute("data-gis-link");
+        runQuerySearchTerm = gisLink
+        runQuery()
+      })
+
       $(document).ready(function () {
         // Add click event listener to the dynamically generated buttons with class 'justRemove'
         $(document).on("click", ".justRemove", function (event) {
@@ -2231,6 +2238,7 @@ require([
           sortUniqueArray("location");
         });
 
+
       function buildResultsPanel(
         features,
         polygonGraphics,
@@ -2331,6 +2339,7 @@ require([
           let locationMBL = feature.MBL;
           let locationGeom = feature.geometry;
           let propertyType = feature.Parcel_Type;
+          // let accountType = feature.Parcel_Type;
 
           if (configVars.useUniqueIdforParcelMap === "yes") {
             zoomToItemId = locationUniqueId;
@@ -2571,6 +2580,7 @@ require([
               let Image_Path = feature.attributes["Image_Path"];
               let AcctNum = feature.attributes["AcctNum"];
               let Match_Status = feature.attributes["Match_Status"];
+              let Account_Type = feature.attributes["ACCOUNT_TYPE"]
 
               firstList.push(
                 new Parcel(
@@ -2613,7 +2623,8 @@ require([
                   Lon,
                   Image_Path,
                   AcctNum,
-                  Match_Status
+                  Match_Status,
+                  Account_Type
                 )
               );
             }
@@ -3118,7 +3129,8 @@ require([
           Lon,
           Image_Path,
           AcctNum,
-          Match_Status
+          Match_Status,
+          Account_Type
         ) {
           this.objectid = objectid;
           this.location = location;
@@ -3160,6 +3172,7 @@ require([
           this.Image_Path = Image_Path;
           this.AcctNum = AcctNum;
           this.Match_Status = Match_Status;
+          this.Account_Type = Account_Type;
         }
       }
 
@@ -3265,12 +3278,7 @@ require([
                     triggerCondoMain = response.features;
                     noCondosParcelGeom = response.features;
                     addPolygons(response, view.graphics, "");
-                    // if (!urlSearch) {
-                      processFeatures(response.features);
-                    // } else {
-                    //   processFeatures(response.features);
-                    // }
-                    
+                    processFeatures(response.features);
                     if (urlSearch) {
                       setTimeout(() => {
                         triggerListGroup(triggerCondo, triggerCondoMain, searchTerm);
@@ -4502,14 +4510,15 @@ require([
       function clickDetailsPanel(item) {
         $("#select-button").prop("disabled", true);
         $("#select-button").removeClass("btn-warning");
-        detailsHandleUsed = "detailClick";
         $("#detail-content").empty();
         $("#selected-feature").empty();
         $(".center-container").hide();
         $("#layerListDiv").hide();
-       
 
+        detailsHandleUsed = "detailClick";
+       
         let features = item[0].attributes;
+        let AccountType = features.ACCOUNT_TYPE === undefined ? "" : features.ACCOUNT_TYPE
         let Location = features.Location === undefined ? "" : features.Location;
         let locationUniqueId =
           features.Uniqueid === undefined ? "" : features.Uniqueid;
@@ -4617,7 +4626,27 @@ require([
           }
         });
 
-        let detailsHTML = `
+       let detailsHTML = ''
+
+        if (AccountType.toUpperCase() == 'CONDOMAIN') {
+           detailsHTML = `
+            <div style="padding-left: 20px; padding-top: 20px;">
+              <button
+                type="button"
+                class="btn btn-info mr-3"
+                id="condomain-show-all"
+                data-toggle="popover"
+                data-placement="left"
+                data-gis-link=${locationGIS_LINK}
+                data-html="true"
+                data-content="Use abutters tool to draw buffer around selected parcel and to recieve mailing list."
+              >Lookup All Condos
+              
+              </button>
+            </div>`
+        }
+
+       detailsHTML += `
         <p>
         <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
         </p>
@@ -4911,6 +4940,9 @@ require([
             return item.GIS_LINK === itemId || item.uniqueId === itemId;
           });
         }
+
+        let AccountType =
+        matchedObject.Account_Type === undefined ? "" : matchedObject.Account_Type;
         let Location =
           matchedObject.location === undefined ? "" : matchedObject.location;
         let locationUniqueId =
@@ -5011,11 +5043,9 @@ require([
           TaxId = locationUniqueId;
         }
 
-        // zoomToItemId = locationUniqueId;
         zoomToObjectID = objectID2;
         zoomToGisLink = locationGIS_LINK;
 
-        // const imageUrl = `${imageUrl}${ImagePath};
         const detailsDiv = document.getElementById("detail-content");
         const details = document.createElement("div");
 
@@ -5041,7 +5071,27 @@ require([
           }
         });
 
-        let detailsHTML = `
+        let detailsHTML = ''
+
+        if (AccountType.toUpperCase() == 'CONDOMAIN') {
+           detailsHTML = `
+            <div style="padding-left: 20px; padding-top: 20px;">
+              <button
+                type="button"
+                class="btn btn-info mr-3"
+                id="condomain-show-all"
+                data-toggle="popover"
+                data-placement="left"
+                data-gis-link=${locationGIS_LINK}
+                data-html="true"
+                data-content="Use abutters tool to draw buffer around selected parcel and to recieve mailing list."
+              >Lookup All Condos
+              
+              </button>
+            </div>`
+        }
+
+       detailsHTML += `
       <p>
       <span style="font-family:Tahoma;font-size:14px;"><strong>${Location}</strong></span> <br>
       </p>
@@ -5621,6 +5671,7 @@ require([
           $("#exportSearch").hide();
           $("#csvExportResults").hide();
           $("#exportButtons").hide();
+          $(".center-container").show()
 
           let whereClause;
 
@@ -5716,6 +5767,7 @@ require([
                     let Image_Path = feature.attributes["Image_Path"];
                     let AcctNum = feature.attributes["AcctNum"];
                     let Match_Status = feature.attributes["Match_Status"];
+                    let Account_Type = feature.attributes["ACCOUNT_TYPE"]
 
                     firstList.push(
                       new Parcel(
@@ -5758,7 +5810,8 @@ require([
                         Lon,
                         Image_Path,
                         AcctNum,
-                        Match_Status
+                        Match_Status,
+                        Account_Type
                       )
                     );
                   }
@@ -5945,21 +5998,21 @@ require([
       
 
       
-      // Set UI to details panel state
-  triggerListDetails();
+          // Set UI to details panel state
+        triggerListDetails();
 
-  // Zoom to the parcel
-  triggerDetailsZoom(items, condoMain);
+        // Zoom to the parcel
+        triggerDetailsZoom(items, condoMain);
 
-  // Populate details panel
-  buildDetailsPanel(objectID, itemId);
+        // Populate details panel
+        buildDetailsPanel(objectID, itemId);
 
-  // Reset flags
-  urlBackButton = true;
-  triggerfromNoCondos = false;
-  urlSearchUniqueId = false;
+        // Reset flags
+        urlBackButton = true;
+        triggerfromNoCondos = false;
+        urlSearchUniqueId = false;
 
-  $(".spinner-container").hide();
+        $(".spinner-container").hide();
       }
 
       // Helper function to parse and modify URL query parameters
