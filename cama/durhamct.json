@@ -23,7 +23,7 @@
   "accessorName": "- John S. Philip – Assessor <br>    - Lynn Riotte - Assistant Assessor",
   "includePermitLink": "no",
   "permitLink": "http://permitlinkusa-online.com/csp/columbiact/DocumentLink.PublicDLinkHome.cls",
-  "propertyCardPdf": "yes",
+  "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=030&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Durham",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Durham_Demographics_2024.pdf",
