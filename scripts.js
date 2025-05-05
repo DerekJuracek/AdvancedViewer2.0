@@ -5336,7 +5336,7 @@ require([
             };
 
             const geometryExtent = targetExtent.extent;
-            const zoomOutFactor = 2.0;
+            const zoomOutFactor = 3.0;
             const newExtent = geometryExtent.expand(zoomOutFactor);
 
 
@@ -5375,7 +5375,7 @@ require([
               detailsGeometry = geometry;
 
               const geometryExtent = targetExtent.extent;
-              const zoomOutFactor = 2.0;
+              const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
@@ -5431,7 +5431,7 @@ require([
             ) {
               detailsGeometry = matchingObject[0].geometry;
               const geometryExtent = detailsGeometry.extent;
-              const zoomOutFactor = 2.0;
+              const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
@@ -5489,7 +5489,7 @@ require([
                 targetExtent = geometry;
 
                 const geometryExtent = targetExtent.extent;
-                const zoomOutFactor = 2.0;
+                const zoomOutFactor = 4.0;
                 const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
