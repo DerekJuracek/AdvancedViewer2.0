@@ -2533,7 +2533,7 @@ require([
         function createList(features) {
           features.forEach(function (feature) {
             // PUT BACK TO FILTER OUT EMPTY OWNERS
-            if (feature.attributes.Owner === "" || null || undefined) {
+            if (feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") {
               return;
             } else {
               let objectId = feature.attributes["OBJECTID"];
@@ -2701,8 +2701,20 @@ require([
         ClickEvent,
         tableSearch
       ) {
+
+        let owner = polygonGeometries.features[0].attributes.Owner;
+        if (owner == "RESIDENT") {
+          return 
+        } else {
+
+        
         let count;
         let countCondos;
+        
+
+        console.log(polygonGeometries)
+
+       
 
         // formats of queries from table and feature layer different
         if (tableSearch) {
@@ -2882,6 +2894,7 @@ require([
         }
         count = false;
         regSearch = false;
+      }
       }
 
       let sketch = new SketchViewModel({
@@ -5336,7 +5349,7 @@ require([
             };
 
             const geometryExtent = targetExtent.extent;
-            const zoomOutFactor = 2.0;
+            const zoomOutFactor = 3.0;
             const newExtent = geometryExtent.expand(zoomOutFactor);
 
 
@@ -5375,7 +5388,7 @@ require([
               detailsGeometry = geometry;
 
               const geometryExtent = targetExtent.extent;
-              const zoomOutFactor = 2.0;
+              const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
@@ -5431,7 +5444,7 @@ require([
             ) {
               detailsGeometry = matchingObject[0].geometry;
               const geometryExtent = detailsGeometry.extent;
-              const zoomOutFactor = 2.0;
+              const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
@@ -5489,7 +5502,7 @@ require([
                 targetExtent = geometry;
 
                 const geometryExtent = targetExtent.extent;
-                const zoomOutFactor = 2.0;
+                const zoomOutFactor = 4.0;
                 const newExtent = geometryExtent.expand(zoomOutFactor);
 
               view
@@ -5715,7 +5728,7 @@ require([
                   triggerfromNoCondos = true;
                 }
                 features.forEach(function (feature) {
-                  if (feature.attributes.Owner === "" || null || undefined) {
+                  if (feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") {
                     return;
                   } else {
                     let objectId = feature.attributes["OBJECTID"];
