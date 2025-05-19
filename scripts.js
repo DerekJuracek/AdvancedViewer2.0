@@ -53,6 +53,7 @@ require([
     "colebrookct",
     "columbiact",
     "durhamct",
+    "franklinct",
     "haddamct",
     "northcanaanct",
     "roxburyct",
