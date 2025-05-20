@@ -2701,8 +2701,13 @@ require([
         ClickEvent,
         tableSearch
       ) {
-        let owner = polygonGeometries.features[0].attributes.Owner;
+        let owner;
         let count;
+        
+        if (polygonGeometries.length > 0) {
+         owner = polygonGeometries.features[0].attributes.Owner;
+        }
+
         if (owner == "RESIDENT" && (!ClickEvent)) {
           return 
         } else {
