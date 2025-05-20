@@ -1906,10 +1906,7 @@ require([
       })
 
       $(document).ready(function () {
-        // Add click event listener to the dynamically generated buttons with class 'justRemove'
         $(document).on("click", ".justRemove", function (event) {
-          // Get the clicked element
-
           event.stopPropagation();
           event.preventDefault();
 
@@ -1921,7 +1918,6 @@ require([
           let classes = [];
           let noGeom = false;
 
-          // Assuming there's only one div inside the li, you can use:
           let nestedDiv = targetElement.querySelector(".listText");
 
           if (nestedDiv) {
@@ -1966,7 +1962,6 @@ require([
       });
 
       $(document).ready(function () {
-        // Add click event listener to the dynamically generated buttons with class 'justZoom'
         $(document).on("click", ".justZoom", function (event) {
           event.stopPropagation();
           event.preventDefault();
@@ -2531,10 +2526,11 @@ require([
         let pointGraphic;
         let pointLocation;
         let pointGisLink;
+        let clickEvent = false;
         function createList(features) {
           features.forEach(function (feature) {
             // PUT BACK TO FILTER OUT EMPTY OWNERS
-            if (feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") {
+            if ((feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") && !lasso && !clickEvent) {
               return;
             } else {
               let objectId = feature.attributes["OBJECTID"];
@@ -2630,9 +2626,12 @@ require([
               );
             }
           });
+          lasso = false
+          clickEvent = false
         }
 
         if (e && e != undefined) {
+          clickEvent = true
           pointGraphic = features[0].attributes.OBJECTID;
           pointLocation = features[0].attributes.Location;
           pointGisLink = features[0].attributes.GIS_LINK;
@@ -2702,22 +2701,12 @@ require([
         ClickEvent,
         tableSearch
       ) {
-
         let owner = polygonGeometries.features[0].attributes.Owner;
-        if (owner == "RESIDENT") {
+        let count;
+        if (owner == "RESIDENT" && (!ClickEvent)) {
           return 
         } else {
 
-        
-        let count;
-        let countCondos;
-        
-
-        console.log(polygonGeometries)
-
-       
-
-        // formats of queries from table and feature layer different
         if (tableSearch) {
           features = polygonGeometries;
         } else {
@@ -2941,7 +2930,7 @@ require([
 
             buildAndQueryTable(bufferResults, lassoBuffer);
 
-            lasso = false;
+            lasso = true;
           });
         }
 
@@ -3389,7 +3378,7 @@ require([
           $("#select-button").removeClass("btn-warning");
         }
 
-        lasso = false;
+        // lasso = true;
         select = false;
       }
 
@@ -3952,8 +3941,11 @@ require([
               : ""; // Add a tab in front to preserve leading zeros
             let Location = feature.attributes["Location"] || "";
             let MBL = feature.attributes["MBL"] || "";
-            // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
+
+            MBL = MBL.replace(/"/g, '""'); // Escape any existing double quotes
+            MBL = `="${MBL}"`; // Wrap in ="..." to force text in Excel
+      
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}",${MBL},"${Location}"\n`;
           });
           // Create blob
           const blob = new Blob([csvContent], {
@@ -4006,8 +3998,10 @@ require([
             let Location = feature.location || "";
             let MBL = feature.MBL || "";
 
-            // Append data to CSV content
-            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}","${MBL}","${Location}"\n`;
+            MBL = MBL.replace(/"/g, '""'); // Escape any existing double quotes
+            MBL = `="${MBL}"`; // Wrap in ="..." to force text in Excel 
+
+            csvContent += `"${owner}","${coOwner}","${mailingAddress}","${mailingAddress2}","${Mailing_City}","${Mail_State}","${Mailing_Zip}",${MBL},"${Location}"\n`;
           });
 
           // Create blob
@@ -4308,161 +4302,6 @@ require([
           $("#abutters-spinner").hide();
           $("#abutters-title").html(`Abutting Parcels (${totalResults})`);
         });
-        $("#results-div").css("height", "300px");
-        $("#exportResults").show();
-        $("#csvExportResults").show();
-      }
-
-      // THIS IS WHERE YOU WOULD MAKE UNITS A VARIABLE FOR USER SELECTION
-      function queryDetailsBuffer(geometry) {
-        // Loader.open();
-        let bothResults = [];
-
-        const abuttersDiv = document.getElementById("parcel-feature");
-        abuttersDiv.innerHTML = "";
-
-        const parcelQuery = {
-          spatialRelationship: "intersects", // Relationship operation to apply
-          geometry: geometry, // The sketch feature geometry
-          outFields: ["*"], // Attributes to return
-          returnGeometry: true,
-          units: queryUnits,
-        };
-
-        exportResults = [];
-
-        if (sessionStorage.getItem("condos") === "no") {
-          noCondosLayer.queryFeatures(parcelQuery).then((results) => {
-            bothResults = [...results.features];
-
-            const seenLocations = new Set();
-
-            let noDupBothResults = bothResults.filter((item) => {
-              if (seenLocations.has(item.attributes.OBJECTID)) {
-                return false;
-              }
-              seenLocations.add(item.attributes.OBJECTID);
-              return true;
-            });
-
-            let foundLocs = bothResults.filter((element) =>
-              seenLocations.has(element.attributes.OBJECTID)
-            );
-
-            totalResults = bothResults.length;
-            let noResultDups = bothResults;
-
-            let finalResults = noResultDups.filter(
-              (item, index) => noResultDups.indexOf(item) === index
-            );
-
-            lastResults = finalResults;
-
-            exportResults = bothResults;
-
-            exportCsv = foundLocs;
-
-            // console.log(lastResults);
-            foundLocs.forEach(function (feature) {
-              let locationGISLINK = feature.attributes["GIS_LINK"];
-              let objectID = feature.attributes["OBJECTID"];
-              let owner = feature.attributes["Owner"];
-              let coOwner = feature.attributes["Co_Owner"];
-              let mailingAddress = feature.attributes["Mailing_Address_1"];
-              let mailingAddress2 = feature.attributes["Mailing_Address_2"];
-              let Mailing_City = feature.attributes["Mailing_City"];
-              let Mail_State = feature.attributes["Mail_State"];
-              let Mailing_Zip = feature.attributes["Mailing_Zip"];
-
-              const listGroup = document.createElement("ul");
-              listGroup.classList.add("row");
-              listGroup.classList.add("list-group");
-              listGroup.classList.add("abutters-list");
-
-              const listItem = document.createElement("li");
-              listItem.classList.add("abutters-group-item", "col-12");
-
-              let listItemHTML = "";
-
-              listItemHTML = ` ${owner} ${coOwner} <br> ${mailingAddress} ${mailingAddress2} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
-
-              // Append the new list item to the list
-              listItem.innerHTML += listItemHTML;
-
-              listItem.setAttribute("data-id", locationGISLINK);
-              listItem.setAttribute("object-id", objectID);
-
-              listGroup.appendChild(listItem);
-              abuttersDiv.appendChild(listGroup);
-              $("#abutters-spinner").hide();
-              $("#abutters-title").html(`Abutting Parcels (${totalResults})`);
-            });
-          });
-        } else {
-          CondosLayer.queryFeatures(parcelQuery).then((results2) => {
-            bothResults = [...results2.features];
-
-            const seenLocations = new Set();
-
-            let noDupBothResults = bothResults.filter((item) => {
-              if (seenLocations.has(item.attributes.OBJECTID)) {
-                return false;
-              }
-              seenLocations.add(item.attributes.OBJECTID);
-              return true;
-            });
-
-            let foundLocs = bothResults.filter((element) =>
-              seenLocations.has(element.attributes.OBJECTID)
-            );
-
-            totalResults = bothResults.length;
-            let noResultDups = bothResults;
-
-            let finalResults = noResultDups.filter(
-              (item, index) => noResultDups.indexOf(item) === index
-            );
-
-            lastResults = finalResults;
-            exportResults = bothResults;
-            exportCsv = foundLocs;
-
-            foundLocs.forEach(function (feature) {
-              let locationGISLINK = feature.attributes["GIS_LINK"];
-              let objectID = feature.attributes["OBJECTID"];
-              let owner = feature.attributes["Owner"];
-              let coOwner = feature.attributes["Co_Owner"];
-              let mailingAddress = feature.attributes["Mailing_Address_1"];
-              let mailingAddress2 = feature.attributes["Mailing_Address_2"];
-              let Mailing_City = feature.attributes["Mailing_City"];
-              let Mail_State = feature.attributes["Mail_State"];
-              let Mailing_Zip = feature.attributes["Mailing_Zip"];
-
-              const listGroup = document.createElement("ul");
-              listGroup.classList.add("row");
-              listGroup.classList.add("list-group");
-              listGroup.classList.add("abutters-list");
-
-              const listItem = document.createElement("li");
-              listItem.classList.add("abutters-group-item", "col-12");
-
-              let listItemHTML = "";
-
-              listItemHTML = ` ${owner} ${coOwner} <br> ${mailingAddress} ${mailingAddress2} <br> ${Mailing_City}, ${Mail_State} ${Mailing_Zip}`;
-
-              // Append the new list item to the list
-              listItem.innerHTML += listItemHTML;
-
-              listItem.setAttribute("data-id", locationGISLINK);
-              listItem.setAttribute("object-id", objectID);
-
-              listGroup.appendChild(listItem);
-              abuttersDiv.appendChild(listGroup);
-              $("#abutters-spinner").hide();
-              $("#abutters-title").html(`Abutting Parcels (${totalResults})`);
-            });
-          });
-        }
         $("#results-div").css("height", "300px");
         $("#exportResults").show();
         $("#csvExportResults").show();
@@ -5087,7 +4926,7 @@ require([
 
         let detailsHTML = ''
 
-        if (AccountType.toUpperCase() == 'CONDOMAIN') {
+        if (AccountType?.toUpperCase() == 'CONDOMAIN') {
            detailsHTML = `
             <div style="padding-left: 20px; padding-top: 20px;">
               <button
@@ -5651,6 +5490,12 @@ require([
         abuttersDiv.appendChild(listGroup);
       };
 
+      function CheckResident(searchTerm, feature) {
+        const Location = feature.attributes?.Location
+        const containsSearchTerm = Location.includes(searchTerm)
+        return containsSearchTerm
+      }
+
       // LOGIC FOR SEARCH OF FEATURE LAYERS AND RELATED RECORDS
 
       const runQuery = (e, filterQuery, lassoquery) => {
@@ -5728,8 +5573,10 @@ require([
                 ) {
                   triggerfromNoCondos = true;
                 }
+                
                 features.forEach(function (feature) {
-                  if (feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") {
+                  const residentCheck = CheckResident(searchTerm, feature)
+                  if (feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT" && !residentCheck) {
                     return;
                   } else {
                     let objectId = feature.attributes["OBJECTID"];
