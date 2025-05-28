@@ -2704,11 +2704,12 @@ require([
         let owner;
         let count;
         
-        if (polygonGeometries.length > 0) {
+        if (polygonGeometries.features.length > 0) {
          owner = polygonGeometries.features[0].attributes.Owner;
         }
 
         if (owner == "RESIDENT" && (!ClickEvent)) {
+          console.log('serach on resident not clicking')
           return 
         } else {
 
