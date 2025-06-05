@@ -1079,7 +1079,7 @@ calcite-slider::part(tick) {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   color: antiquewhite;
   padding-left: 30px;
   /* background-color: rgba(0, 0, 0, 0.5); */
@@ -1087,7 +1087,7 @@ calcite-slider::part(tick) {
 }
 
 #detailBox {
-  height: 100%;
+  /* height: 100%; */
 }
 
 .details {
