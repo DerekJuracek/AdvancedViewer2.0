@@ -68,9 +68,8 @@ require([
 
   // Create a regex pattern to match allowed config file names
   let allowedNamesPattern = configFiles.join("|");
-  let urlPattern = new RegExp(
-    `\\?viewer=cama\\/(${allowedNamesPattern})(\\&\\w+=\\w+)*$`
-  );
+  let urlPattern = new RegExp(`\\?viewer=cama\\/(${allowedNamesPattern})(\\&\\w+=[\\w-]+)*$`);
+  
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
