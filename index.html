@@ -25,7 +25,7 @@
             return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
         }
         function launchMobileApp() {
-            window.location.href = '/mobile/mobile_app.html';
+            window.location.href = 'mobile/mobile_app.html';
         }
         if (isMobileDevice()) {
             document.write("<div style=\"font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:1000px;\"><h1>Device Detection</h1><p>Mobile device detected! Launching mobile app...</p></div>");
