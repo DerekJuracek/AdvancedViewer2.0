@@ -19,17 +19,31 @@
       rel="stylesheet"
       href="https://js.arcgis.com/4.27/esri/themes/dark/main.css"
     />
-    <script>
+  <script>
+        // Clear document to prevent rendering
+        document.open();
+        document.write('<html><body style="margin:0;background:#f0f0f0;"><div style="font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:400px;"><h1>Device Detection</h1><p>Checking device...</p></div></body></html>');
+        document.close();
+
         function isMobileDevice() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
         }
+
         function launchMobileApp() {
-            window.location.href = 'mobile/mobile_app.html';
+            window.location.replace('mobile/points.html'); // Use replace to avoid adding to history
         }
+
+        // Run detection immediately
         if (isMobileDevice()) {
-            document.write("<div style=\"font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:1000px;\"><h1>Device Detection</h1><p>Mobile device detected! Launching mobile app...</p></div>");
-            setTimeout(launchMobileApp, 1000);
+            // Update message
+            document.body.innerHTML = '<div style="font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:400px;"><h1>Device Detection</h1><p>Mobile device detected! Launching mobile app...</p></div>';
+            setTimeout(launchMobileApp, 1000); // Redirect after 1 second
+        } else {
+            // Clear temporary content and let the original page load
+            document.open();
+            document.write(''); // Reset document
+            document.close();
         }
     </script>
     <script
