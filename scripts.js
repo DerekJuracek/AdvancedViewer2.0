@@ -4376,7 +4376,7 @@ require([
         detailsHandleUsed = "detailClick";
        
         let features = item[0].attributes;
-        let AccountType = features.ACCOUNT_TYPE === undefined ? "" : features.ACCOUNT_TYPE
+        let AccountType = features.ACCOUNT_TYPE === null ? "" : features.ACCOUNT_TYPE
         let Location = features.Location === undefined ? "" : features.Location;
         let locationUniqueId =
           features.Uniqueid === undefined ? "" : features.Uniqueid;
@@ -4800,7 +4800,7 @@ require([
         }
 
         let AccountType =
-        matchedObject.Account_Type === undefined ? "" : matchedObject.Account_Type;
+        matchedObject.Account_Type === null ? "" : matchedObject.Account_Type;
         let Location =
           matchedObject.location === undefined ? "" : matchedObject.location;
         let locationUniqueId =
