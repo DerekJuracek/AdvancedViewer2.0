@@ -19,33 +19,7 @@
       rel="stylesheet"
       href="https://js.arcgis.com/4.27/esri/themes/dark/main.css"
     />
-  <script>
-        // Clear document to prevent rendering
-        document.open();
-        document.write('<html><body style="margin:0;background:#f0f0f0;"><div style="font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:400px;"><h1>Device Detection</h1><p>Checking device...</p></div></body></html>');
-        document.close();
 
-        function isMobileDevice() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
-        }
-
-        function launchMobileApp() {
-            window.location.replace('mobile/mobile_app.html'); // Use replace to avoid adding to history
-        }
-
-        // Run detection immediately
-        if (isMobileDevice()) {
-            // Update message
-            document.body.innerHTML = '<div style="font-family:Arial,sans-serif;text-align:center;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:400px;"><h1>Device Detection</h1><p>Mobile device detected! Launching mobile app...</p></div>';
-            setTimeout(launchMobileApp, 1000); // Redirect after 1 second
-        } else {
-            // Clear temporary content and let the original page load
-            document.open();
-            document.write(''); // Reset document
-            document.close();
-        }
-    </script>
     <script
       type="module"
       src="https://js.arcgis.com/calcite-components/1.10.0/calcite.esm.js"
@@ -1311,5 +1285,5 @@
 
   </body>
   <script src="https://js.arcgis.com/4.27/"></script>
-  <script src="scripts.min.js?v=1.0.13"></script>
+  <script src="scripts.min.js?v=1.0.14"></script>
 </html>
