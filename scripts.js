@@ -1029,13 +1029,6 @@ require([
         },
       ];
 
-      // CondosTable.load().then(() => {
-      //   webmap.tables.add(CondosTable);
-      // });
-      // noCondosTable.load().then(() => {
-      //   webmap.tables.add(noCondosTable);
-      // });
-
       view.when(function () {
         let watchLayer;
         // Assuming the icon is initially set to "plus" for all items
@@ -2783,7 +2776,8 @@ require([
             // will zoom to extent of adding and deselecting
             //view.goTo(polygonGraphics);
           } else {
-            graphicsLayer.addMany(polygonGraphics2);
+            graphicsLayer.addMany(polygonGraphics2)
+           
           }
         } else {
           if (tableSearch) {
@@ -2807,6 +2801,7 @@ require([
 
             if (polygonGraphics2.length >= 1) {
               graphicsLayer.addMany(polygonGraphics2);
+            
             }
 
             view.goTo({
@@ -2849,7 +2844,6 @@ require([
               });
             } else {
               graphicsLayer.addMany(polygonGraphics2);
-              
               if (polygonGraphics2.length > 0) {
                 // Step 1: Extract extents of all polygon graphics
                 const extents = polygonGraphics2.map(graphic => graphic.geometry.extent);
@@ -3637,7 +3631,9 @@ require([
           ) {
             backButtonPanelShowSelect();
             view.graphics.removeAll();
+            console.log(polygonGraphics)
             view.graphics.addMany(polygonGraphics);
+         
             if (polygonGraphics.length > 1) {
                 // Step 1: Extract extents of all polygon graphics
                 const extents = polygonGraphics.map(graphic => graphic.geometry.extent);
@@ -5217,6 +5213,7 @@ require([
                   // NoZoomDetails = true;
                 }
               });
+              view.refresh()
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
             let query = noCondosLayer.createQuery();
