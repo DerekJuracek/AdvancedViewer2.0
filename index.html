@@ -3,75 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title id="tab-title">Advanced CAMA</title>
-
-  <style>
-    body {
-      margin: 0;
-      background: #f0f0f0;
-      font-family: Arial, sans-serif;
-    }
-    .detection-message {
-      text-align: center;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      max-width: 400px;
-    }
-  </style>
+  <title>Redirecting...</title>
 </head>
 <body>
-  <div id="message" class="detection-message">
-    <h1>Device Detection</h1>
-    <p>Checking device...</p>
-  </div>
-
   <script>
-
-    function getQueryString() {
-      return window.location.search; // Includes the '?' prefix
-    }
-
     function isMobileDevice() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
     }
 
-    function launchDesktopApp() {
-      console.log(getQueryString())
-      console.log(window.location)
-      //window.location.replace('home.html' + getQueryString());
-    }
+    const query = window.location.search; // Preserves original query string
+    const hash = window.location.hash;    // Preserves hash (if any)
 
-    function launchMobileApp() {
-      window.location.replace('mobile/mobile_app.html');
+    if (isMobileDevice()) {
+      // Mobile: redirect to mobile version and preserve parameters
+      window.location.replace('mobile/mobile_app.html' + query + hash);
+    } else {
+      // Desktop: redirect to full GitHub Pages URL with hardcoded viewer param
+      window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/home.html?viewer=cama/northcanaanct' + hash);
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const message = document.getElementById('message');
-      if (isMobileDevice()) {
-        message.innerHTML = `
-          <h1>Device Detection</h1>
-          <p>Mobile device detected! Launching mobile app...</p>
-        `;
-        setTimeout(launchMobileApp, 200);
-      } else {
-        message.innerHTML = `
-          <h1>Device Detection</h1>
-          <p>Desktop detected! Launching desktop app...</p>
-        `;
-        setTimeout(launchDesktopApp, 200);
-      }
-    });
   </script>
 </body>
 </html>
