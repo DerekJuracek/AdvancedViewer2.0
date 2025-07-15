@@ -36,13 +36,18 @@
   </div>
 
   <script>
+
+    function getQueryString() {
+      return window.location.search; // Includes the '?' prefix
+    }
+
     function isMobileDevice() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
     }
 
     function launchDesktopApp() {
-      window.location.replace('home.html');
+      window.location.replace('home.html' + getQueryString());
     }
 
     function launchMobileApp() {
@@ -56,13 +61,13 @@
           <h1>Device Detection</h1>
           <p>Mobile device detected! Launching mobile app...</p>
         `;
-        setTimeout(launchMobileApp, 1000);
+        setTimeout(launchMobileApp, 200);
       } else {
         message.innerHTML = `
           <h1>Device Detection</h1>
           <p>Desktop detected! Launching desktop app...</p>
         `;
-        setTimeout(launchDesktopApp, 1000);
+        setTimeout(launchDesktopApp, 200);
       }
     });
   </script>
