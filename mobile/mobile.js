@@ -46,6 +46,7 @@ require([
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
+    console.log(configUrl)
     //$("#whole-app").show();
   } else if (
     window.location.href === "https://terrenogis.com" ||
@@ -64,6 +65,7 @@ require([
     isCondosLayer: "",
     noCondoLayer: "",
   };
+  console.log(configUrl)
 
   fetch(configUrl)
     .then((response) => response.json())
@@ -106,7 +108,15 @@ require([
       configVars.includePermitLink = config.includePermitLink;
       configVars.scale = config.scale;
 
+
+    //document.getElementById("AccessorName").innerHTML = config.accessorName;
+      $(".help-url").attr("href", configVars.helpUrl);
+      document.getElementById("title").innerHTML = configVars.title;
+      //document.getElementById("imageContainer").src = configVars.welcomeImage;
+      //document.getElementById("tab-title").innerHTML = configVars.tabTitle;
+
     });
+
 
     const searchGraphicsLayers = new GraphicsLayer();
 

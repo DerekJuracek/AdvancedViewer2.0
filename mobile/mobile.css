@@ -257,11 +257,8 @@ width: 250px !important;
     width: 100%;
   }
 
-
-
-
 .btn-info {
-  background-color: rgba(127, 42, 145, 0.8) !important;
+  background-color: rgba(127, 42, 145, 0.9) !important;
   border-color: #ccc;
 }
 
@@ -462,7 +459,7 @@ main {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001; /* make sure it's above the map */
-  width: fit-content;
+  width: 90%;
   z-index: 1000;
   border-radius: 15px 15px 15px 15px;
   overflow-y: visible;

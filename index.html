@@ -18,7 +18,7 @@
 
     if (isMobileDevice()) {
       // Mobile: redirect to mobile version and preserve parameters
-      window.location.replace('mobile/mobile_app.html' + query + hash);
+      window.location.replace('mobile_app.html' + query + hash);
     } else {
       if (envr == 'dev') {
         window.location.replace('http://127.0.0.1:5501/index.html' + query + hash)
