@@ -5216,7 +5216,7 @@ require([
                   // NoZoomDetails = true;
                 }
               });
-              view.refresh()
+       
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
             let query = noCondosLayer.createQuery();
