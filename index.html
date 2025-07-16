@@ -7,6 +7,7 @@
 </head>
 <body>
   <script>
+    let envr = 'dev'
     function isMobileDevice() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
@@ -19,8 +20,11 @@
       // Mobile: redirect to mobile version and preserve parameters
       window.location.replace('mobile/mobile_app.html' + query + hash);
     } else {
+      if (envr == 'dev') {
+        window.location.replace('http://127.0.0.1:5501/index.html' + query + hash)
+      }
       // Desktop: redirect to full GitHub Pages URL with hardcoded viewer param
-      window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/home.html?viewer=cama/northcanaanct' + hash);
+      window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/home.html' + query + hash);
     }
   </script>
 </body>
