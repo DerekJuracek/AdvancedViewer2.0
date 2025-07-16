@@ -131,7 +131,6 @@ require([
         map: webmap,
         units: "imperial",
         scale: configVars.scale,
-        //zoom: `${configVars.zoom}`,
         popupEnabled: false,
         ui: {
           components: ["attribution"],

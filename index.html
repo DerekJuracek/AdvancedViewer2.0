@@ -13,8 +13,8 @@
       return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
     }
 
-    const query = window.location.search; // Preserves original query string
-    const hash = window.location.hash;    // Preserves hash (if any)
+    const query = window.location.search;
+    const hash = window.location.hash;   
 
     if (isMobileDevice()) {
       // Mobile: redirect to mobile version and preserve parameters
