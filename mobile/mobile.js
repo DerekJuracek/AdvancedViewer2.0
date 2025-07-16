@@ -70,7 +70,6 @@ require([
   fetch(configUrl)
     .then((response) => response.json())
     .then((config) => {
-      const layers = config.layers;
       configVars.mapId = config.webmapId || "6448b08504de4244973a28305b18271f";
       configVars.condoLayer = config.condoLayer;
       configVars.noCondoLayer = config.noCondoLayer;
@@ -122,7 +121,7 @@ require([
 
       const webmap = new WebMap({
         portalItem: {
-          id: 'a9b7b11618104b5284db5ef5d7369d95',
+          id: configVars.mapId,
         },
         layers: [searchGraphicsLayers],
       });
