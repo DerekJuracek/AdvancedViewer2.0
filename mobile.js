@@ -136,5 +136,108 @@ require([
           components: ["attribution"],
         },
       });
+
+       const noCondosTable = new FeatureLayer({
+        url: `${configVars.masterTable}`,
+      });
+
+
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", function (e) {
+          firstList = [];
+         
+          $("#results-div").css("left", "0px");
+          $("#dropdown").toggleClass("expanded");
+          $("#dropdown").hide();
+        
+
+          var searchTerm = e.target.value.toUpperCase();
+          firstList = [];
+          secondList = [];
+          polygonGraphics = [];
+          $("#select-button").removeClass("btn-warning");
+          $("#searchInput ul").remove();
+          $("#suggestions").hide();
+         
+          $("#dropdown").removeClass("expanded");
+          $("#dropdown").hide();
+        
+       
+
+          $("#dropdown").show();
+       
+
+          let suggestionsContainer = document.getElementById("suggestions");
+          suggestionsContainer.innerHTML = "";
+          $("#featureWid").empty();
+          view.graphics.removeAll();
+
+          // Construct your where clause
+          let whereClause = `
+            Street_Name LIKE '%${searchTerm}%' OR 
+            MBL LIKE '%${searchTerm}%' OR 
+            Location LIKE '%${searchTerm}%' OR 
+            Co_Owner LIKE '%${searchTerm}%' OR 
+            Uniqueid LIKE '%${searchTerm}%' OR 
+            Owner LIKE '%${searchTerm}%' OR
+            GIS_LINK LIKE '%${searchTerm}%'
+        `;
+
+          let query = noCondosTable.createQuery();
+          query.where = whereClause;
+          query.returnGeometry = false;
+          query.outFields = [
+            "Street_Name",
+            "MBL",
+            "Location",
+            "Co_Owner",
+            "Uniqueid",
+            "Owner",
+            "GIS_LINK",
+          ];
+
+          let uniqueSuggestions = new Set();
+
+          noCondosTable.queryFeatures(query).then((response) => {
+            let suggestionsContainer = document.getElementById("suggestions");
+            suggestionsContainer.innerHTML = ""; // Clear previous suggestions
+
+            response.features.forEach((feature) => {
+              [
+                "Street_Name",
+                "MBL",
+                "Location",
+                "Co_Owner",
+                "Uniqueid",
+                "Owner",
+                "GIS_LINK",
+              ].forEach((fieldName) => {
+                let value = feature.attributes[fieldName];
+                if (
+                  value &&
+                  value.includes(searchTerm) &&
+                  !uniqueSuggestions.has(value)
+                ) {
+                  let suggestionDiv = document.createElement("div");
+                  suggestionDiv.className = "list-group-item";
+                  suggestionDiv.innerText = `${value}`;
+
+                  suggestionsContainer.appendChild(suggestionDiv);
+
+                  // Add the value to the Set
+                  uniqueSuggestions.add(value);
+                  suggestionsContainer.style.display = "block";
+
+                  suggestionDiv.addEventListener("click", function (e) {
+                    clickedToggle = true;
+                    runQuery(e.target.innerHTML);
+                    clickedToggle = false;
+                  });
+                }
+              });
+            });
+          });
+        });
     });
 })
