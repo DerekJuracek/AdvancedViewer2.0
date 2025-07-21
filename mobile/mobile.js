@@ -114,7 +114,7 @@ require([
       //document.getElementById("imageContainer").src = configVars.welcomeImage;
       //document.getElementById("tab-title").innerHTML = configVars.tabTitle;
 
-    });
+  
 
 
     const searchGraphicsLayers = new GraphicsLayer();
@@ -136,5 +136,5 @@ require([
           components: ["attribution"],
         },
       });
-
+    });
 })
