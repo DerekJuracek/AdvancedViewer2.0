@@ -4413,7 +4413,7 @@ require([
         let Sale_Price =
           features.Sale_Price === undefined
             ? ""
-            : formatNumber(features.Assessed_Total);
+            : formatNumber(features.Sale_Price);
         let Vol_Page = features.Vol_Page === undefined ? "" : features.Vol_Page;
 
         let Prior_Appraised_Total =

@@ -46,7 +46,7 @@ require([
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
-    console.log(configUrl)
+
     //$("#whole-app").show();
   } else if (
     window.location.href === "https://terrenogis.com" ||
@@ -65,7 +65,6 @@ require([
     isCondosLayer: "",
     noCondoLayer: "",
   };
-  console.log(configUrl)
 
   fetch(configUrl)
     .then((response) => response.json())
@@ -146,6 +145,22 @@ require([
 
       view.when(() => {
         configVars.homeExtent = view.extent;
+      });
+
+      const noCondosLayer = new FeatureLayer({
+        url: `${configVars.noCondoLayer}`,
+        visible: false,
+        popupEnabled: true,
+        title: "Parcel Boundaries",
+        id: "noCondoLayer",
+      });
+
+      const CondosLayer = new FeatureLayer({
+        url: `${configVars.condoLayer}`,
+        visible: false,
+        popupEnabled: true,
+        title: "Parcel Boundaries",
+        id: "condoLayer",
       });
 
       const CondosTable = new FeatureLayer({
@@ -268,22 +283,409 @@ require([
           );
       }
 
+      function buildFilterQuery(query) {
+          let tableQuery;
+            if (sessionStorage.getItem("condos") === "no") {
+              tableQuery = noCondosLayer.createQuery();
+              tableQuery.where = query.where;
+              tableQuery.returnDistinctValues = false;
+              tableQuery.returnGeometry = true;
+              tableQuery.outFields = ["*"];
+            } else {
+              tableQuery = CondosLayer.createQuery();
+              tableQuery.where = query.where;
+              tableQuery.returnDistinctValues = false;
+              tableQuery.returnGeometry = true;
+              tableQuery.outFields = ["*"];
+            }
+
+          return tableQuery;
+      }
+
+        let features;
+
+      function addPolygons(
+        polygonGeometries,
+        graphicsLayer,
+        ClickEvent,
+        tableSearch
+      ) {
+        let owner;
+        let count;
+        
+        if (polygonGeometries.features.length > 0) {
+         owner = polygonGeometries.features[0].attributes.Owner;
+        }
+
+        if (owner == "RESIDENT" && (!ClickEvent)) {
+          console.log('serach on resident not clicking')
+          return 
+        } else {
+
+        if (tableSearch) {
+          features = polygonGeometries;
+        } else {
+          features = polygonGeometries.features;
+        }
+
+      
+
+        let polygonGraphics2 = [];
+        let bufferGraphicId;
+        let pointGisLink;
+
+        var fillSymbol = {
+          type: "simple-fill",
+          color: [127, 42, 145, 0.4],
+          outline: {
+            color: [127, 42, 145, 0.8],
+            width: 2,
+          },
+        };
+
+        if (ClickEvent) {
+          let array = [];
+          bufferGraphicId = polygonGeometries.features[0].attributes.OBJECTID;
+          pointGisLink = features[0].attributes.GIS_LINK;
+
+          const graphic = new Graphic({
+            geometry: features[0].geometry,
+            symbol: fillSymbol,
+            id: bufferGraphicId,
+          });
+
+          polygonGraphics2.push(graphic);
+
+          countCondos = firstList.filter(
+            (g) => g.GIS_LINK === pointGisLink
+          ).length;
+
+          count = view.graphics.some((g) => g.id === bufferGraphicId);
+
+          if (count) {
+            const firstIndex = view.graphics.findIndex(
+              (g) => g.id === bufferGraphicId
+            );
+
+            view.graphics.removeAt(firstIndex);
+
+            const graphicIndex = polygonGraphics.findIndex(
+              (g) => g.id === bufferGraphicId
+            );
+
+            if (polygonGraphics.length === 1) {
+              polygonGraphics.splice(0, 1);
+            } else {
+              polygonGraphics.splice(graphicIndex, 1);
+            }
+
+            if (polygonGraphics.length === 0) {
+              if (!DetailsHandle) {
+                DetailsHandle = view.on("click", handleDetailsClick);
+              }
+              if (clickHandle) {
+                clickHandle?.remove();
+                clickHandle = null;
+              }
+              clickHandle = view.on("click", handleClick);
+            }
+
+            // will zoom to extent of adding and deselecting
+            //view.goTo(polygonGraphics);
+          } else {
+            graphicsLayer.addMany(polygonGraphics2)
+           
+          }
+        } else {
+          if (tableSearch) {
+            // First, filter out features without geometry
+            const featuresWithGeometry = features.filter(
+              (feature) => feature.geometry
+            );
+
+            // Now, map each feature with geometry to a new graphic and add it to the polygonGraphics2 array
+            featuresWithGeometry.forEach((feature) => {
+              const bufferGraphicId = feature.attributes.OBJECTID;
+
+              const graphic = new Graphic({
+                geometry: feature.geometry,
+                symbol: fillSymbol,
+                id: bufferGraphicId,
+              });
+
+              polygonGraphics2.push(graphic);
+            });
+
+            if (polygonGraphics2.length >= 1) {
+              graphicsLayer.addMany(polygonGraphics2);
+            
+            }
+
+            view.goTo({
+              target: polygonGraphics,
+              zoom: 18,
+              // extent: newExtent,
+            });
+          } else {
+            let graphic3;
+            regSearch = true;
+            // regular search polygons added here
+            features
+              .map(function (feature) {
+                bufferGraphicId = feature.attributes.OBJECTID;
+                if (!feature.geometry || tableSearch) {
+                  return null; // Skip this feature as it has no geometry
+                }
+                graphic3 = new Graphic({
+                  geometry: feature.geometry,
+                  symbol: fillSymbol,
+                  id: bufferGraphicId,
+                });
+                polygonGraphics2.push(graphic3);
+              })
+              .filter((graphic) => graphic !== null);
+
+            if (polygonGraphics2.length == 1) {
+              graphicsLayer.addMany(polygonGraphics2);
+
+              let geometry = features[0].geometry;
+              const geometryExtent = geometry.extent;
+              const center = geometryExtent.center;
+              const zoomOutFactor = 2.0; // Adjust as needed
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view.goTo({
+                target: polygonGraphics2,
+                // zoom: 11,
+                extent: newExtent,
+              });
+            } else {
+              graphicsLayer.addMany(polygonGraphics2);
+              if (polygonGraphics2.length > 0) {
+                // Step 1: Extract extents of all polygon graphics
+                const extents = polygonGraphics2.map(graphic => graphic.geometry.extent);
+              
+                // Step 2: Combine all extents into a single full extent
+                const fullExtent = extents.reduce((acc, extent) => acc.union(extent), extents[0]);
+              
+                // Step 3: Expand the full extent by the zoom-out factor
+                const zoomOutFactor = 3.0; // Adjust as needed
+                const newExtent = fullExtent.expand(zoomOutFactor);
+              
+                // Step 4: Zoom the view to the expanded extent
+                view.goTo({
+                  target: newExtent
+                }).catch(err => {
+                  console.error("Error zooming to extent:", err);
+                });
+              } else {
+                console.warn("No graphics available to calculate extent.");
+              }
+              
+            }
+          }
+        }
+
+        if (!polygonGraphics) {
+          polygonGraphics = polygonGraphics2;
+        }
+
+        if (ClickEvent && !count) {
+          let id = polygonGraphics2[0].id;
+          polygonGraphics = [...polygonGraphics, polygonGraphics2[0]];
+          removeFromList = id;
+        }
+        if (regSearch) {
+          polygonGraphics = polygonGraphics2;
+        }
+        count = false;
+        regSearch = false;
+      }
+      }
+
+      function queryRelatedFeatureRecords(searchTerm, urlSearch, filterQuery) {
+        if (sessionStorage.getItem("condos") === "no") {
+          noCondosLayer.visible = true;
+        } else {
+          CondosLayer.visible = true;
+        }
+
+        $(".spinner-container").show();
+
+        let whereClause;
+
+        whereClause = `
+          Street_Name LIKE '%${searchTerm}%' OR 
+          MBL LIKE '%${searchTerm}%' OR 
+          Location LIKE '%${searchTerm}%' OR 
+          Co_Owner LIKE '%${searchTerm}%' OR 
+          Uniqueid LIKE '%${searchTerm}%' OR 
+          Owner LIKE '%${searchTerm}%' OR 
+          GIS_LINK LIKE '%${searchTerm}%'
+      `;
+
+        let query;
+        let triggerUrl;
+
+        if (filterQuery) {
+          query = filterQuery;
+        } else if (urlSearchUniqueId) {
+          query = filterQuery;
+          tableSearch = true;
+        } 
+
+
+        if (sessionStorage.getItem("condos") === "no") {
+          noCondosLayer.queryFeatures(query).then(function (result) {
+            triggerUrl = result.features;
+            if (result.features.length >= 0) {
+              // THIS LOGIC RUNS WHERE THERES A CONDO MAIN BUT NO FOOTPRINTS
+              // queries layer, no data, queries table to get gis_link
+              // then gets condo main from layer with gis_link
+              triggerUrl = result.features;
+              noCondosParcelGeom = result.features;
+
+              // if no condos and coming from url search of condiminium like wilton
+              if (triggerfromNoCondos) {
+                let triggerCondo = "";
+                let triggerCondoMain = "";
+                const firstQuery = noCondosTable.createQuery();
+                firstQuery.where = query.where;
+                firstQuery.returnGeometry = false;
+                firstQuery.outFields = ["*"];
+
+                noCondosTable
+                  .queryFeatures(firstQuery)
+                  .then(function (result) {
+                    triggerCondo = result.features;
+                    let data = result.features[0].attributes;
+                    const gis_link = data.GIS_LINK;
+
+                    let query2 = noCondosLayer.createQuery();
+                    query2.where = `GIS_LINK = '${gis_link}'`;
+                    query2.returnGeometry = true;
+                    query2.returnHiddenFields = true; // Adjust based on your needs
+                    query2.outFields = ["*"];
+
+                    return noCondosLayer.queryFeatures(query2); // Return the promise to chain
+                  })
+                  .then(function (response) {
+                    triggerUrl = response.features;
+                    triggerCondoMain = response.features;
+                    noCondosParcelGeom = response.features;
+                    addPolygons(response, view.graphics, "");
+                    processFeatures(response.features);
+                    if (urlSearch) {
+                      setTimeout(() => {
+                        triggerListGroup(triggerCondo, triggerCondoMain, searchTerm);
+                      }, 200)
+                    }
+                  })
+                  .catch(function (error) {
+                    console.error("Error querying features: ", error);
+                  });
+              } else {
+                noCondosParcelGeom = result.features;
+                addPolygons(result, view.graphics, "");
+                processFeatures(result.features);
+                if (urlSearch) {
+                  setTimeout(() => {
+                  triggerListGroup(triggerUrl, searchTerm);
+                }, 200)
+                }
+                triggerfromNoCondos = false;
+              }
+            } else if (result.features.length === 1 && firstList.length > 2) {
+              const firstQuery = noCondosTable.createQuery();
+              firstQuery.where = whereClause;
+              firstQuery.returnGeometry = false;
+              firstQuery.outFields = ["*"];
+
+              noCondosTable.queryFeatures(firstQuery).then(function (result) {
+                addPolygons(result.features);
+                processFeatures();
+                if (urlSearch) {
+                  setTimeout(() => {
+                  triggerListGroup(triggerUrl, searchTerm);
+                  }, 200)
+                }
+              });
+            } else {
+              const firstQuery = noCondosTable.createQuery();
+              firstQuery.where = filterQuery.where;
+              firstQuery.returnGeometry = false;
+              firstQuery.outFields = ["*"];
+
+              if (result.features.length == 0) {
+                noCondosTable
+                  .queryFeatures(firstQuery)
+                  .then(function (result) {
+                    triggerUrl = result.features;
+                    GISLINK = result.features[0].attributes.GIS_LINK;
+                    let uniId = result.features[0].attributes.Uniqueid;
+                    noCondosParcelGeom = result.features;
+                    addPolygons(result, view.graphics);
+                    processFeatures(result.features);
+                    if (urlSearch) {
+                      setTimeout(() => {
+                      needToSearchGisLink = true;
+                      triggerListGroup(triggerUrl, uniId);
+                      }, 200)
+                    }
+                  })
+              }
+            }
+          });
+          // classic search on condos layer
+        } else {
+          CondosLayer.queryFeatures(query).then(function (result) {
+            triggerUrl = result.features;
+            // dont add polygons if not geometry 
+            if (result.features.length > 0) {
+              const getId = result.features[0].attributes.Uniqueid;
+                addPolygons(result, view.graphics, "");
+                if (urlSearch) {
+                  setTimeout(() => {
+                  triggerListGroup(triggerUrl, getId);
+                  }, 200)
+                }
+            }
+
+            processFeatures(result.features);
+          
+          });
+        }
+        // if (clickHandle) {
+        //   clickHandle?.remove();
+        //   clickHandle = null;
+        // }
+        // if (DetailsHandle) {
+        //   DetailsHandle?.remove();
+        //   DetailsHandle = null;
+        // }
+
+        // if (lassoGisLinks) {
+        //   $("#select-button").addClass("btn-warning");
+        //   clickHandle = view.on("click", handleClick);
+        // } else {
+        //   DetailsHandle = view.on("click", handleDetailsClick);
+        //   $("#select-button").removeClass("btn-warning");
+        // }
+
+       
+      }
+
       const runQuery = () => {
         firstList = [];
-        let suggestionsContainer = document.getElementById("suggestions");
-        suggestionsContainer.innerHTML = "";
+        $("#suggestions").val('').html('')
         let features;
         let searchTerm = runQuerySearchTerm;
 
-        if (
-          searchTerm?.length < 3 && !searchTerm
-        ) {
+        if (searchTerm?.length < 3 && !searchTerm) {
           clearContents();
           return;
         } else {
-          $("#dropdown").toggleClass("expanded");
           let query;
-
           if (urlSearchUniqueId) {
             query = filterQuery; // coming from url unique id search
           } else {
@@ -322,7 +724,17 @@ require([
                   }
                 });
 
-               queryRelatedRecords(runQuerySearchTerm, tableSearch, query2);
+              
+
+                let tableSearch = null;
+
+                if (urlSearchUniqueId) {
+                  tableQuery.where = filterQuery.where;
+                  tableSearch = true;
+                }
+
+              const tableQuery = buildFilterQuery(query)
+              queryRelatedFeatureRecords(runQuerySearchTerm, tableSearch, tableQuery);
               }
             })
             .catch((error) => {
@@ -398,16 +810,16 @@ require([
         const currentUrl = window.location.href;
         const newUrl = removeQueryParam("uniqueid", currentUrl);
         window.history.pushState({ path: newUrl }, "", newUrl);
-        // console.log(e.target.value);
+
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
         } else {
           CondosLayer.visible = true;
         }
+        // global search
         runQuerySearchTerm = "";
         $("#searchInput ul").remove();
         $("#searchInput").val = "";
-        $("#select-button").prop("disabled", false);
 
         // Get a reference to the search input field
         const searchInput = document.getElementById("searchInput");
@@ -425,8 +837,6 @@ require([
 
         let suggestionsContainer = document.getElementById("suggestions");
         suggestionsContainer.innerHTML = "";
-
-        detailsHandleUsed == "";
         view.graphics.removeAll();
         polygonGraphics = [];
       }
@@ -445,7 +855,6 @@ require([
           buildSuggestions(runQuerySearchTerm)
         });
 
-         // Hide suggestions when clicking outside
       document.addEventListener("click", function (e) {
         if (e.target.id !== "searchInput") {
           document.getElementById("suggestions").style.display = "none";
@@ -455,6 +864,26 @@ require([
       clearBtn.addEventListener("click", function () {
         clearContents();
       });
+
+          // Helper function to parse and modify URL query parameters
+      function removeQueryParam(key, sourceURL) {
+        let rtn = sourceURL.split("?")[0],
+          param,
+          params_arr = [],
+          queryString =
+            sourceURL.indexOf("?") !== -1 ? sourceURL.split("?")[1] : "";
+        if (queryString !== "") {
+          params_arr = queryString.split("&");
+          for (let i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+              params_arr.splice(i, 1);
+            }
+          }
+          rtn = rtn + "?" + params_arr.join("&");
+        }
+        return rtn;
+      }
 
        function hitQuery() {
         if (sessionStorage.getItem("condos") === "no") {
@@ -473,7 +902,8 @@ require([
 
       document
         .getElementById("searchButton")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (event) {
+          event.preventDefault();
           $("#results-div").css("left", "0px");
           function throttleQuery() {
             clearTimeout(debounceTimer2);
