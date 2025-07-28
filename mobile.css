@@ -449,7 +449,7 @@ main {
 
 .navbar.bg-dark {
   background-color: var(--background-color) !important;
-  margin-top: 3px; 
+  margin-top: 10px; 
   /* padding-top: 0px; */
 }
 
@@ -463,7 +463,7 @@ main {
   z-index: 1000;
   border-radius: 15px 15px 15px 15px;
   overflow-y: visible;
-  height: 105px;
+  /* height: 105px; */
   /* This ensures the navbar is always on top */
 }
 
@@ -526,7 +526,7 @@ ul {
 }
 
 .form-inline {
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   padding-left: 0px;
 }
 

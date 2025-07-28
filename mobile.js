@@ -110,9 +110,8 @@ require([
 
     //document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
-      document.getElementById("title").innerHTML = configVars.title;
-      //document.getElementById("imageContainer").src = configVars.welcomeImage;
-      //document.getElementById("tab-title").innerHTML = configVars.tabTitle;
+      // document.getElementById("title").innerHTML = configVars.title;
+
     const key = "condos";
     const key2 = "No geometry";
   
