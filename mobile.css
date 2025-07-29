@@ -1456,7 +1456,7 @@ calcite-slider::part(tick) {
 }
 
 .content {
-  margin-top: 65px;
+  /* margin-top: 65px; */
   /* height: 400px; */
   overflow-y: auto;
 
