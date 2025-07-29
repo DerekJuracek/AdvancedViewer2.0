@@ -301,7 +301,249 @@ require([
           return tableQuery;
       }
 
-        let features;
+      function sortByOwner(arr) {
+        return arr.sort((a, b) => {
+          const ownerA = a.owner ? a.owner.toLowerCase() : "";
+          const ownerB = b.owner ? b.owner.toLowerCase() : "";
+          return ownerA.localeCompare(ownerB);
+        });
+    }
+
+    function getUniqueArray(firstList) {
+      let seenIds = new Set();
+      let seenUID = new Set();
+      let uniqueArray = firstList.filter((obj) => {
+        if (obj.geometry) {
+          seenIds.add(obj.uniqueId);
+          return true;
+        }
+        return false;
+      });
+
+        firstList.forEach((obj) => {
+          if (!seenIds.has(obj.uniqueId)) {
+            seenUID.add(obj.uniqueId);
+            uniqueArray.push(obj);
+          }
+        });
+
+      return { uniqueArray, seenIds };
+    }
+
+    function hasDuplicateObjectId(objectId, list) {
+      return list.filter((g) => g.objectid === objectId).length > 1;
+    }
+
+    function removeDuplicates(list, objectId, location, gisLink) {
+      if (sessionStorage.getItem("condos") === "yes") {
+        $(`li[object-id="${objectId}"]`).remove();
+        return list.filter(item => item.objectid !== objectId);
+      } else {
+        $(`li[data-id="${gisLink}"]`).remove();
+        return list.filter(item => item.GIS_LINK !== gisLink);
+      }
+    }
+
+    function setupClickHandlers(listGroup) {
+       listGroup.addEventListener("click", function (event) {
+          let shouldZoomTo = true;
+          if (
+            event.target.closest(".justZoom") ||
+            event.target.closest(".justZoomBtn") ||
+            event.target.closest(".pdf-links")
+          ) {
+            return; // Exit the handler early if a button was clicked
+          }
+          // if (clickHandle) {
+          //   clickHandle?.remove();
+          //   clickHandle = null;
+          // }
+
+          // if (DetailsHandle) {
+          //   DetailsHandle?.remove();
+          //   DetailsHandle = null;
+          // }
+          $("#select-button").attr("title", "Select Enabled");
+          let targetElement = event.target.closest("li");
+          if (!targetElement) return;
+
+          // Now you can handle the click event as you would in the individual event listener
+          let itemId = targetElement.getAttribute("data-id");
+          let objectID = targetElement.getAttribute("object-id");
+          zoomToFeature(objectID,  itemId);
+          $("#details-spinner").show();
+          $("#WelcomeBox").hide();
+          $("#featureWid").hide();
+          $("#result-btns").hide();
+          $("#total-results").hide();
+          $("#ResultDiv").hide();
+          $("#abutters-content").hide();
+          $("#details-btns").show();
+          $("#abut-mail").show();
+          $("#detailBox").show();
+          $("#backButton").show();
+          $("#detailsButton").hide();
+          $("#detail-content").empty();
+          $("#selected-feature").empty();
+          $("#exportButtons").hide();
+          $("#exportSearch").hide();
+          $("#exportResults").hide();
+          $("#csvExportResults").hide();
+          $("#csvExportSearch").hide();
+          $("#results-div").css("height", "300px");
+          $("#backButton-div").css("padding-top", "0px");
+          $(".center-container").hide();
+          $("#abutters-attributes").prop("disabled", false);
+          $("#abutters-zoom").prop("disabled", false);
+          if (event.target.closest(".no-zoomto")) {
+            console.log("dont zoom");
+            shouldZoomTo = false;
+          }
+          //buildDetailsPanel(objectID, itemId, shouldZoomTo);
+        });
+    }
+
+    function buildList(uniqueArray) {
+       const resultDiv = document.getElementById("results");
+        const listGroup = document.createElement("ul");
+
+        let zoomToItemId;
+        let Id;
+
+        uniqueArray.forEach(function (feature) {
+          let objectID = feature.objectid;
+          let locationVal = feature.location;
+          let locationUniqueId =
+            feature.uniqueId === undefined
+              ? feature.GIS_LINK
+              : feature.uniqueId;
+          let locationGISLINK = feature.GIS_LINK;
+          let locationCoOwner = feature.coOwner;
+          let locationOwner = feature.owner;
+          let locationMBL = feature.MBL;
+          let locationGeom = feature.geometry;
+          let propertyType = feature.Parcel_Type;
+          // let accountType = feature.Parcel_Type;
+
+          if (configVars.useUniqueIdforParcelMap === "yes") {
+            zoomToItemId = locationUniqueId;
+            Id = locationUniqueId;
+          } else {
+            zoomToItemId = locationGISLINK;
+            Id = locationGISLINK;
+          }
+
+          let ImagePath = feature.Image_Path;
+          let VisionAct = feature.AcctNum === undefined ? "" : feature.AcctNum;
+          const imageUrl = `${configVars.imageUrl}${ImagePath}`;
+
+          listGroup.classList.add("row");
+          listGroup.classList.add("list-group");
+
+          const listItem = document.createElement("li");
+          const imageDiv = document.createElement("li");
+          const linksDiv = document.createElement("tr");
+
+          // Creating the new li for links that will span the full width (col-12)
+          linksDiv.classList.add("col-12", "list-group-item");
+
+            // Constructing the initial part of the inner HTML
+            let linksHTML = `<div class="extra-links">
+            <a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=https://publicweb-gis.s3.amazonaws.com/PDFs/${configVars.parcelMapUrl}/Quick_Maps/QM_${Id}.pdf><span style="font-family:Tahoma;font-size:12px;"><strong>PDF Map</strong></a>`
+            if (configVars.propertyCardPdf == "yes") {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}.PDF><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            } else {
+              linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.propertyCard}${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Property Card</strong></a>`;
+            }
+
+          if (configVars.useVisionForTaxBillUrl === "yes") {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${VisionAct}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          } else {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.tax_bill}&amp;uniqueId=${locationUniqueId}><span style="font-family:Tahoma;font-size:12px;"><strong>Tax Bills</strong></span></a>`;
+          }
+
+          // Conditionally add the "Permits" link if the variable allows it
+          if (configVars.includePermitLink === "yes") {
+            linksHTML += `<a target="_blank" class='pdf-links mx-2' rel="noopener noreferrer" href=${configVars.permitLink}?uniqueid=${locationUniqueId} ><span style="font-family:Tahoma;font-size:12px;"><strong>Permits</strong></a>`;
+          }
+
+          // Closing the div
+          linksHTML += `</div>`;
+
+          // Set the inner HTML of the linksDiv
+          linksDiv.innerHTML = linksHTML;
+
+          imageDiv.innerHTML = `<img class="img-search image" object-id="${objectID}" src="${imageUrl}" alt="Image of ${locationUniqueId}" >`;
+          listItem.classList.add("list-group-item", "col-9");
+          listItem.classList.add("search-list");
+          imageDiv.setAttribute("object-id", objectID);
+          imageDiv.setAttribute("data-id", locationGISLINK);
+
+          imageDiv.classList.add("image-div", "col-3");
+
+          let listItemHTML;
+          let displayNoGeometry;
+
+          if (sessionStorage.getItem(key2) === "yes") {
+            displayNoGeometry = true;
+          } else {
+            displayNoGeometry = false;
+          }
+
+          if (!locationCoOwner && locationGeom) {
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+          } else if (!locationGeom) {
+            listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
+             </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            listItem.classList.add("no-zoomto");
+          } else {
+            listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+          }
+
+          // Append the new list item to the list
+          listItem.innerHTML += listItemHTML;
+          listItem.setAttribute("object-id", objectID);
+          listItem.setAttribute("data-id", locationGISLINK);
+
+          listGroup.appendChild(imageDiv);
+          listGroup.appendChild(listItem);
+          listGroup.appendChild(linksDiv);
+        })
+
+        setupClickHandlers(listGroup);
+        resultDiv.appendChild(listGroup);
+    }
+
+
+      function buildResultsPanel(
+        features,
+        polygonGraphics,
+        e,
+        pointGraphic,
+        pointLocation,
+        pointGisLink
+      ) {
+        $("status-loader").show();
+        $("#results").empty();
+
+        let triggerfromNoCondos = false;
+
+        let { uniqueArray, seenIds } = getUniqueArray(firstList);
+        uniqueArray = sortByOwner(uniqueArray);
+
+         if (!triggerfromNoCondos && hasDuplicateObjectId(pointGraphic, firstList)) {
+            uniqueArray = removeDuplicates(uniqueArray, pointGraphic, pointLocation, pointGisLink);
+         }
+
+        buildList(uniqueArray)
+
+        searchResults = uniqueArray.length;
+        $("#total-results").html(searchResults + " results returned");
+      }
+
+      let features;
 
       function addPolygons(
         polygonGeometries,
@@ -502,6 +744,86 @@ require([
       }
       }
 
+      function processFeatures(features, polygonGraphics, e, silentMode) {
+        let pointGraphic;
+        let pointLocation;
+        let pointGisLink;
+        let clickEvent = false;
+
+        function createList(features) {
+          features.forEach(function (feature) {
+            // PUT BACK TO FILTER OUT EMPTY OWNERS
+            if ((feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") && !lasso && !clickEvent) {
+              return;
+            } else {
+                buildParcelList(feature)
+            }
+          });
+        }
+
+        if (e && e != undefined) {
+          clickEvent = true
+          pointGraphic = features[0].attributes.OBJECTID;
+          pointLocation = features[0].attributes.Location;
+          pointGisLink = features[0].attributes.GIS_LINK;
+
+          const count = firstList.filter(
+            (g) => g.objectid === pointGraphic
+          ).length;
+
+          const countGisLinks = firstList.filter(
+            (g) => g.GIS_LINK === pointGisLink
+          ).length;
+
+          if (count >= 1 || (count == 0 && countGisLinks >= 1)) {
+            createList(features);
+            buildResultsPanel(
+              features,
+              polygonGraphics,
+              e,
+              pointGraphic,
+              pointLocation,
+              pointGisLink
+            );
+          } else {
+            createList(features);
+            buildResultsPanel(features);
+          }
+        } else {
+          if (!features) {
+            buildResultsPanel("", polygonGraphics, e, pointGraphic);
+          } else if (features.length > 1) {
+            // if (!lasso) {
+            //   features = features.filter(
+            //     (item) => item.attributes.ACCOUNT_TYPE != "CONDOMAIN"
+            //   );
+            // }
+            createList(features);
+          } else {
+            createList(features);
+          }
+        }
+
+        if (e) {
+          return;
+        } else {
+          // this logic needs to be sorted, no condos are searched on here
+          // where no geom on condos are building results panel and passing in undefined values
+          // only features is not empty
+
+          // triggerfromNoCondos = true;
+
+          buildResultsPanel(
+            features,
+            polygonGraphics,
+            e,
+            pointGraphic,
+            pointLocation,
+            pointGisLink
+          );
+        }
+      }
+
       function queryRelatedFeatureRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
@@ -679,8 +1001,9 @@ require([
         $("#suggestions").val('').html('')
         let features;
         let searchTerm = runQuerySearchTerm;
+        console.log(searchTerm)
 
-        if (searchTerm?.length < 3 && !searchTerm) {
+        if (searchTerm?.length < 3 || !searchTerm) {
           clearContents();
           return;
         } else {
@@ -820,7 +1143,7 @@ require([
         $("#searchInput ul").remove();
         $("#searchInput").val = "";
 
-        // Get a reference to the search input field
+      
         const searchInput = document.getElementById("searchInput");
         searchInput.value = "";
         searchTerm = "";
@@ -831,6 +1154,7 @@ require([
         triggerfromNoCondos = false;
         $(".spinner-container").hide();
         $("#dropdown").hide();
+        $("#suggestions").hide();
 
         urlBackButton = false;
 
@@ -848,10 +1172,17 @@ require([
           polygonGraphics = [];
           view.graphics.removeAll();
           $("#suggestions").html('')
+        
           runQuerySearchTerm = e.target.value
             .toUpperCase()
             .replace(/&amp;/g, "&");
-          buildSuggestions(runQuerySearchTerm)
+
+          if (runQuerySearchTerm.length > 1 ) {
+              buildSuggestions(runQuerySearchTerm)
+          } else {
+            $("#suggestions").hide()
+          }
+        
         });
 
       document.addEventListener("click", function (e) {
