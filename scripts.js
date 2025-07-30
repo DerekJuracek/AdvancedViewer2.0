@@ -58,6 +58,7 @@ require([
     "northcanaanct",
     "roxburyct",
     "roxburyctassessor",
+    "salisburyct",
     "scotlandct",
     "warrenct",
     "warrenctassessor",
