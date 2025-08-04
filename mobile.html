@@ -63,40 +63,40 @@
 
   $(document).ready(function () {
 
-   let lastTarget = null;
+  //  let lastTarget = null;
 
-  function toggleContent(target) {
-    if (lastTarget === target && $(target).is(":visible")) {
-      $("#closed").show();
-      $("#open").hide();
-      $(".content").hide();
-      $(".content > div").hide();
-      lastTarget = null;
-    } else {
-      $("#open").show();
-      $("#closed").hide();
-      $(".content").show();
-      $(".content > div").hide();
-      $(target).show();
-      lastTarget = target;
-    }
-  }
+  // function toggleContent(target) {
+  //   if (lastTarget === target && $(target).is(":visible")) {
+  //     $("#closed").show();
+  //     $("#open").hide();
+  //     $(".content").hide();
+  //     $(".content > div").hide();
+  //     lastTarget = null;
+  //   } else {
+  //     $("#open").show();
+  //     $("#closed").hide();
+  //     $(".content").show();
+  //     $(".content > div").hide();
+  //     $(target).show();
+  //     lastTarget = target;
+  //   }
+  // }
 
-  $(".action-btn").click(function () {
-    const target = $(this).data("target");
-    toggleContent(target);
-  });
+  // $(".action-btn").click(function () {
+  //   const target = $(this).data("target");
+  //   toggleContent(target);
+  // });
 
-  $("#action-exp").click(function () {
-    // If lastTarget is already open, close it; otherwise, reopen it
-    if (lastTarget) {
-      toggleContent(lastTarget);
-    } else {
-      // Optional: Open a default target if none is open
-      const defaultTarget = $(".action-btn").first().data("target");
-      toggleContent(defaultTarget);
-    }
-  });
+  // $("#action-exp").click(function () {
+  //   // If lastTarget is already open, close it; otherwise, reopen it
+  //   if (lastTarget) {
+  //     toggleContent(lastTarget);
+  //   } else {
+  //     // Optional: Open a default target if none is open
+  //     const defaultTarget = $(".action-btn").first().data("target");
+  //     toggleContent(defaultTarget);
+  //   }
+  // });
   })
 
 </script>
@@ -170,11 +170,14 @@
         </div>
         <div class="content" style="height: 25vh; display: none;">
             <div class="search-results">
-                <div id="total-results" style="background-color: rgba(127, 42, 145, 0.8); color:white;"></div>
+                <div id="total-results" style="background-color: rgba(127, 42, 145, 0.8); color:white;">No Parcels Selected</div>
                 <div id="results"></div>
             </div>
-            <div class="basemaps">Basemaps...</div>
-            <div class="layerlist">Layer List...</div>
+            <div class="basemaps"></div>
+            <div class="layerlist">
+              <calcite-list id="layerList" class="calcite-mode-dark">
+              </calcite-list>
+          </div>
             <div class="help">Help...</div>
             <div class="report-issues">Report Issues...</div>
         </div>
