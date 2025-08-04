@@ -123,6 +123,8 @@ require([
     let queryParameters;
     let polygonGraphics;
     let runQuerySearchTerm;
+    let isGisLink;
+    let clickedToggle;
 
       const webmap = new WebMap({
         portalItem: {
@@ -168,6 +170,130 @@ require([
 
        const noCondosTable = new FeatureLayer({
         url: `${configVars.masterTable}`,
+      });
+
+         
+      function toggleLayerVisibility(layerId, actionElement) {
+  
+        let layer = webmap.findLayerById(layerId);
+
+        if (layer) {
+          layer.visible = !layer.visible;
+          if (layer.type === "group") {
+            layer.layers.forEach((subLayer) => {
+              subLayer.visible = layer.visible;
+            });
+          }
+
+
+          actionElement.attr("icon", layer.visible ? "check-square" : "square");
+        }
+      }
+
+        function addLayerToPickList(layer, container) {
+        let turnLayerOff;
+        // Assuming the icon is initially set to "plus" for all items
+        if (sessionStorage.getItem("condos") === "yes") {
+          turnLayerOff = "noCondoLayer";
+        } else {
+          turnLayerOff = "condoLayer";
+        }
+
+        if (
+          layer.type === "graphics" ||
+          layer.title == "Tax Map Annotation" ||
+          layer.title == "Road Centerline" ||
+          layer.title == null ||
+          layer.title == "" ||
+          layer.id == turnLayerOff
+        ) {
+          return;
+        } else {
+          var icon;
+
+          layer.visible ? (icon = "check-square") : (icon = "square");
+          // var icon = "square";
+
+          // Create the pick list item and action for each layer
+          var item = $(`
+          <calcite-list-item scale="m" label="${layer.title}" value="${layer.id}" style="border: white 0.5px solid;">
+          <calcite-action class="toggle-slider" id="action-${layer.id}-dropdown" slot="actions-end" icon="sliders-horizontal" text="${layer.title}"></calcite-action>
+            <calcite-action class="layer-vis" id="action-${layer.id}" slot="actions-end" icon="${icon}" text="${layer.title}"></calcite-action>
+            <div id="opacityDiv-${layer.id}" class="esri-slider esri-widget esri-slider--horizontal opacity-div " touch-action="none" style="display: none; height: 45px; align-items: center; padding-bottom: 10px; padding-left: 10px;">
+              <label style="margin-right: 10px; padding-top: 20px; font-weight: 500;font-size: 12px;">Layer Opacity (%)</label>
+              <calcite-slider class="slider-opacity" id="${layer.id}" style="width: 50%;" value="100" label-handles max-label="100" max-value="100" min-label="0"></calcite-slider>
+              </calcite-slider>
+            </div>
+          </calcite-list-item>
+      `);
+
+          container.append(item);
+        }
+      }
+
+       function processLayers(layers, container) {
+        layers.forEach(function (layer) {
+          if (layer.type === "group") {
+            // Check if the group layer is named "hidden group"
+            if (layer.title && layer.title.toLowerCase() === "hidden group") {
+              // Skip processing this layer and its sublayers
+              return;
+            }
+
+            // For group layers, create a calcite-accordion-item
+            var groupTitle = layer.title || "Industry"; // Default title or layer title
+            var accordionItem = $(`
+              <calcite-accordion scale="m">
+                <calcite-accordion-item heading="${groupTitle}">
+                </calcite-accordion-item>
+              </calcite-accordion>`);
+
+            // Recursively process sublayers, adding them as pick list items
+            processLayers(
+              layer.layers.items,
+              accordionItem.find("calcite-accordion-item")
+            );
+
+            container.append(accordionItem);
+          } else {
+            addLayerToPickList(layer, container);
+          }
+        });
+      }
+   
+   $("#layerList").on("click", ".layer-vis", function (event) {
+        event.preventDefault();
+
+        let layerId = $(this).closest("calcite-list-item").attr("value");
+
+        toggleLayerVisibility(layerId, $(this));
+      });
+
+    $(document).ready(function () {
+        // Attach the event listener to a parent element, like 'body' or a wrapper around the list
+        $("body").on("click", ".toggle-slider", function () {
+          // Find the closest layer-item and toggle the opacity div inside it
+          $(this).closest("calcite-list-item").find(".opacity-div").toggle();
+        });
+      });
+
+        function addSliderEvents() {
+        $(".slider-opacity").on("calciteSliderChange", function (event) {
+          console.log()
+          const Id = event.target.id;
+          let layer = webmap.findLayerById(Id);
+          let opacityValue = event.target.value / 100; 
+          layer.opacity = opacityValue; 
+        });
+      }
+
+    
+      view.when(function () {
+        var pickListContainer = $("#layerList");
+        var layers = webmap.layers.items; 
+
+        processLayers(layers, pickListContainer);
+        addSliderEvents();
       });
 
       function formatDate(timestamp) {
@@ -344,6 +470,239 @@ require([
       }
     }
 
+    function zoomToFeature(objectid, gisLink, triggerList) {
+        view.graphics.removeAll(polygonGraphics);
+
+        detailsChanged = {
+          isChanged: false,
+          item: "",
+        };
+        isGisLink = [];
+        let bufferGraphicId = "uniqueBufferGraphicId";
+        const existingBufferGraphicIndex = view.graphics.items.findIndex(
+          (g) => g.id === bufferGraphicId
+        );
+
+        if (existingBufferGraphicIndex > -1) {
+          view.graphics.removeAt(existingBufferGraphicIndex);
+        }
+
+        isGisLink = firstList.filter((obj) => obj.GIS_LINK == gisLink);
+
+        // if "no condos" and GIS_LINK is equal to firstlist(means its searched by GIS_LINK)
+        // and GIS_LINK > 1( not searched on one uniqueid w/ no geometry) or will error
+        // so say selected a condomain with 111 condos, checks against 1st list
+        if (
+          sessionStorage.getItem("condos") == "no" &&
+          isGisLink.length == firstList.length &&
+          isGisLink.length > 1
+        ) {
+          if (noCondosParcelGeom) {
+            CondoBuffer = false;
+            targetExtent = noCondosParcelGeom[0].geometry;
+            detailsGeometry = noCondosParcelGeom[0].geometry;
+            const fillSymbol = {
+              type: "simple-fill",
+              color: [0, 0, 0, 0.1],
+              outline: {
+                color: [145, 199, 61, 1],
+                width: 4,
+              },
+            };
+
+            const geometryExtent = targetExtent.extent;
+            const zoomOutFactor = 3.0;
+            const newExtent = geometryExtent.expand(zoomOutFactor);
+
+
+            const polygonGraphic = new Graphic({
+              geometry: targetExtent,
+              symbol: fillSymbol,
+              id: bufferGraphicId,
+            });
+
+            view.graphics.addMany([polygonGraphic]);
+            view
+              .goTo({
+                target: polygonGraphic,
+                extent: newExtent,
+                // zoom: 15,
+              })
+              .catch(function (error) {
+                if (error.name != "AbortError") {
+                  console.error(error);
+                  // NoZoomDetails = true;
+                }
+              });
+       
+          } else {
+            let whereClause = `GIS_LINK = '${gisLink}'`;
+            let query = noCondosLayer.createQuery();
+            query.where = whereClause;
+            query.returnGeometry = true;
+            query.returnHiddenFields = true; // Adjust based on your needs
+            query.outFields = ["*"];
+
+            noCondosLayer.queryFeatures(query).then((response) => {
+              let feature = response;
+              let geometry = feature.features[0].geometry;
+
+              targetExtent = geometry;
+              detailsGeometry = geometry;
+
+              const geometryExtent = targetExtent.extent;
+              const zoomOutFactor = 4.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view
+                .goTo({
+                  target: geometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                    // NoZoomDetails = true;
+                  }
+                });
+
+              const fillSymbol = {
+                type: "simple-fill",
+                color: [0, 0, 0, 0.1],
+                outline: {
+                  color: [145, 199, 61, 1],
+                  width: 4,
+                },
+              };
+
+              const polygonGraphic = new Graphic({
+                geometry: detailsGeometry,
+                symbol: fillSymbol,
+                id: bufferGraphicId,
+              });
+              view.graphics.addMany([polygonGraphic]);
+            });
+          }
+        } else {
+          CondoBuffer = true;
+          let matchingObject
+          if (triggerList) {
+            matchingObject = firstList.filter(
+              (obj) =>obj.uniqueId == objectid
+            );
+          } else {
+            matchingObject = firstList.filter(
+              (obj) =>obj.objectid == objectid
+            );
+          }
+        
+          // this is where its actually working on click
+          // not on uniqueid search
+          // whats the difference?
+          if (matchingObject.length > 0) {
+            if (
+              matchingObject[0].geometry != null &&
+              matchingObject[0].geometry != ""
+            ) {
+              detailsGeometry = matchingObject[0].geometry;
+              const geometryExtent = detailsGeometry.extent;
+              const zoomOutFactor = 4.0;
+              const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view
+                .goTo({
+                  target: detailsGeometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                  }
+                });
+
+              const fillSymbol = {
+                type: "simple-fill",
+                color: [0, 0, 0, 0.1],
+                outline: {
+                  color: [145, 199, 61, 1],
+                  width: 4,
+                },
+              };
+
+              const polygonGraphic = new Graphic({
+                geometry: detailsGeometry,
+                symbol: fillSymbol,
+                id: bufferGraphicId,
+              });
+              view.graphics.addMany([polygonGraphic]);
+            } else {
+              let whereClause;
+              CondoBuffer = false;
+
+              let match = matchingObject.filter((item) => {
+                item.GIS_LINK === gisLink;
+              });
+
+              if (match) {
+                whereClause = `GIS_LINK = '${gisLink}'`;
+              } else {
+                whereClause = `GIS_LINK = '${matchingObject[0].GIS_LINK}'`;
+              }
+
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+
+                detailsGeometry = geometry;
+                targetExtent = geometry;
+
+                const geometryExtent = targetExtent.extent;
+                const zoomOutFactor = 4.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
+
+              view
+                .goTo({
+                  target: geometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      // NoZoomDetails = true;
+                    }
+                  });
+
+                const fillSymbol = {
+                  type: "simple-fill",
+                  color: [0, 0, 0, 0.1],
+                  outline: {
+                    color: [145, 199, 61, 1],
+                    width: 4,
+                  },
+                };
+
+                const polygonGraphic = new Graphic({
+                  geometry: detailsGeometry,
+                  symbol: fillSymbol,
+                  id: bufferGraphicId,
+                });
+                view.graphics.addMany([polygonGraphic]);
+              });
+            }
+          }
+        }
+       
+      }
+
     function setupClickHandlers(listGroup) {
        listGroup.addEventListener("click", function (event) {
           let shouldZoomTo = true;
@@ -354,15 +713,6 @@ require([
           ) {
             return; // Exit the handler early if a button was clicked
           }
-          // if (clickHandle) {
-          //   clickHandle?.remove();
-          //   clickHandle = null;
-          // }
-
-          // if (DetailsHandle) {
-          //   DetailsHandle?.remove();
-          //   DetailsHandle = null;
-          // }
           $("#select-button").attr("title", "Select Enabled");
           let targetElement = event.target.closest("li");
           if (!targetElement) return;
@@ -371,30 +721,13 @@ require([
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
           zoomToFeature(objectID,  itemId);
-          $("#details-spinner").show();
-          $("#WelcomeBox").hide();
-          $("#featureWid").hide();
-          $("#result-btns").hide();
-          $("#total-results").hide();
-          $("#ResultDiv").hide();
-          $("#abutters-content").hide();
-          $("#details-btns").show();
-          $("#abut-mail").show();
-          $("#detailBox").show();
-          $("#backButton").show();
-          $("#detailsButton").hide();
-          $("#detail-content").empty();
-          $("#selected-feature").empty();
-          $("#exportButtons").hide();
-          $("#exportSearch").hide();
-          $("#exportResults").hide();
-          $("#csvExportResults").hide();
-          $("#csvExportSearch").hide();
-          $("#results-div").css("height", "300px");
-          $("#backButton-div").css("padding-top", "0px");
-          $(".center-container").hide();
-          $("#abutters-attributes").prop("disabled", false);
-          $("#abutters-zoom").prop("disabled", false);
+          // $("#details-spinner").show();
+          // $("#WelcomeBox").hide();
+            $("#featureWid").hide();
+          // $("#result-btns").hide();
+          // $("#total-results").hide();
+          // $("#ResultDiv").hide();
+         
           if (event.target.closest(".no-zoomto")) {
             console.log("dont zoom");
             shouldZoomTo = false;
@@ -492,14 +825,14 @@ require([
 
           if (!locationCoOwner && locationGeom) {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
-            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button></div>`;
           } else if (!locationGeom) {
             listItemHTML = ` <div class="listText noGeometry">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType} 
-             </div><div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+             </div></div>`;
             listItem.classList.add("no-zoomto");
           } else {
             listItemHTML = ` <div class="listText">UID: ${locationUniqueId}  &nbsp;<br>MBL: ${locationMBL} <br> ${locationOwner} ${locationCoOwner} <br> ${locationVal} <br> Property Type: ${propertyType}</div>
-            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button><button type="button" class="btn btn-primary btn-sm justRemove" title="Remove from Search List"><calcite-icon icon="minus-circle" scale="s"/>Remove</button></div>`;
+            <div class="justZoomBtn"><button type="button" class="btn btn-primary btn-sm justZoom" title="Zoom to Parcel"><calcite-icon icon="magnifying-glass-plus" scale="s"/>Zoom</button></div>`;
           }
 
           // Append the new list item to the list
@@ -538,6 +871,8 @@ require([
          }
 
         buildList(uniqueArray)
+        const defaultTarget = $(".action-btn").first().data("target");
+        toggleContent(defaultTarget);
 
         searchResults = uniqueArray.length;
         $("#total-results").html(searchResults + " results returned");
@@ -1001,7 +1336,10 @@ require([
         $("#suggestions").val('').html('')
         let features;
         let searchTerm = runQuerySearchTerm;
-        console.log(searchTerm)
+
+        // if (clickedToggle) {
+        //   runQuerySearchTerm = e.replace(/&amp;/g, "&");
+        // }
 
         if (searchTerm?.length < 3 || !searchTerm) {
           clearContents();
@@ -1119,7 +1457,13 @@ require([
 
                   suggestionDiv.addEventListener("click", function (e) {
                     clickedToggle = true;
-                    runQuery(e.target.innerHTML);
+                    let value = e.target.textContent
+
+                    if (clickedToggle) {
+                      runQuerySearchTerm = value.replace(/&amp;/g, "&");
+                      runQuery();
+                    }
+                 
                     clickedToggle = false;
                   });
                 }
@@ -1142,6 +1486,8 @@ require([
         runQuerySearchTerm = "";
         $("#searchInput ul").remove();
         $("#searchInput").val = "";
+        $("#results").empty();
+        $("#total-results").html("No Parcels Selected");
 
       
         const searchInput = document.getElementById("searchInput");
@@ -1156,7 +1502,8 @@ require([
         $("#dropdown").hide();
         $("#suggestions").hide();
 
-        urlBackButton = false;
+        const defaultTarget = $(".action-btn").first().data("target");
+        toggleContent(defaultTarget);
 
         let suggestionsContainer = document.getElementById("suggestions");
         suggestionsContainer.innerHTML = "";
@@ -1193,6 +1540,7 @@ require([
 
       clearBtn.addEventListener("click", function () {
         clearContents();
+        // $(".content").empty()
       });
 
           // Helper function to parse and modify URL query parameters
@@ -1230,11 +1578,13 @@ require([
         runQuery();
       }
 
+      let debounceTimer2;
+
       document
         .getElementById("searchButton")
         .addEventListener("click", function (event) {
           event.preventDefault();
-          $("#results-div").css("left", "0px");
+
           function throttleQuery() {
             clearTimeout(debounceTimer2);
             debounceTimer2 = setTimeout(() => {
@@ -1243,6 +1593,42 @@ require([
           }
           throttleQuery();
         });
+
+           let lastTarget = null;
+
+  function toggleContent(target) {
+    if (lastTarget === target && $(target).is(":visible")) {
+      $("#closed").show();
+      $("#open").hide();
+      $(".content").hide();
+      $(".content > div").hide();
+      lastTarget = null;
+    } else {
+      $("#open").show();
+      $("#closed").hide();
+      $(".content").show();
+      $(".content > div").hide();
+      $(target).show();
+      lastTarget = target;
+    }
+  }
+
+  $(".action-btn").click(function () {
+    const target = $(this).data("target");
+    toggleContent(target);
+  });
+
+  $("#action-exp").click(function () {
+    // If lastTarget is already open, close it; otherwise, reopen it
+    if (lastTarget) {
+      toggleContent(lastTarget);
+    } else {
+   
+      const defaultTarget = $(".action-btn").first().data("target");
+      toggleContent(defaultTarget);
+    }
+  });
+  
 
 
     });
