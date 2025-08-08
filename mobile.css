@@ -459,7 +459,7 @@ main {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001; /* make sure it's above the map */
-  width: 90%;
+  width: 100%;
   z-index: 1000;
   border-radius: 15px 15px 15px 15px;
   overflow-y: visible;

@@ -1679,6 +1679,7 @@ require([
       document
         .getElementById("searchInput")
         .addEventListener("input", function (e) {
+          e.preventDefault();
           firstList = [];
           secondList = [];
           polygonGraphics = [];
