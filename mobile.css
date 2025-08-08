@@ -467,6 +467,11 @@ main {
   /* This ensures the navbar is always on top */
 }
 
+.form-control {
+  font-size: 16px !important;
+}
+
+
 
 .col-md {
   padding-left: 0px;
