@@ -6,8 +6,6 @@ require([
   "esri/Graphic",
   "esri/layers/GraphicsLayer",
   "esri/widgets/BasemapLayerList",
-  "esri/widgets/Legend",
-
 ], function (
   WebMap,
   MapView,
@@ -16,7 +14,6 @@ require([
   Graphic,
   GraphicsLayer,
   BasemapLayerList,
-  Legend,
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -125,6 +122,9 @@ require([
     let runQuerySearchTerm;
     let isGisLink;
     let clickedToggle;
+    let oldExtent;
+    let oldScale;
+    let oldZoom;
 
       const webmap = new WebMap({
         portalItem: {
@@ -171,6 +171,36 @@ require([
        const noCondosTable = new FeatureLayer({
         url: `${configVars.masterTable}`,
       });
+
+    oldExtent = view.extent;
+    oldScale = view.scale;
+    oldZoom = view.zoom;
+
+       reactiveUtils.watch(
+        () => [view.zoom, view.extent, view.scale],
+        ([zoom, extent, scale], [wasStationary]) => {
+          if (zoom) {
+            if (zoom !== oldZoom) {
+              oldZoom = zoom;
+            }
+
+            if (!noCondosLayer.visible && !CondosLayer.visible) {
+              if (Number(zoom) > configVars.parcelZoom) {
+                if (sessionStorage.getItem("condos") === "no") {
+                  noCondosLayer.visible = true;
+                } else {
+                  CondosLayer.visible = true;
+                }
+              }
+            }
+          } else if (wasStationary) {
+            oldExtent = extent;
+            oldScale = scale;
+            oldZoom = zoom;
+          }
+          return "";
+        }
+      );
 
          
       function toggleLayerVisibility(layerId, actionElement) {
@@ -294,6 +324,141 @@ require([
 
         processLayers(layers, pickListContainer);
         addSliderEvents();
+      });
+
+      view.when(() => {
+        const basemaps = new BasemapLayerList({
+          view: view,
+          container: $(".basemaps")[0],
+          dragEnabled: true,
+        });
+
+        basemaps.visibleElements = {
+          statusIndicators: true,
+          baseLayers: true,
+          referenceLayers: false,
+          referenceLayersTitle: false,
+          errors: true,
+          heading: false,
+        };
+
+        let newRenderer = {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            color: [255, 255, 255, 0.0],
+            outline: {
+              width: 1,
+              color: `${configVars.parcelRenderer}`,
+            },
+          },
+        };
+
+        let OG = {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            color: [255, 255, 255, 0.0],
+            outline: {
+              width: 1,
+              color: "#897044",
+            },
+          },
+        };
+
+        view.map.allLayers.forEach((layer) => {
+          if (layer.title === "Parcel Boundaries") {
+            originalRenderer = layer.renderer;
+          }
+        });
+
+        // Check visibility of ortho layers at the start
+        const orthoLayers = [
+          "Aerial-Ortho 2023",
+          "Aerial-Ortho 2019",
+          "Aerial-Ortho 2016",
+          "Aerial-Ortho 2012",
+        ];
+        let anyOrthoVisible = view.map.allLayers.some(
+          (layer) => orthoLayers.includes(layer.title) && layer.visible
+        );
+
+        if (anyOrthoVisible) {
+          view.map.allLayers.forEach((layer) => {
+            if (layer.title === "Parcel Boundaries") {
+              layer.renderer = newRenderer;
+            }
+          });
+        }
+
+        if (sessionStorage.getItem("condos") === "yes") {
+          originalRenderer = CondosLayer.renderer;
+        } else {
+          originalRenderer = noCondosLayer.renderer;
+        }
+
+        // Initialize visibility tracking
+        const layerVisibility = {};
+        view.map.basemap.baseLayers.forEach((layer) => {
+          layerVisibility[layer.id] = layer.visible;
+        });
+
+        reactiveUtils.watch(
+          () => view.map.basemap.baseLayers.map((layer) => layer.visible),
+          () => {
+          
+            manageBasemapVisibility(
+              view.map.basemap.baseLayers,
+              layerVisibility
+            );
+          }
+        );
+
+        function manageBasemapVisibility(baseLayers, visibilityTracker) {
+          let newlyVisibleLayer = baseLayers.find(
+            (layer) => layer.visible && !visibilityTracker[layer.id]
+          );
+
+          if (newlyVisibleLayer) {
+            baseLayers.forEach((layer) => {
+              if (layer !== newlyVisibleLayer) {
+                layer.visible = false;
+              }
+            });
+
+            if (
+              newlyVisibleLayer.title !== `${configVars.basemapTitle}` &&
+              newlyVisibleLayer.title !== "Washington Basemap"
+            ) {
+              if (sessionStorage.getItem("condos") === "yes") {
+                CondosLayer.renderer = newRenderer;
+              } else {
+                noCondosLayer.renderer = newRenderer;
+              }
+            } else {
+              // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
+              view.map.allLayers.forEach((layer) => {
+                if (layer.title === "Parcel Boundaries") {
+                  layer.renderer = OG;
+                }
+              });
+            }
+          } else {
+            // Prevent all basemaps from being deselected
+            let visibleLayers = baseLayers.filter((layer) => layer.visible);
+            if (visibleLayers.length === 0) {
+              // If no layers are visible, revert the change
+              baseLayers.forEach((layer) => {
+                layer.visible = visibilityTracker[layer.id];
+              });
+            }
+          }
+
+          // Update visibility tracker
+          baseLayers.forEach((layer) => {
+            visibilityTracker[layer.id] = layer.visible;
+          });
+        }
       });
 
       function formatDate(timestamp) {
@@ -1540,7 +1705,6 @@ require([
 
       clearBtn.addEventListener("click", function () {
         clearContents();
-        // $(".content").empty()
       });
 
           // Helper function to parse and modify URL query parameters
