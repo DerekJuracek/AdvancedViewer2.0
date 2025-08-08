@@ -125,7 +125,7 @@ require([
     let oldExtent;
     let oldScale;
     let oldZoom;
-
+    let triggerfromNoCondos = false;
       const webmap = new WebMap({
         portalItem: {
           id: configVars.mapId,
