@@ -165,20 +165,29 @@
             <button type="button" class="btn btn-info action-btn" data-target=".search-results">Search</button>
             <button type="button" class="btn btn-info action-btn" data-target=".basemaps">Basemaps</button>
             <button type="button" class="btn btn-info action-btn" data-target=".layerlist">Layers</button>
-            <button type="button" class="btn btn-info action-btn" data-target=".help">Help</button>
-            <button type="button" class="btn btn-info action-btn" data-target=".report-issues">Report</button>
+            <button type="button" class="btn btn-info action-btn" data-target=".help">Help/Report</button>
+            <!-- <button type="button" class="btn btn-info action-btn" data-target=".report-issues">Report</button> -->
         </div>
-        <div class="content" style="height: 25vh; display: none;">
+        <div class="content" style="height: 25vh; display: none; background-color: var(--background-color);">
             <div class="search-results">
                 <div id="total-results" style="background-color: rgba(127, 42, 145, 0.8); color:white;">No Parcels Selected</div>
                 <div id="results"></div>
             </div>
-            <div class="basemaps"></div>
-            <div class="layerlist">
+            <div class="basemaps" style="color: white; height: 100%;"></div>
+            <div class="layerlist" style="height: 100%">
               <calcite-list id="layerList" class="calcite-mode-dark">
               </calcite-list>
           </div>
-            <div class="help">Help...</div>
+            <div class="help">
+               <a href="QDS.biz" class="help-url" target="_blank"><strong>Help/Report</strong></a>
+               <br>
+                <a
+                    href="https://forms.office.com/r/ApsqdW1ASa"
+                    target="_blank"
+                    ><strong>Report an Issue</strong></a
+                  >
+         
+            </div>
             <div class="report-issues">Report Issues...</div>
         </div>
     </div>
