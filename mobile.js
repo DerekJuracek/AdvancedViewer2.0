@@ -309,7 +309,6 @@ require([
 
         function addSliderEvents() {
         $(".slider-opacity").on("calciteSliderChange", function (event) {
-          console.log()
           const Id = event.target.id;
           let layer = webmap.findLayerById(Id);
           let opacityValue = event.target.value / 100; 
@@ -886,15 +885,10 @@ require([
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
           zoomToFeature(objectID,  itemId);
-          // $("#details-spinner").show();
-          // $("#WelcomeBox").hide();
-            $("#featureWid").hide();
-          // $("#result-btns").hide();
-          // $("#total-results").hide();
-          // $("#ResultDiv").hide();
+          $("#featureWid").hide();
+       
          
           if (event.target.closest(".no-zoomto")) {
-            console.log("dont zoom");
             shouldZoomTo = false;
           }
           //buildDetailsPanel(objectID, itemId, shouldZoomTo);
@@ -1667,8 +1661,8 @@ require([
         $("#dropdown").hide();
         $("#suggestions").hide();
 
-        const defaultTarget = $(".action-btn").first().data("target");
-        toggleContent(defaultTarget);
+   
+        closeContent()
 
         let suggestionsContainer = document.getElementById("suggestions");
         suggestionsContainer.innerHTML = "";
@@ -1761,6 +1755,14 @@ require([
 
            let lastTarget = null;
 
+  function closeContent() {
+      $("#closed").show();
+      $("#open").hide();
+      $(".content").hide();
+      $(".content > div").hide();
+      lastTarget = null;
+  }
+
   function toggleContent(target) {
     if (lastTarget === target && $(target).is(":visible")) {
       $("#closed").show();
@@ -1780,7 +1782,12 @@ require([
 
   $(".action-btn").click(function () {
     const target = $(this).data("target");
-    toggleContent(target);
+    if (target == '.help' || target == '.report') {
+      return
+    } else {
+      toggleContent(target);
+    }
+
   });
 
   $("#action-exp").click(function () {
