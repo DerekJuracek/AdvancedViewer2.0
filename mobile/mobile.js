@@ -43,6 +43,7 @@ require([
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
+    console.log(configUrl)
 
     //$("#whole-app").show();
   } else if (
