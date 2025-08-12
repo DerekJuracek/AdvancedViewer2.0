@@ -164,6 +164,9 @@ require([
         id: "condoLayer",
       });
 
+      webmap.add(noCondosLayer);
+      webmap.add(CondosLayer);
+
       const CondosTable = new FeatureLayer({
         url: `${configVars.masterTable}`,
       });
@@ -172,9 +175,53 @@ require([
         url: `${configVars.masterTable}`,
       });
 
-    oldExtent = view.extent;
-    oldScale = view.scale;
-    oldZoom = view.zoom;
+      oldExtent = view.extent;
+      oldScale = view.scale;
+      oldZoom = view.zoom;
+
+    view.on("click", handleClick)
+
+    function handleClick(event) {
+        clearContents()
+        detailsHandleUsed = "click";
+        triggerfromNoCondos = false;
+
+       
+
+        if (sessionStorage.getItem("condos") === "no") {
+          let query = noCondosLayer.createQuery();
+          query.geometry = event.mapPoint;
+          query.spatialRelationship = "intersects";
+          query.returnGeometry = true;
+          query.outFields = ["*"];
+
+          noCondosLayer.queryFeatures(query).then(function (response) {
+            if (response.features) {
+              totalResults = response.features;
+              processFeatures(totalResults, "", event);
+              addPolygons(response, view.graphics);
+            } else {
+              return;
+            }
+          });
+        } else {
+          let query2 = CondosLayer.createQuery();
+          query2.geometry = event.mapPoint;
+          query2.spatialRelationship = "intersects";
+          query2.returnGeometry = true;
+          query2.outFields = ["*"];
+
+          CondosLayer.queryFeatures(query2).then(function (response) {
+            if (response.features) {
+              totalResults = response.features;
+              processFeatures(totalResults, "", event);
+              addPolygons(response, view.graphics);
+            } else {
+              return;
+            }
+          });
+        }
+      }
 
        reactiveUtils.watch(
         () => [view.zoom, view.extent, view.scale],
@@ -204,7 +251,6 @@ require([
 
          
       function toggleLayerVisibility(layerId, actionElement) {
-  
         let layer = webmap.findLayerById(layerId);
 
         if (layer) {
@@ -431,8 +477,10 @@ require([
             ) {
               if (sessionStorage.getItem("condos") === "yes") {
                 CondosLayer.renderer = newRenderer;
+                console.log(CondosLayer)
               } else {
                 noCondosLayer.renderer = newRenderer;
+                console.log(noCondosLayer)
               }
             } else {
               // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"

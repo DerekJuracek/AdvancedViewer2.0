@@ -457,6 +457,7 @@ main {
   position: absolute;
   top: 0; /* adjust for spacing from the top */
   left: 50%;
+  max-width: 400px;
   transform: translateX(-50%);
   z-index: 1001; /* make sure it's above the map */
   width: 100%;
@@ -1499,6 +1500,41 @@ calcite-combobox::part(items-wrapper) {
   max-height: 300px; /* Customize this value to your needs */
   overflow-y: auto;
 }
+
+.action-bar { /* already fixed; this just keeps context for absolute children */
+  position: fixed;
+}
+
+/* The little tab that sits on the top-left lip of the bar */
+.drawer-toggle {
+  position: absolute;
+  top: -30px;        /* lift it so it “hooks” over the bar */
+  left: 8px;
+  height: 32px;
+  width: 38px;
+  padding: 0;
+  z-index: 1060;     /* above bar contents */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.15);
+}
+
+/* Rotate chevron when open */
+.drawer-toggle.open svg {
+  transform: rotate(180deg);
+  transition: transform 160ms ease;
+}
+.drawer-toggle svg {
+  transition: transform 160ms ease;
+}
+
+/* (Optional) smooth slide for the drawer */
+.content {
+  display: none;               /* initial state closed */
+  overflow: auto;
+  background-color: var(--background-color);
+}
+
 
 
 
