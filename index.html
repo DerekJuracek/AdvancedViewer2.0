@@ -17,8 +17,16 @@
     const hash = window.location.hash;   
 
     if (isMobileDevice()) {
+
+      if (window.location.href.toLowerCase().contains('5501')) {
+        window.location.replace('http://127.0.0.1:5501/mobile/mobile.html' + query + hash)
+      } else if (window.location.href.toLowerCase().contains('github')) {
+      window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/mobile/mobile.html' + query + hash);
+      } else {
+        window.location.replace('https://terrenogis.com/desktop/mobile/mobile.html' + query + hash);
+      }
       // Mobile: redirect to mobile version and preserve parameters
-      window.location.replace('/mobile/mobile.html' + query + hash);
+      // window.location.replace('/mobile/mobile.html' + query + hash);
     } else {
       if (window.location.href.toLowerCase().contains('5501')) {
         window.location.replace('http://127.0.0.1:5501/desktop/home.html' + query + hash)
