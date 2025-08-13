@@ -1,4 +1,4 @@
-{
+s{
   "webmapId": "b211938cff164977ae5e740a0c7252c3",
   "image": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Wilton_CT.png",
   "title": "Town of Wilton, CT",
@@ -29,7 +29,7 @@
   "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=wilton",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Wilton/Tax_Maps/2020_Wilton",
-  "useUniqueIdforParcelMap": "no",
+  "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Wilton",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
