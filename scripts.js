@@ -52,6 +52,7 @@ require([
   const configFiles = [
     "colebrookct",
     "columbiact",
+    "cornwallct",
     "durhamct",
     "franklinct",
     "haddamct",
