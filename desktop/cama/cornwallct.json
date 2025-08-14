@@ -24,7 +24,7 @@
   "includePermitLink": "no",
   "permitLink": "http://permitlinkusa-online.com/csp/salisburyct/DocumentLink.PublicDLinkHome.cls",
   "propertyCardPdf": "no",
-  "propertyCard": "https://gis.vgsi.com/cornwallct/Parcel.aspx?pid=",
+  "propertyCard": "https://gis.vgsi.com/wolcottct/Parcel.aspx?pid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Cornwall",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Cornwall_Demographics_2025.pdf",
   "useVisionForTaxBillUrl": "yes",
