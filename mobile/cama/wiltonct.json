@@ -29,7 +29,7 @@
   "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=wilton",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Wilton/Tax_Maps/2020_Wilton",
-  "useUniqueIdforParcelMap": "no",
+  "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Wilton",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
