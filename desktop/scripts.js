@@ -50,6 +50,7 @@ require([
   let configUrl = urlParams.get("viewer");
 
   const configFiles = [
+    "canaanct",
     "colebrookct",
     "columbiact",
     "cornwallct",
