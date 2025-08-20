@@ -5700,6 +5700,7 @@ require([
                   query2.returnGeometry = true;
                   query2.outFields = ["*"];
                 }
+                
 
                 let tableSearch = null;
 
