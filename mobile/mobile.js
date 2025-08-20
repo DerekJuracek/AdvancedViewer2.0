@@ -48,7 +48,6 @@ require([
 
   if (configUrl != null && urlPattern.test(currentURL)) {
     configUrl = configUrl + ".json";
-    console.log(configUrl)
 
     //$("#whole-app").show();
   } else if (
@@ -131,7 +130,9 @@ require([
     let oldExtent;
     let oldScale;
     let oldZoom;
+    let zoomToDetails = true;
     let triggerfromNoCondos = false;
+    let triggeredDetailsZoom = false;
       const webmap = new WebMap({
         portalItem: {
           id: configVars.mapId,
@@ -483,10 +484,8 @@ require([
             ) {
               if (sessionStorage.getItem("condos") === "yes") {
                 CondosLayer.renderer = newRenderer;
-                console.log(CondosLayer)
               } else {
                 noCondosLayer.renderer = newRenderer;
-                console.log(noCondosLayer)
               }
             } else {
               // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
@@ -728,7 +727,7 @@ require([
               },
             };
 
-            const geometryExtent = targetExtent.extent;
+              const geometryExtent = targetExtent.extent;
             const zoomOutFactor = 3.0;
             const newExtent = geometryExtent.expand(zoomOutFactor);
 
@@ -740,7 +739,11 @@ require([
             });
 
             view.graphics.addMany([polygonGraphic]);
-            view
+
+            if (!zoomToDetails) {
+              return 
+            } else {
+              view
               .goTo({
                 target: polygonGraphic,
                 extent: newExtent,
@@ -753,6 +756,8 @@ require([
                 }
               });
        
+            }
+
           } else {
             let whereClause = `GIS_LINK = '${gisLink}'`;
             let query = noCondosLayer.createQuery();
@@ -772,20 +777,7 @@ require([
               const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
-              view
-                .goTo({
-                  target: geometry,
-                  extent: newExtent,
-                  // zoom: 15,
-                })
-                .catch(function (error) {
-                  if (error.name != "AbortError") {
-                    console.error(error);
-                    // NoZoomDetails = true;
-                  }
-                });
-
-              const fillSymbol = {
+                 const fillSymbol = {
                 type: "simple-fill",
                 color: [0, 0, 0, 0.1],
                 outline: {
@@ -801,6 +793,24 @@ require([
               });
               view.graphics.addMany([polygonGraphic]);
             });
+
+
+              if (!zoomToDetails) {
+                return 
+              } else {
+                 view
+                .goTo({
+                  target: geometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                    // NoZoomDetails = true;
+                  }
+                });
+              }
           }
         } else {
           CondoBuffer = true;
@@ -828,18 +838,6 @@ require([
               const zoomOutFactor = 4.0;
               const newExtent = geometryExtent.expand(zoomOutFactor);
 
-              view
-                .goTo({
-                  target: detailsGeometry,
-                  extent: newExtent,
-                  // zoom: 15,
-                })
-                .catch(function (error) {
-                  if (error.name != "AbortError") {
-                    console.error(error);
-                  }
-                });
-
               const fillSymbol = {
                 type: "simple-fill",
                 color: [0, 0, 0, 0.1],
@@ -855,6 +853,23 @@ require([
                 id: bufferGraphicId,
               });
               view.graphics.addMany([polygonGraphic]);
+
+              if (!zoomToDetails) {
+                return
+              } else {
+                view
+                .goTo({
+                  target: detailsGeometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                .catch(function (error) {
+                  if (error.name != "AbortError") {
+                    console.error(error);
+                  }
+                });
+              }
+
             } else {
               let whereClause;
               CondoBuffer = false;
@@ -886,20 +901,7 @@ require([
                 const zoomOutFactor = 4.0;
                 const newExtent = geometryExtent.expand(zoomOutFactor);
 
-              view
-                .goTo({
-                  target: geometry,
-                  extent: newExtent,
-                  // zoom: 15,
-                })
-                  .catch(function (error) {
-                    if (error.name != "AbortError") {
-                      console.error(error);
-                      // NoZoomDetails = true;
-                    }
-                  });
-
-                const fillSymbol = {
+                    const fillSymbol = {
                   type: "simple-fill",
                   color: [0, 0, 0, 0.1],
                   outline: {
@@ -914,11 +916,26 @@ require([
                   id: bufferGraphicId,
                 });
                 view.graphics.addMany([polygonGraphic]);
+                if (!zoomToDetails) {
+                  return
+                } else {
+                view
+                .goTo({
+                  target: geometry,
+                  extent: newExtent,
+                  // zoom: 15,
+                })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      // NoZoomDetails = true;
+                    }
+                  });
+                }
               });
             }
           }
         }
-       
       }
 
     function setupClickHandlers(listGroup) {
@@ -931,16 +948,19 @@ require([
           ) {
             return; // Exit the handler early if a button was clicked
           }
-          $("#select-button").attr("title", "Select Enabled");
+      
           let targetElement = event.target.closest("li");
           if (!targetElement) return;
 
           // Now you can handle the click event as you would in the individual event listener
           let itemId = targetElement.getAttribute("data-id");
           let objectID = targetElement.getAttribute("object-id");
-          zoomToFeature(objectID,  itemId);
-          $("#featureWid").hide();
-       
+    
+          if (triggeredDetailsZoom) {
+            return
+          } else {
+            zoomToFeature(objectID,  itemId);
+          }
          
           if (event.target.closest(".no-zoomto")) {
             shouldZoomTo = false;
@@ -955,6 +975,9 @@ require([
 
         let zoomToItemId;
         let Id;
+        if (uniqueArray.length == 1) {
+          zoomToDetails = false;
+        }
 
         uniqueArray.forEach(function (feature) {
           let objectID = feature.objectid;
@@ -1107,7 +1130,6 @@ require([
         }
 
         if (owner == "RESIDENT" && (!ClickEvent)) {
-          console.log('serach on resident not clicking')
           return 
         } else {
 
@@ -1372,6 +1394,158 @@ require([
         }
       }
 
+      function triggerDetailsZoom(results, main,) {
+        view.graphics.removeAll(polygonGraphics);
+        let parcelGeometry = results[0].geometry;
+        let GIS_LINK = results[0].attributes.GIS_LINK;
+        triggeredDetailsZoom = true
+
+        if (parcelGeometry) {
+          targetExtent = parcelGeometry;
+          detailsGeometry = parcelGeometry;
+
+          const geometryExtent = targetExtent.extent;
+          const zoomOutFactor = 2.0;
+          const newExtent = geometryExtent.expand(zoomOutFactor);
+
+            const fillSymbol = {
+              type: "simple-fill",
+              color: [0, 0, 0, 0.1],
+              outline: {
+                color: [145, 199, 61, 1],
+                width: 4,
+              },
+            };
+
+            const polygonGraphic = new Graphic({
+              geometry: parcelGeometry,
+              symbol: fillSymbol,
+              // id: bufferGraphicId,
+            });
+            view.graphics.addMany([polygonGraphic]);
+          if (!zoomToDetails) {
+            return
+          } else {
+            view
+            .goTo({
+              target: parcelGeometry,
+              extent: newExtent,
+              //  zoom: 15,
+            })
+              .catch(function (error) {
+                if (error.name != "AbortError") {
+                  console.error(error);
+                  // NoZoomDetails = true;
+                }
+              });
+          }
+        } else {
+          // for condos with no footprints
+              let whereClause = `GIS_LINK = '${GIS_LINK}'`;
+              let query = noCondosLayer.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = true;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+  
+              noCondosLayer.queryFeatures(query).then((response) => {
+                let feature = response;
+                let geometry = feature.features[0].geometry;
+  
+                targetExtent = geometry;
+                detailsGeometry = geometry;
+  
+                const geometryExtent = targetExtent.extent;
+                const zoomOutFactor = 2.0;
+                const newExtent = geometryExtent.expand(zoomOutFactor);
+
+                const fillSymbol = {
+                  type: "simple-fill",
+                  color: [0, 0, 0, 0.1],
+                  outline: {
+                    color: [145, 199, 61, 1],
+                    width: 4,
+                  },
+                };
+  
+                const polygonGraphic = new Graphic({
+                  geometry: detailsGeometry,
+                  symbol: fillSymbol,
+                  id: bufferGraphicId,
+                });
+                view.graphics.addMany([polygonGraphic]);
+  
+                if (!zoomToDetails) {
+                  return 
+                } else {
+                  view
+                  .goTo({
+                    target: geometry,
+                    extent: newExtent,
+                    // zoom: 15,
+                  })
+                  .catch(function (error) {
+                    if (error.name != "AbortError") {
+                      console.error(error);
+                      // NoZoomDetails = true;
+                    }
+                  });
+                }
+            });
+          }
+      }
+
+        function triggerListGroup(results, main, searchTerm) {
+        let items = results;
+        let condoMain = main;
+      
+        if (items.length <= 0) {
+          clearContents();
+          alert("Search resulted in an error, please try again.");
+          return;
+        }
+      
+        let itemId = items[0].attributes.Uniqueid;
+        let objectID = items[0].attributes.OBJECTID;
+      
+
+      
+          // Set UI to details panel state
+        //triggerListDetails();
+
+        // Zoom to the parcel
+        triggerDetailsZoom(items, condoMain);
+
+        // Populate details panel
+        //buildDetailsPanel(objectID, itemId);
+
+        // Reset flags
+        urlBackButton = true;
+        triggerfromNoCondos = false;
+        urlSearchUniqueId = false;
+
+        $(".spinner-container").hide();
+      }
+
+      function buildLayerQuery() {
+        let query2;
+
+        if (sessionStorage.getItem("condos") === "no") {
+          query2 = noCondosLayer.createQuery();
+          query2.where = query.where;
+          query2.returnDistinctValues = false;
+          query2.returnGeometry = true;
+          query2.outFields = ["*"];
+        } else {
+          query2 = CondosLayer.createQuery();
+          query2.where = query.where;
+          query2.returnDistinctValues = false;
+          query2.returnGeometry = true;
+          query2.outFields = ["*"];
+        }
+        return query2
+      }
+
       function queryRelatedFeatureRecords(searchTerm, urlSearch, filterQuery) {
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.visible = true;
@@ -1544,7 +1718,7 @@ require([
        
       }
 
-      const runQuery = () => {
+      const runQuery = (filterQuery) => {
         firstList = [];
         $("#suggestions").val('').html('')
         let features;
@@ -1554,7 +1728,9 @@ require([
         //   runQuerySearchTerm = e.replace(/&amp;/g, "&");
         // }
 
-        if (searchTerm?.length < 3 || !searchTerm) {
+        if (
+          (searchTerm?.length < 3 || !searchTerm) &&
+          !filterQuery) {
           clearContents();
           return;
         } else {
@@ -1597,12 +1773,12 @@ require([
                   }
                 });
 
-              
+              let layerQuery = buildLayerQuery()
 
                 let tableSearch = null;
 
                 if (urlSearchUniqueId) {
-                  tableQuery.where = filterQuery.where;
+                  layerQuery.where = filterQuery.where;
                   tableSearch = true;
                 }
 
@@ -1711,6 +1887,8 @@ require([
         zoomToObjectID = "";
         urlSearchUniqueId = false;
         triggerfromNoCondos = false;
+        zoomToDetails = true;
+        triggeredDetailsZoom = false;
         $(".spinner-container").hide();
         $("#dropdown").hide();
         $("#suggestions").hide();
@@ -1774,6 +1952,66 @@ require([
           rtn = rtn + "?" + params_arr.join("&");
         }
         return rtn;
+      }
+
+      // Helper function to parse URL query parameters
+      function getQueryParams() {
+        const queryParams = {};
+        const queryString = window.location.search.substring(1);
+        const pairs = queryString.split("&");
+
+        for (let i = 0; i < pairs.length; i++) {
+          const pair = pairs[i].split("=");
+          if (pair[0] && pair[1]) {
+            // Ensure the key and value exist
+            queryParams[decodeURIComponent(pair[0])] = decodeURIComponent(
+              pair[1].replace(/\+/g, " ")
+            );
+          }
+        }
+        return queryParams;
+      }
+
+       // document.addEventListener("DOMContentLoaded", async () => {
+      const params = getQueryParams();
+      const uniqueId = params.uniqueid;
+      let whereClause = `Uniqueid = '${uniqueId}'`; // Ensure this key matches your URL parameter
+
+      if (uniqueId) {
+        urlSearchUniqueId = true;
+
+        view
+          .when(function () {
+            function checkQueryVal() {
+              query = CondosTable.createQuery();
+              query.where = whereClause;
+              query.returnGeometry = false;
+              query.returnHiddenFields = true; // Adjust based on your needs
+              query.outFields = ["*"];
+
+              noCondosTable.queryFeatures(query).then((response) => {
+                let data = response.features[0].attributes;
+                let type = data.Building_Type;
+                let misMatch = data.Match_Status;
+
+                if (misMatch === "MISMATCH" && type === "Condominium") {
+                  triggerfromNoCondos = true;
+                }
+                runQuery( query);
+              });
+            }
+
+            query = CondosTable.createQuery();
+            query.where = whereClause;
+            query.returnGeometry = false;
+            query.returnHiddenFields = true; // Adjust based on your needs
+            query.outFields = ["*"];
+
+            checkQueryVal();
+          })
+          .catch(function (error) {
+            console.error("Error occurred while the view was loading: ", error);
+          });
       }
 
        function hitQuery() {
