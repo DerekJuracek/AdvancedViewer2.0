@@ -107,7 +107,6 @@ require([
       configVars.title = config.title;
       configVars.isCondosLayer = config.condos;
       configVars.masterTable = config.masterTable;
-      configVars.zoom = config.zoom;
       configVars.parcelZoom = config.parcelZoom;
       configVars.imageUrl = config.imageUrl;
       configVars.welcomeImage = config.welcomeImage;
@@ -193,7 +192,6 @@ require([
         map: webmap,
         units: "imperial",
         scale: configVars.scale,
-        //zoom: `${configVars.zoom}`,
         popupEnabled: false,
         ui: {
           components: ["attribution"],
@@ -5700,7 +5698,7 @@ require([
                   query2.returnGeometry = true;
                   query2.outFields = ["*"];
                 }
-                
+
 
                 let tableSearch = null;
 

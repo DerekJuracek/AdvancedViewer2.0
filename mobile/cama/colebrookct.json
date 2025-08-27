@@ -39,7 +39,6 @@
   "condoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Colebrook_Adv_Viewer_Parcels/FeatureServer/1",
   "noCondoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/ArcGIS/rest/services/CT_Colebrook_Adv_Viewer_Parcels/FeatureServer/1",
   "parcelServiceTitle": "Parcel Boundaries",
-  "zoom": "13",
   "parcelZoom": 2,
   "scale": 144000,
   "layers": [

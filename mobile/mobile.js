@@ -77,7 +77,6 @@ require([
       configVars.title = config.title;
       configVars.isCondosLayer = config.condos;
       configVars.masterTable = config.masterTable;
-      configVars.zoom = config.zoom;
       configVars.parcelZoom = config.parcelZoom;
       configVars.imageUrl = config.imageUrl;
       configVars.welcomeImage = config.welcomeImage;

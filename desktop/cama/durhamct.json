@@ -39,7 +39,6 @@
   "condoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/arcgis/rest/services/CT_Durham_Adv_Viewer_Parcels/FeatureServer/1",
   "noCondoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/arcgis/rest/services/CT_Durham_Adv_Viewer_Parcels/FeatureServer/1",
   "parcelServiceTitle": "Parcel Boundaries",
-  "zoom": "13",
   "parcelZoom": 3,
   "scale": 72000,
   "layers": [
