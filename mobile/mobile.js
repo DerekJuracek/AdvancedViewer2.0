@@ -938,6 +938,7 @@ require([
       }
 
     function setupClickHandlers(listGroup) {
+      console.log(listGroup)
        listGroup.addEventListener("click", function (event) {
           let shouldZoomTo = true;
           if (
@@ -1531,13 +1532,13 @@ require([
 
         if (sessionStorage.getItem("condos") === "no") {
           query2 = noCondosLayer.createQuery();
-          query2.where = query.where;
+          query2.where = "1=1"
           query2.returnDistinctValues = false;
           query2.returnGeometry = true;
           query2.outFields = ["*"];
         } else {
           query2 = CondosLayer.createQuery();
-          query2.where = query.where;
+          query2.where = "1=1";
           query2.returnDistinctValues = false;
           query2.returnGeometry = true;
           query2.outFields = ["*"];
@@ -1697,24 +1698,6 @@ require([
           
           });
         }
-        // if (clickHandle) {
-        //   clickHandle?.remove();
-        //   clickHandle = null;
-        // }
-        // if (DetailsHandle) {
-        //   DetailsHandle?.remove();
-        //   DetailsHandle = null;
-        // }
-
-        // if (lassoGisLinks) {
-        //   $("#select-button").addClass("btn-warning");
-        //   clickHandle = view.on("click", handleClick);
-        // } else {
-        //   DetailsHandle = view.on("click", handleDetailsClick);
-        //   $("#select-button").removeClass("btn-warning");
-        // }
-
-       
       }
 
       const runQuery = (filterQuery) => {
@@ -1723,13 +1706,14 @@ require([
         let features;
         let searchTerm = runQuerySearchTerm;
 
+
         // if (clickedToggle) {
         //   runQuerySearchTerm = e.replace(/&amp;/g, "&");
         // }
 
         if (
           (searchTerm?.length < 3 || !searchTerm) &&
-          !filterQuery) {
+          !urlSearchUniqueId) {
           clearContents();
           return;
         } else {
@@ -1774,7 +1758,7 @@ require([
 
               let layerQuery = buildLayerQuery()
 
-                let tableSearch = null;
+              let tableSearch = null;
 
                 if (urlSearchUniqueId) {
                   layerQuery.where = filterQuery.where;
@@ -1996,7 +1980,7 @@ require([
                 if (misMatch === "MISMATCH" && type === "Condominium") {
                   triggerfromNoCondos = true;
                 }
-                runQuery( query);
+                runQuery(query);
               });
             }
 
