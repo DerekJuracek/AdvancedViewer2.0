@@ -27,7 +27,7 @@
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=21&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Canaan",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Canaan_Demographics_2025.pdf",
-  "useVisionForTaxBillUrl": "yes",
+  "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=canaan",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Canaan/Tax_Maps/TaxMap_",
   "useUniqueIdforParcelMap": "yes",
