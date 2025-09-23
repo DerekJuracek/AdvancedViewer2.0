@@ -70,22 +70,10 @@ li.esri-print__layout-tab {
   font-size: 12px !important;
 }
 
-/* button.esri-print__advanced-options-button {
-  display: none !important;
-}
-
-div.esri-print__advanced-options-button-container {
-  display: none !important;
-} */
 
 div.esri-ui-corner div.esri-component {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.0) !important;
 }
-
-/* this removes powered by esri */
-/* div.esri-attribution {
-  display: none !important;
-} */
 
 div.esri-attribution__sources {
   display: none !important;
@@ -152,14 +140,6 @@ esri-ui-corner esri-component {
   font-size: 24px;
   margin: 10px 0;
 }
-/* .print-map {
-  position: relative;
-}
-.print-legend, .print-scale-bar {
-  background: white;
-  padding: 10px;
-} */
-
 
 
      /* Hide elements you don't want to print */
@@ -174,52 +154,12 @@ esri-ui-corner esri-component {
 
       .container {
         display: none;
-      }
-/* 
-      #print-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-      .print-title {
-        text-align: center;
-        font-size: 24px;
-        margin: 20px 0;
-    }
-
-    div.esri-ui-inner-container esri-ui-corner-container {
-      display: none;
-    }
-
-      #print-map-image {
-        padding-top: 50px;
-        margin-top: 200px;
-      }
-
-      #map-div {
-        padding-top: 50px;
-      }
-
-      #new-print-container, #new-print-container * {
-        visibility: visible;
-    }
-    #new-print-container {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-    } */
-
-      
+      } 
   }
 
   #accordion {
-color: black !important;
-width: 250px !important;
+    color: black !important;
+    width: 250px !important;
   }
 
   .card {
@@ -542,6 +482,7 @@ ul {
 
 #searchInput {
   width: 150px;
+  border: 1px solid rgba(127, 42, 145, 0.9);
 }
 
 /* #searchInput:active {
