@@ -37,6 +37,10 @@ div.esri-area-measurement-2d__container {
   height: 100px !important;
 }
 
+div.esri-attribution {
+  display: none;
+}
+
 header.esri-print__header-title {
   display: none;
   /* font-size: 10px !important;  
@@ -1501,9 +1505,6 @@ calcite-combobox::part(items-wrapper) {
   overflow-y: auto;
 }
 
-.action-bar { /* already fixed; this just keeps context for absolute children */
-  position: fixed;
-}
 
 /* The little tab that sits on the top-left lip of the bar */
 .drawer-toggle {

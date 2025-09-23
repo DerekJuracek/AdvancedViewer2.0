@@ -36,13 +36,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
   .action-bar {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     width: 100%;
     background-color: #f8f9fa; /* Light gray */
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1050;
-    padding-bottom: 5px;
     text-align: center;
   }
 
@@ -62,41 +61,22 @@
 <script>
 
   $(document).ready(function () {
+    window.addEventListener("orientationchange", function() {
+        if (window.orientation === 90 || window.orientation === -90) {
+          $(".action-bar").css("width", "45%")
+          $(".content").css("height", "40vh")
+        
+          // User has gone into landscape mode.
+          console.log("Device is now in landscape mode.");
+        } else {
+          $(".action-bar").css("width", "100%")
+          $(".content").css("height", "25vh")
+          // User is in portrait mode.
+          console.log("Device is in portrait mode.");
+        }
+      });
 
-  //  let lastTarget = null;
-
-  // function toggleContent(target) {
-  //   if (lastTarget === target && $(target).is(":visible")) {
-  //     $("#closed").show();
-  //     $("#open").hide();
-  //     $(".content").hide();
-  //     $(".content > div").hide();
-  //     lastTarget = null;
-  //   } else {
-  //     $("#open").show();
-  //     $("#closed").hide();
-  //     $(".content").show();
-  //     $(".content > div").hide();
-  //     $(target).show();
-  //     lastTarget = target;
-  //   }
-  // }
-
-  // $(".action-btn").click(function () {
-  //   const target = $(this).data("target");
-  //   toggleContent(target);
-  // });
-
-  // $("#action-exp").click(function () {
-  //   // If lastTarget is already open, close it; otherwise, reopen it
-  //   if (lastTarget) {
-  //     toggleContent(lastTarget);
-  //   } else {
-  //     // Optional: Open a default target if none is open
-  //     const defaultTarget = $(".action-btn").first().data("target");
-  //     toggleContent(defaultTarget);
-  //   }
-  // });
+    
   })
 
 </script>
