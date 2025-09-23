@@ -51,6 +51,15 @@
     /* width: 97%; */
   }
 
+  .actions{
+  display: flex;
+}
+
+.actions button {
+  flex: 1 1 auto;          /* shrink and grow evenly */
+  min-width: 60px;         /* don’t shrink too tiny */
+}
+
   body, html {
     height: 100%;
     margin: 0;
@@ -74,6 +83,20 @@
           console.log("Device is in portrait mode.");
         }
       });
+
+       if (window.orientation === 90 || window.orientation === -90) {
+          $(".action-bar").css("width", "45%")
+          $(".content").css("height", "40vh")
+        
+          // User has gone into landscape mode.
+          console.log("Device is now in landscape mode.");
+        } else {
+          $(".action-bar").css("width", "100%")
+          $(".content").css("height", "25vh")
+          // User is in portrait mode.
+          console.log("Device is in portrait mode.");
+        }
+
 
     
   })
@@ -112,27 +135,6 @@
           <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"></path>
         </svg>
       </button>
-
-      <!-- <button
-        type="button"
-        id="action-exp"
-        class="btn btn-light btn-sm btn-info mb-2 ml-2"
-        data-toggle="popover"
-        data-placement="bottom"
-        data-html="true"
-        data-content="Use reset to clear previous search."
-        style="height: 31.81px; width: 38px; padding: 0;"
-      >
-      <svg id="closed" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4.20697L4 8.20697V6.79297L8 2.79297L12 6.79297V8.20697L8 4.20697ZM4 14.207L8 10.207L12 14.207V12.793L8 8.79297L4 12.793V14.207Z" fill="#FFFAFA"/>
-      </svg>
-
-      <svg id="open" style="display: none;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 7.79297L8 11.793L12 7.79297V9.20697L8 13.207L4 9.20697V7.79297ZM12 3.20697V1.79297L8 5.79297L4 1.79297V3.20697L8 7.20697L12 3.20697Z" fill="#FFFDFD"/>
-      </svg>
-
-
-      </button> -->
     </form>
     <div id="suggestions" class="list-group mt-2 suggestions-dropdown" style="position: absolute; z-index: 1002"></div>
   </div>

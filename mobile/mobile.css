@@ -485,10 +485,6 @@ ul {
   border: 1px solid rgba(127, 42, 145, 0.9);
 }
 
-/* #searchInput:active {
-  background-color: #ff5722;
-} */
-
 .custom-example-theme {
   --calcite-color-brand: #c20044 !important;
 }
@@ -582,8 +578,8 @@ ul {
   display: none;
   position: absolute;
   top: 85%;
-  left: 0;
-  width: 100%;
+  /* left: 0; */
+  width: 80%;
   height: 100px;
   overflow-y: auto;
   border: 1px solid #ccc;
@@ -849,17 +845,10 @@ ul {
   margin-bottom: 5px;
 }
 
-/* .bar-Buttons {
-  margin-top: 5px;
-} */
-
 #refresh-search {
   margin-top: 5px;
   z-index: 1000;
 }
-/* ul {
-  border: #e0e0e0 solid 0.5px;
-} */
 
 li {
   font-size: 9px;
