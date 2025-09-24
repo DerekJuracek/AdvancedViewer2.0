@@ -2241,6 +2241,8 @@ require([
         $("status-loader").show();
         $("#featureWid").empty();
 
+        console.log(firstList)
+
         let seenIds = new Set();
         let seenUID = new Set();
         // Step 1: Filter for unique objectid with geometry
@@ -2316,6 +2318,7 @@ require([
 
         let zoomToItemId;
         let Id;
+        console.log(uniqueArray)
 
         uniqueArray.forEach(function (feature) {
           let objectID = feature.objectid;
@@ -2523,6 +2526,7 @@ require([
         let pointGisLink;
         let clickEvent = false;
         function createList(features) {
+          console.log('process features:', features)
           features.forEach(function (feature) {
             // PUT BACK TO FILTER OUT EMPTY OWNERS
             if ((feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") && !lasso && !clickEvent) {
@@ -2658,9 +2662,10 @@ require([
             buildResultsPanel("", polygonGraphics, e, pointGraphic);
           } else if (features.length > 1) {
             if (!lasso) {
-              features = features.filter(
-                (item) => item.attributes.ACCOUNT_TYPE != "CONDOMAIN"
-              );
+              // NOT sure if we need to keep this or not? Lets see
+              // features = features.filter(
+              //   (item) => item.attributes.ACCOUNT_TYPE != "CONDOMAIN"
+              // );
             }
             createList(features);
           } else {
@@ -3358,6 +3363,7 @@ require([
                   }, 200)
                 }
             }
+            console.log('from layer:', result.features)
 
             processFeatures(result.features);
           
@@ -5682,6 +5688,7 @@ require([
                     );
                   }
                 });
+                console.log('from table:', firstList)
 
                 let query2;
 
