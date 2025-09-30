@@ -106,10 +106,6 @@ require([
       configVars.DetailLinksToInclude = config.DetailLinksToInclude;
       configVars.includePermitLink = config.includePermitLink;
       configVars.scale = config.scale;
-
-      if (configVars.includePermitLink === "yes") {
-        configVars.permitLink = config.permitLink;
-      }
     
 
 
@@ -136,8 +132,6 @@ require([
     let zoomToDetails = true;
     let triggerfromNoCondos = false;
     let triggeredDetailsZoom = false;
-
-  
       const webmap = new WebMap({
         portalItem: {
           id: configVars.mapId,
@@ -245,7 +239,6 @@ require([
 
             if (!noCondosLayer.visible && !CondosLayer.visible) {
               if (Number(zoom) > configVars.parcelZoom) {
-                console.log(configVars.parcelZoom)
                 if (sessionStorage.getItem("condos") === "no") {
                   noCondosLayer.visible = true;
                 } else {
@@ -292,7 +285,6 @@ require([
           layer.type === "graphics" ||
           layer.title == "Tax Map Annotation" ||
           layer.title == "Road Centerline" ||
-          layer.title == "Parcel Boundaries" ||
           layer.title == null ||
           layer.title == "" ||
           layer.id == turnLayerOff
@@ -324,9 +316,8 @@ require([
        function processLayers(layers, container) {
         layers.forEach(function (layer) {
           if (layer.type === "group") {
-            console.log(layer.title)
             // Check if the group layer is named "hidden group"
-            if (layer.title && layer.title.toLowerCase() === "hidden group" || layer.title.toLowerCase() === "parcel boundaries") {
+            if (layer.title && layer.title.toLowerCase() === "hidden group") {
               // Skip processing this layer and its sublayers
               return;
             }
@@ -1517,18 +1508,8 @@ require([
         let itemId = items[0].attributes.Uniqueid;
         let objectID = items[0].attributes.OBJECTID;
       
-
-      
-          // Set UI to details panel state
-        //triggerListDetails();
-
-        // Zoom to the parcel
         triggerDetailsZoom(items, condoMain);
 
-        // Populate details panel
-        //buildDetailsPanel(objectID, itemId);
-
-        // Reset flags
         urlBackButton = true;
         triggerfromNoCondos = false;
         urlSearchUniqueId = false;

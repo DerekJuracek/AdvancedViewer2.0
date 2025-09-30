@@ -7,10 +7,13 @@
 </head>
 <body>
   <script>
-    function isMobileDevice() {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      return /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
-    }
+   function isMobileDevice() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const ua = userAgent.toLowerCase();
+
+  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|fxios/.test(ua);
+}
+
 
     const query = window.location.search;
     const hash = window.location.hash;   
