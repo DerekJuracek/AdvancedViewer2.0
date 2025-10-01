@@ -285,6 +285,7 @@ require([
           layer.type === "graphics" ||
           layer.title == "Tax Map Annotation" ||
           layer.title == "Road Centerline" ||
+          layer.title == "Parcel Boundaries" ||
           layer.title == null ||
           layer.title == "" ||
           layer.id == turnLayerOff
