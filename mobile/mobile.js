@@ -477,11 +477,13 @@ require([
         );
 
         function manageBasemapVisibility(baseLayers, visibilityTracker) {
+          alert('triggering basemap')
           let newlyVisibleLayer = baseLayers.find(
             (layer) => layer.visible && !visibilityTracker[layer.id]
           );
 
           if (newlyVisibleLayer) {
+
             baseLayers.forEach((layer) => {
               if (layer !== newlyVisibleLayer) {
                 layer.visible = false;
@@ -493,8 +495,10 @@ require([
               newlyVisibleLayer.title !== "Washington Basemap"
             ) {
               if (sessionStorage.getItem("condos") === "yes") {
+                alert('tried to change renderer')
                 CondosLayer.renderer = new SimpleRenderer(newRenderer);
               } else {
+                alert('tried to change renderer')
                 noCondosLayer.renderer = new SimpleRenderer(newRenderer);
               }
             } else {
@@ -503,6 +507,7 @@ require([
                 if (layer.title === "Parcel Boundaries") {
                   layer.renderer = OG;
                 }
+                alert('default renderer')
               });
             }
           } else {
