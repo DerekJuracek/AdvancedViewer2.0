@@ -938,7 +938,6 @@ require([
       }
 
     function setupClickHandlers(listGroup) {
-      console.log(listGroup)
        listGroup.addEventListener("click", function (event) {
           let shouldZoomTo = true;
           if (
@@ -1331,7 +1330,7 @@ require([
           });
         }
 
-        if (e && e != undefined) {
+        if (e && e != undefined && features[0]) {
           clickEvent = true
           pointGraphic = features[0].attributes.OBJECTID;
           pointLocation = features[0].attributes.Location;
