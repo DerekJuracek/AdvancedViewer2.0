@@ -457,6 +457,14 @@ require([
           layerVisibility[layer.id] = layer.visible;
         });
 
+        // Runs every time the basemap changes (e.g. imagery swap on mobile)
+        reactiveUtils.watch(
+        () => view.map.basemap,
+        () => {
+            manageBasemapVisibility(view.map.basemap.baseLayers, layerVisibility);
+        }
+        );
+
         reactiveUtils.watch(
           () => view.map.basemap.baseLayers.map((layer) => layer.visible),
           () => {
