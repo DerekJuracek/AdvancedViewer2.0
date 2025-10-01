@@ -231,7 +231,7 @@ require([
         }
       }
 
-       reactiveUtils.watch(
+       reactiveUtils.on(
         () => [view.zoom, view.extent, view.scale],
         ([zoom, extent, scale], [wasStationary]) => {
           if (zoom) {
