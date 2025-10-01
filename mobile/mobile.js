@@ -6,6 +6,7 @@ require([
   "esri/Graphic",
   "esri/layers/GraphicsLayer",
   "esri/widgets/BasemapLayerList",
+  "esri/renderers/SimpleRenderer",
 ], function (
   WebMap,
   MapView,
@@ -14,6 +15,7 @@ require([
   Graphic,
   GraphicsLayer,
   BasemapLayerList,
+  SimpleRenderer
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
