@@ -438,7 +438,7 @@ require([
         if (anyOrthoVisible) {
           view.map.allLayers.forEach((layer) => {
             if (layer.title === "Parcel Boundaries") {
-              layer.renderer = newRenderer;
+              layer.renderer = new SimpleRenderer(newRenderer);
             }
           });
         }
@@ -483,9 +483,9 @@ require([
               newlyVisibleLayer.title !== "Washington Basemap"
             ) {
               if (sessionStorage.getItem("condos") === "yes") {
-                CondosLayer.renderer = newRenderer;
+                CondosLayer.renderer = new SimpleRenderer(newRenderer);
               } else {
-                noCondosLayer.renderer = newRenderer;
+                noCondosLayer.renderer = new SimpleRenderer(newRenderer);
               }
             } else {
               // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
