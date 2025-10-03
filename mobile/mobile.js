@@ -109,7 +109,9 @@ require([
       configVars.includePermitLink = config.includePermitLink;
       configVars.scale = config.scale;
     
-
+      if (configVars.includePermitLink === "yes") {
+              configVars.permitLink = config.permitLink;
+            }
 
     //document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
@@ -380,8 +382,7 @@ require([
         addSliderEvents();
       });
 
-
-  view.when(() => {
+      view.when(() => {
   const basemaps = new BasemapLayerList({
     view: view,
     container: $(".basemaps")[0],
@@ -397,7 +398,7 @@ require([
     heading: false,
   };
 
-  const whiteRenderer = {
+  let newRenderer = {
     type: "simple",
     symbol: {
       type: "simple-fill",
@@ -409,7 +410,7 @@ require([
     },
   };
 
-  const OG = {
+  let OG = {
     type: "simple",
     symbol: {
       type: "simple-fill",
@@ -423,7 +424,7 @@ require([
 
   view.map.allLayers.forEach((layer) => {
     if (layer.title === "Parcel Boundaries") {
-      originalRenderer = layer.renderer;  // This will capture from the first matching layer; adjust if needed
+      originalRenderer = layer.renderer;
     }
   });
 
@@ -441,7 +442,7 @@ require([
   if (anyOrthoVisible) {
     view.map.allLayers.forEach((layer) => {
       if (layer.title === "Parcel Boundaries") {
-        layer.renderer = whiteRenderer;
+        layer.renderer = new SimpleRenderer(newRenderer);
       }
     });
   }
@@ -483,8 +484,19 @@ require([
     }
   );
 
+  // REMOVE this, as it's replaced by individual watches
+  // reactiveUtils.watch(
+  //   () => view.map.basemap.baseLayers.map((layer) => layer.visible),
+  //   () => {
+  //     manageBasemapVisibility(
+  //       view.map.basemap.baseLayers,
+  //       layerVisibility
+  //     );
+  //   }
+  // );
+
   function manageBasemapVisibility(baseLayers, visibilityTracker) {
-    alert('triggering basemap')
+    // alert('triggering basemap')
     let newlyVisibleLayer = baseLayers.find(
       (layer) => layer.visible && !visibilityTracker[layer.id]
     );
@@ -500,27 +512,21 @@ require([
         newlyVisibleLayer.title !== `${configVars.basemapTitle}` &&
         newlyVisibleLayer.title !== "Washington Basemap"
       ) {
-        alert('tried to change renderer')
-        view.map.allLayers.forEach((layer) => {
-          if (layer.title === "Parcel Boundaries") {
-            layer.renderer = whiteRenderer;
-          }
-        });
-
-        // OPTIONAL FALLBACK: If the above loop doesn't trigger a redraw on mobile, uncomment this to cycle the layers
-        [noCondosLayer, CondosLayer].forEach((parcelLayer) => {
-          webmap.remove(parcelLayer);
-          parcelLayer.renderer = whiteRenderer;
-          webmap.add(parcelLayer);
-        });
+        if (sessionStorage.getItem("condos") === "yes") {
+          // alert('tried to change renderer')
+          CondosLayer.renderer = new SimpleRenderer(newRenderer);
+        } else {
+          // alert('tried to change renderer')
+          noCondosLayer.renderer = new SimpleRenderer(newRenderer);
+        }
       } else {
         // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
         view.map.allLayers.forEach((layer) => {
           if (layer.title === "Parcel Boundaries") {
             layer.renderer = OG;
           }
+          // alert('default renderer')
         });
-        alert('default renderer')
       }
     } else {
       // Prevent all basemaps from being deselected
