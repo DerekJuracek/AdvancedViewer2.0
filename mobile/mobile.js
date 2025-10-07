@@ -115,6 +115,7 @@ require([
 
     //document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
+      document.getElementById("imageContainer").src = configVars.welcomeImage;
       // document.getElementById("title").innerHTML = configVars.title;
 
     const key = "condos";
