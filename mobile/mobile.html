@@ -35,15 +35,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-  .action-bar {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: #f8f9fa; /* Light gray */
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1050;
-    text-align: center;
-  }
+
+ .action-bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45%; /* adjust as needed */
+  background-color: #f8f9fa;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+  text-align: center;
+}
+
 
   .action-bar .btn-group {
     display: flex;
@@ -71,13 +75,23 @@
   $(document).ready(function () {
     window.addEventListener("orientationchange", function() {
         if (window.orientation === 90 || window.orientation === -90) {
-          $(".action-bar").css("width", "45%")
+          
+          $(".action-bar").css({
+              width: '45%',
+              left: '50%',
+              transform: 'translateX(-50%)'
+          })
           $(".content").css("height", "40vh")
         
           // User has gone into landscape mode.
           console.log("Device is now in landscape mode.");
         } else {
-          $(".action-bar").css("width", "100%")
+
+          $(".action-bar").css({
+              width: '100%',
+              left: '',
+              transform: ''
+          })
           $(".content").css("height", "25vh")
           // User is in portrait mode.
           console.log("Device is in portrait mode.");
@@ -108,7 +122,7 @@
   <div class="container-fluid d-flex flex-column align-items-center text-center" style="padding-top: 5px;">
     <!-- <span class="navbar-brand mb-2 h1" id="title">Town of Washington, CT</span> -->
     <form class="form-inline justify-content-center flex-wrap">
-            <img class="image" id="imageContainer" style="height: 50px; width: 50px;" alt="Loaded Image">
+      <img class="image" id="imageContainer" style="height: 50px; width: 50px;" alt="Loaded Image">
       <input
         class="form-control form-control-sm mr-2 mb-2"
         autocomplete="off"
