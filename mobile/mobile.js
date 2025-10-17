@@ -404,10 +404,10 @@ require([
     type: "simple",
     symbol: {
       type: "simple-fill",
-      color: [255, 255, 255, 0.0],
+      color: [255, 255, 255, 0],
       outline: {
         width: 1,
-        color: `${configVars.parcelRenderer}`,
+        color: "#FFFFFF",
       },
     },
   };
@@ -416,7 +416,7 @@ require([
     type: "simple",
     symbol: {
       type: "simple-fill",
-      color: [255, 255, 255, 0.0],
+      color: [255, 255, 255, 0],
       outline: {
         width: 1,
         color: "#897044",
