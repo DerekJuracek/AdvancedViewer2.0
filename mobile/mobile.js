@@ -54,13 +54,14 @@ require([
     //$("#whole-app").show();
   } else if (
     window.location.href === "https://terrenogis.com" ||
-    window.location.href === "https://terrenogis.com/"
+    window.location.href === "https://terrenogis.com/" || 
+    window.location.href === "http://terrenogis.com/mobile/"
   ) {
-    // Navigate to the specified URL in the current tab
     window.location.href = "https://www.qds.biz/gis-service";
   } else {
     window.location.href = "./onload.html";
   }
+  
 
   const configVars = {
     mapId: "",
@@ -115,6 +116,7 @@ require([
 
     //document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
+      document.getElementById("imageContainer").src = configVars.welcomeImage;
       // document.getElementById("title").innerHTML = configVars.title;
 
     const key = "condos";
@@ -779,7 +781,7 @@ require([
               view
               .goTo({
                 target: polygonGraphic,
-                extent: newExtent,
+                // extent: newExtent,
                 // zoom: 15,
               })
               .catch(function (error) {
@@ -834,7 +836,7 @@ require([
                  view
                 .goTo({
                   target: geometry,
-                  extent: newExtent,
+                  // extent: newExtent,
                   // zoom: 15,
                 })
                 .catch(function (error) {
@@ -893,7 +895,7 @@ require([
                 view
                 .goTo({
                   target: detailsGeometry,
-                  extent: newExtent,
+                  // extent: newExtent,
                   // zoom: 15,
                 })
                 .catch(function (error) {
@@ -955,7 +957,7 @@ require([
                 view
                 .goTo({
                   target: geometry,
-                  extent: newExtent,
+                  // extent: newExtent,
                   // zoom: 15,
                 })
                   .catch(function (error) {
@@ -1301,7 +1303,7 @@ require([
               view.goTo({
                 target: polygonGraphics2,
                 // zoom: 11,
-                extent: newExtent,
+                // extent: newExtent,
               });
             } else {
               graphicsLayer.addMany(polygonGraphics2);
@@ -1318,7 +1320,8 @@ require([
               
                 // Step 4: Zoom the view to the expanded extent
                 view.goTo({
-                  target: newExtent
+                  polygonGraphics2
+                  // target: newExtent
                 }).catch(err => {
                   console.error("Error zooming to extent:", err);
                 });
@@ -1462,7 +1465,7 @@ require([
             view
             .goTo({
               target: parcelGeometry,
-              extent: newExtent,
+              // extent: newExtent,
               //  zoom: 15,
             })
               .catch(function (error) {
@@ -1514,7 +1517,7 @@ require([
                   view
                   .goTo({
                     target: geometry,
-                    extent: newExtent,
+                    // extent: newExtent,
                     // zoom: 15,
                   })
                   .catch(function (error) {

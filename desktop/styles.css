@@ -9,6 +9,10 @@
 
 }
 
+a {
+  color: #00cc66 !important;
+}
+
 .mx-2 {
   margin-right: .4rem !important;
   margin-left: .4rem !important;

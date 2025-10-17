@@ -81,7 +81,8 @@ require([
     $("#whole-app").show();
   } else if (
     window.location.href === "https://terrenogis.com" ||
-    window.location.href === "https://terrenogis.com/"
+    window.location.href === "https://terrenogis.com/" ||
+    window.location.href === "http://terrenogis.com/desktop/"
   ) {
     // Navigate to the specified URL in the current tab
     window.location.href = "https://www.qds.biz/gis-service";

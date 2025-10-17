@@ -14,6 +14,10 @@
   margin-left: .4rem !important;
 }
 
+a {
+  color: #00cc66 !important;
+}
+
 ul.esri-print__layout-tab-list {
   height: 30px !important;
 }
