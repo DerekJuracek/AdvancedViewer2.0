@@ -72,48 +72,35 @@
 </style>
 <script>
 
-  $(document).ready(function () {
-    window.addEventListener("orientationchange", function() {
-        if (window.orientation === 90 || window.orientation === -90) {
-          
-          $(".action-bar").css({
+$(document).ready(function () {
+  function applyOrientationStyles() {
+    if (window.orientation === 90 || window.orientation === -90) {
+      // Landscape
+      $("body").addClass("landscape");
+      $(".content").css("height", "40vh");
+       $(".action-bar").css({
               width: '45%',
-              left: '50%',
-              transform: 'translateX(-50%)'
+            
           })
-          $(".content").css("height", "40vh")
-        
-          // User has gone into landscape mode.
-          console.log("Device is now in landscape mode.");
-        } else {
-
-          $(".action-bar").css({
+      console.log("Device is now in landscape mode.");
+    } else {
+      // Portrait
+      $("body").removeClass("landscape");
+      $(".content").css("height", "25vh");
+      $(".action-bar").css({
               width: '100%',
               left: '',
               transform: ''
-          })
-          $(".content").css("height", "25vh")
-          // User is in portrait mode.
-          console.log("Device is in portrait mode.");
-        }
-      });
+        })
+      console.log("Device is in portrait mode.");
+    }
+  }
 
-       if (window.orientation === 90 || window.orientation === -90) {
-          $(".action-bar").css("width", "45%")
-          $(".content").css("height", "40vh")
-        
-          // User has gone into landscape mode.
-          console.log("Device is now in landscape mode.");
-        } else {
-          $(".action-bar").css("width", "100%")
-          $(".content").css("height", "25vh")
-          // User is in portrait mode.
-          console.log("Device is in portrait mode.");
-        }
+  // Run on load and on orientation change
+  applyOrientationStyles();
+  window.addEventListener("orientationchange", applyOrientationStyles);
+});
 
-
-    
-  })
 
 </script>
 </head>

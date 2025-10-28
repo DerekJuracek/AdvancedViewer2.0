@@ -1470,6 +1470,49 @@ calcite-combobox::part(items-wrapper) {
   background-color: var(--background-color);
 }
 
+/* Make sure the map fills the screen behind everything */
+#viewDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+}
+
+/* Navbar overlays the map */
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 1051;
+      /* optional subtle blur for a clean look */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Landscape mode shared with action bar alignment */
+.landscape .navbar,
+.landscape .action-bar {
+  left: 2%;
+  transform: none;
+  width: 45%;
+}
+
+/* Bottom action bar still overlays map */
+.action-bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 1050;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
 
 
 
