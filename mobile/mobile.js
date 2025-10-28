@@ -442,6 +442,7 @@ require([
   );
 
   if (anyOrthoVisible) {
+   
     view.map.allLayers.forEach((layer) => {
       if (layer.title === "Parcel Boundaries") {
         layer.renderer = new SimpleRenderer(newRenderer);
@@ -479,23 +480,8 @@ require([
     () => view.map.basemap,
     () => {
       manageBasemapVisibility(view.map.basemap.baseLayers, layerVisibility);
-      // OPTIONAL: If basemap can be fully replaced, re-attach individual watches here
-      // visibilityWatchHandles.forEach(handle => handle.remove());
-      // visibilityWatchHandles.length = 0;
-      // Then re-add watches as above for the new baseLayers
     }
   );
-
-  // REMOVE this, as it's replaced by individual watches
-  // reactiveUtils.watch(
-  //   () => view.map.basemap.baseLayers.map((layer) => layer.visible),
-  //   () => {
-  //     manageBasemapVisibility(
-  //       view.map.basemap.baseLayers,
-  //       layerVisibility
-  //     );
-  //   }
-  // );
 
   function manageBasemapVisibility(baseLayers, visibilityTracker) {
     // alert('triggering basemap')
@@ -527,7 +513,6 @@ require([
           if (layer.title === "Parcel Boundaries") {
             layer.renderer = OG;
           }
-          // alert('default renderer')
         });
       }
     } else {
