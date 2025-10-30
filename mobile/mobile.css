@@ -1497,7 +1497,7 @@ calcite-combobox::part(items-wrapper) {
 .landscape .action-bar {
   left: 2%;
   transform: none;
-  width: 45%;
+  width: 50%;
 }
 
 /* Bottom action bar still overlays map */
