@@ -176,8 +176,18 @@ require([
         id: "condoLayer",
       });
 
-      webmap.add(noCondosLayer);
-      webmap.add(CondosLayer);
+       if (sessionStorage.getItem("condos") === "no") {
+          webmap.add(noCondosLayer);
+          noCondosLayer.visible = true;
+          console.log('no condos layer added')
+        } else {
+          webmap.add(CondosLayer);
+          CondosLayer.visible = true;
+          console.log('condos layer added')
+        }
+
+     
+    
 
       const CondosTable = new FeatureLayer({
         url: `${configVars.masterTable}`,
@@ -404,7 +414,7 @@ require([
     type: "simple",
     symbol: {
       type: "simple-fill",
-      color: [255, 255, 255, 0],
+      color: [255, 255, 255, 0.1],
       outline: {
         width: 1,
         color: "#FFFFFF",
@@ -416,14 +426,13 @@ require([
     type: "simple",
     symbol: {
       type: "simple-fill",
-      color: [255, 255, 255, 0],
+      color: [255, 255, 255, 0.1],
       outline: {
         width: 1,
         color: "#897044",
       },
     },
   };
-
   view.map.allLayers.forEach((layer) => {
     if (layer.title === "Parcel Boundaries") {
       originalRenderer = layer.renderer;
@@ -449,10 +458,11 @@ require([
     });
   }
 
-  if (sessionStorage.getItem("condos") === "yes") {
-    originalRenderer = CondosLayer.renderer;
+  if (sessionStorage.getItem("condos") === "no") {
+     originalRenderer = noCondosLayer.renderer;
+   
   } else {
-    originalRenderer = noCondosLayer.renderer;
+    originalRenderer = CondosLayer.renderer;
   }
 
   // Initialize visibility tracking
@@ -514,16 +524,23 @@ require([
         newlyVisibleLayer.title !== `${configVars.basemapTitle}` &&
         newlyVisibleLayer.title !== "Washington Basemap"
       ) {
-        if (sessionStorage.getItem("condos") === "yes") {
-          // alert('tried to change renderer')
-          CondosLayer.renderer = new SimpleRenderer(newRenderer);
+
+    
+        if (sessionStorage.getItem("condos") === "no") {
+            noCondosLayer.renderer = new SimpleRenderer(newRenderer);
+       
+
         } else {
+                    // alert('tried to change renderer')
+          CondosLayer.renderer = new SimpleRenderer(newRenderer);
           // alert('tried to change renderer')
-          noCondosLayer.renderer = new SimpleRenderer(newRenderer);
+       
         }
       } else {
         // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
         view.map.allLayers.forEach((layer) => {
+          console.log(layer)
+          console.log('reverting renderer')
           if (layer.title === "Parcel Boundaries") {
             layer.renderer = OG;
           }

@@ -1489,7 +1489,7 @@ calcite-combobox::part(items-wrapper) {
   width: 100%;
   z-index: 1051;
       /* optional subtle blur for a clean look */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.2); */
 }
 
 /* Landscape mode shared with action bar alignment */
