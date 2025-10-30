@@ -417,7 +417,7 @@ require([
       color: [255, 255, 255, 0.1],
       outline: {
         width: 1,
-        color: "#FFFFFF",
+        color: "#17ed3bff",
       },
     },
   };
@@ -489,26 +489,10 @@ require([
     () => view.map.basemap,
     () => {
       manageBasemapVisibility(view.map.basemap.baseLayers, layerVisibility);
-      // OPTIONAL: If basemap can be fully replaced, re-attach individual watches here
-      // visibilityWatchHandles.forEach(handle => handle.remove());
-      // visibilityWatchHandles.length = 0;
-      // Then re-add watches as above for the new baseLayers
     }
   );
 
-  // REMOVE this, as it's replaced by individual watches
-  // reactiveUtils.watch(
-  //   () => view.map.basemap.baseLayers.map((layer) => layer.visible),
-  //   () => {
-  //     manageBasemapVisibility(
-  //       view.map.basemap.baseLayers,
-  //       layerVisibility
-  //     );
-  //   }
-  // );
-
   function manageBasemapVisibility(baseLayers, visibilityTracker) {
-    // alert('triggering basemap')
     let newlyVisibleLayer = baseLayers.find(
       (layer) => layer.visible && !visibilityTracker[layer.id]
     );
@@ -528,13 +512,8 @@ require([
     
         if (sessionStorage.getItem("condos") === "no") {
             noCondosLayer.renderer = new SimpleRenderer(newRenderer);
-       
-
         } else {
-                    // alert('tried to change renderer')
           CondosLayer.renderer = new SimpleRenderer(newRenderer);
-          // alert('tried to change renderer')
-       
         }
       } else {
         // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
@@ -544,7 +523,6 @@ require([
           if (layer.title === "Parcel Boundaries") {
             layer.renderer = OG;
           }
-          // alert('default renderer')
         });
       }
     } else {
