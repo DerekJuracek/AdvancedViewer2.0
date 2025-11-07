@@ -1502,6 +1502,65 @@ calcite-combobox::part(items-wrapper) {
   overflow-y: auto;
 }
 
+#LegendDiv {
+  background-color: rgba(36, 36, 36, 0.2) !important;
+}
+
+/* Popup box — no dark background */
+.popup {
+  display: none;
+  position: absolute;
+  top: 120px;
+  right: 40px;
+  z-index: 2000;
+  background-color: #2a2a2a;
+  color: #f5f5f5;
+  border-radius: 10px;
+  width: 350px;
+  padding: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+/* Header (used as drag handle) */
+.popup-header {
+  background-color: #1f1f1f;
+  padding: 8px 12px;
+  border-radius: 10px 10px 0 0;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+/* Body */
+#legendBody {
+  padding: 15px;
+  text-align: center;
+}
+
+/* Close button */
+.close {
+  color: #ccc;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close:hover {
+  color: #fff;
+}
+
+/* Optional trigger link style */
+#openLegend {
+  color: #007ac2;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#openLegend:hover {
+  color: #0097f6;
+}
+
+
 
 
 

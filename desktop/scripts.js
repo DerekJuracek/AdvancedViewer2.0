@@ -137,6 +137,7 @@ require([
       configVars.DetailLinksToInclude = config.DetailLinksToInclude;
       configVars.includePermitLink = config.includePermitLink;
       configVars.scale = config.scale;
+      configVars.customLegend = config.customLegend;
 
       if (configVars.showDisclaimer === "no") {
         sessionStorage.setItem("agreedToDisclaimer", "yes");
@@ -154,6 +155,33 @@ require([
 
       if (configVars.includePermitLink === "yes") {
         configVars.permitLink = config.permitLink;
+      }
+
+      if (configVars.customLegend === "yes") {
+        $("#legendHeader").show();
+        const $popup = $('#legendPopup');
+        const $legendTitle = $('#legendTitle');
+        const $legendBody = $('#legendBody p');
+        const $legendImage = $('#legendImage');
+
+        $popup.draggable({
+          handle: '.popup-header',
+          containment: 'window'
+        });
+
+        $('#openLegend').on('click', function (e) {
+          e.preventDefault();
+
+          $legendTitle.text('Basemap Legend');
+          // $legendBody.text('Here’s the legend for Aerial-Ortho 2023.');
+          $legendImage.attr('src', 'images/legend_example.png').show();
+
+          $popup.fadeIn(200);
+        });
+
+        $('#closeLegend').on('click', function () {
+          $popup.fadeOut(200);
+        });
       }
 
       document.getElementById("AccessorName").innerHTML = config.accessorName;
@@ -7369,20 +7397,6 @@ require([
           $("#LegendDiv").hide();
           $("#group-container-right").show();
         });
-
-        // $("#Print-selector").on("click", function () {
-        //   $("#rightPanel").hide();
-        //   $("#BookmarksDiv").hide();
-        //   $("#BasemapDiv").hide();
-        //   $("#Right-Btn-div").hide();
-        //   $("#PrintDiv").hide();
-        //   $("#ContactDiv").hide();
-        //   $("#Right-Btn-div").show();
-        //   $("#AddDataDiv").hide();
-        //   $("#PrintDiv").show();
-        //   $("#LegendDiv").hide();
-        //   $("#group-container-right").show();
-        // });
 
         $("#Legend-selector").on("click", function () {
           $("#rightPanel").hide();
