@@ -55,7 +55,8 @@ require([
   } else if (
     window.location.href === "https://terrenogis.com" ||
     window.location.href === "https://terrenogis.com/" || 
-    window.location.href === "http://terrenogis.com/mobile/"
+    window.location.href === "http://terrenogis.com/mobile/" ||
+    window.location.href === "http://terrenogis.com/mobile/mobile.html"
   ) {
     window.location.href = "https://www.qds.biz/gis-service";
   } else {
