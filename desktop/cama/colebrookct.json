@@ -25,7 +25,7 @@
   "includePermitLink": "no",
   "permitLink": "http://permitlinkusa-online.com/csp/colebrookct/DocumentLink.PublicDLinkHome.cls",
   "propertyCardPdf": "no",
-  "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=029&uniqueid=",
+  "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=CBK&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Colebrook",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Colebrook_Demographics_2024.pdf",
   "useVisionForTaxBillUrl": "no",
