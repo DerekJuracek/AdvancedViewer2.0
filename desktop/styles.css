@@ -756,7 +756,7 @@ ul {
   right: 250px; /* the width of #sidebar */
   height: 400px;
   width: 55px;
-  background-color: var(--background-color) !important;
+  background-color: rgba(30, 30, 30, .9) !important;
   transition: right 0.5s;
   padding: 6px; /* Change this to the color you want */
 }
@@ -815,7 +815,7 @@ ul {
 }
 
 .list-group-item {
-  background-color: var(--background-color) !important;
+  background-color: rgba(30, 30, 30, .9) !important;
   outline-color: white;
   font-size: 12px;
   color: white;
@@ -830,6 +830,41 @@ ul {
   flex-direction: row;
   vertical-align: middle;
 }
+
+.list-group-item-info {
+  background-color: rgba(30, 30, 30, .4) !important;
+  outline-color: white;
+  font-size: 12px;
+  color: white;
+  z-index: 1000;
+  right: 0;
+
+  /* ALIGN TEXT LEFT + CENTER VERTICALLY */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+
+  /* SPACING */
+  padding-left: 10px;   /* 10px left spacing */
+
+  /* BORDER + RADIUS */
+  border: 1px solid rgba(255, 255, 255, 0.2);  /* light border */
+  border-radius: 6px;   /* small rounded corners */
+}
+
+.list-group-item-info {
+  cursor: pointer;
+}
+
+.list-group-item-info:hover {
+  cursor: pointer;
+}
+
+
+
+
 
 .abutters-group-item {
   background-color: var(--background-color) !important;
