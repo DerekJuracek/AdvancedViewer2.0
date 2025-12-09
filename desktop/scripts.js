@@ -139,6 +139,7 @@ require([
       configVars.includePermitLink = config.includePermitLink;
       configVars.scale = config.scale;
       configVars.customLegend = config.customLegend;
+      configVars.legendImages = config.legendImages;
 
       if (configVars.showDisclaimer === "no") {
         sessionStorage.setItem("agreedToDisclaimer", "yes");
@@ -159,11 +160,11 @@ require([
       }
 
       if (configVars.customLegend === "yes") {
+        const images = configVars.legendImages;   // array of image URLs
         $("#legendHeader").show();
         const $popup = $('#legendPopup');
         const $legendTitle = $('#legendTitle');
-        const $legendBody = $('#legendBody p');
-        const $legendImage = $('#legendImage');
+        const $legendImagesContainer = $('#legendImagesContainer');
 
         $popup.draggable({
           handle: '.popup-header',
@@ -172,10 +173,15 @@ require([
 
         $('#openLegend').on('click', function (e) {
           e.preventDefault();
-
           $legendTitle.text('Basemap Legend');
-          // $legendBody.text('Here’s the legend for Aerial-Ortho 2023.');
-          $legendImage.attr('src', 'images/legend_example.png').show();
+          $legendImagesContainer.empty();
+
+          images.forEach(src => {
+            $('<img>')
+              .attr('src', src)
+              .addClass('legend-img')
+              .appendTo($legendImagesContainer);
+          });
 
           $popup.fadeIn(200);
         });
@@ -184,6 +190,7 @@ require([
           $popup.fadeOut(200);
         });
       }
+
 
       document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);

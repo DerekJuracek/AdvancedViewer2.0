@@ -1595,6 +1595,25 @@ calcite-combobox::part(items-wrapper) {
   color: #0097f6;
 }
 
+#legendImagesContainer {
+  display: flex;
+  flex-direction: column;  
+  gap: 10px;              
+  margin-top: 10px;
+}
+
+.legend-img {
+  max-width: 100%;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+#legendImagesContainer {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 
 
 
