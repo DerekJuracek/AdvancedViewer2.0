@@ -5,7 +5,7 @@
   --accent-color: #e74c3c; /* Red */
   --text-color: #333; /* Dark Grey */
   /* --background-color: rgba(180, 180, 180, 0.8); */
-  --background-color: rgba(30, 30, 30, 0.8); 
+  --background-color: rgba(30, 30, 30, 0.85); 
 
 }
 
@@ -236,7 +236,7 @@ width: 250px !important;
     border: 0.5px white solid;
   }
   .card-body {
-   background-color: rgba(30, 30, 30, 0.9) !important;
+   background-color: var(--background-color) !important;
    color: white;
   }
 
@@ -722,7 +722,7 @@ ul {
   height: 80%;
   width: 250px;
   z-index: 1000;
-  background-color: rgba(30, 30, 30, .9) !important;
+  background-color: var(--background-color) !important;
   transition: width 0.5s;
 }
 
@@ -737,7 +737,7 @@ ul {
   z-index: 1000;
   overflow-y: hidden;
   overflow-x: hidden;
-  background-color: rgba(30, 30, 30, 0.9) !important;
+  background-color: var(--background-color) !important;
   transition: left 0.5s; /* Animate the 'left' property */
 }
 
@@ -756,7 +756,7 @@ ul {
   right: 250px; /* the width of #sidebar */
   height: 400px;
   width: 55px;
-  background-color: rgba(30, 30, 30, .9) !important;
+  background-color: var(--background-color) !important;
   transition: right 0.5s;
   padding: 6px; /* Change this to the color you want */
 }
@@ -773,7 +773,7 @@ ul {
   left: 250px; /* the width of #sidebar */
   height: 250px;
   width: 55px;
-  background-color: rgba(30, 30, 30, 0.9) !important;
+  background-color: var(--background-color) !important;
   transition: left 0.5s;
   padding: 6px; /* Change this to the color you want */
 }
@@ -815,7 +815,7 @@ ul {
 }
 
 .list-group-item {
-  background-color: rgba(30, 30, 30, .9) !important;
+  background-color: var(--background-color) !important;
   outline-color: white;
   font-size: 12px;
   color: white;
