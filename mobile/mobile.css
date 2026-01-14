@@ -888,14 +888,6 @@ li.list-results:hover {
   cursor: pointer;
 }
 
-#clear-btn {
-  z-index: 1000;
-  display: block;
-  margin: 0px;
-  padding: 7px 7px 7px 7px;
-  height: 40px;
-}
-
 .image {
   display: flex;
   text-align: center;
@@ -1511,6 +1503,75 @@ calcite-combobox::part(items-wrapper) {
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
+.top-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hide by default, show when .open is present */
+.dropdown-menu {
+  position: absolute;
+  /* bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%); */
+  margin-bottom: 6px;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+
+  width: auto;          /* shrink wrap */
+  min-width: 0;         /* avoid bootstrap defaults */
+  padding: 4px;
+
+  background: #2b2b2b;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  white-space: nowrap;
+}
+
+.top-dropdown.open .dropdown-menu {
+  display: inline-flex;
+}
+
+/* Make dropdown items icon-sized */
+.dropdown-item {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin: 2px 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Prevent bootstrap dropdown-item defaults from forcing full width */
+.dropdown-item,
+.dropdown-item:active,
+.dropdown-item:focus {
+  width: 32px !important;
+}
+
+/* Hover state */
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Optional: rotate arrow when open */
+.top-dropdown.open .dropdown-toggle svg {
+  transform: rotate(180deg);
+}
+
+
 
 /* .esri-widget--panel[calcite-mode="dark"] {
   background-color: var(--calcite-ui-foreground-1) !important;
