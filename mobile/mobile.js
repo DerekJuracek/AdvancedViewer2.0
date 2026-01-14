@@ -7,6 +7,7 @@ require([
   "esri/layers/GraphicsLayer",
   "esri/widgets/BasemapLayerList",
   "esri/renderers/SimpleRenderer",
+  "esri/widgets/Locate",
 ], function (
   WebMap,
   MapView,
@@ -15,7 +16,8 @@ require([
   Graphic,
   GraphicsLayer,
   BasemapLayerList,
-  SimpleRenderer
+  SimpleRenderer,
+  Locate
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -201,6 +203,45 @@ require([
       oldExtent = view.extent;
       oldScale = view.scale;
       oldZoom = view.zoom;
+
+    const dropdown = document.querySelector(".top-dropdown");
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    // Close on outside click
+    document.addEventListener("click", () => {
+      dropdown.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+
+    // Close on ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        dropdown.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+// Handle actions
+dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const action = btn.dataset.action;
+    console.log("clicked:", action);
+
+    // Close after click
+    dropdown.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+});
+
+
 
     view.on("click", handleClick)
 
@@ -1937,6 +1978,24 @@ require([
 
       clearBtn.addEventListener("click", function () {
         clearContents();
+      });
+
+      $("#home").on("click", function (e) {
+        view.goTo(configVars.homeExtent);
+      });
+
+      let locateWidget = new Locate({
+        view: view,  
+        graphic: new Graphic({
+          symbol: { type: "simple-marker" }  
+        })
+      });
+
+      window._widgets = { locateWidget };
+
+      $("#locate").on("click", function (e) {
+          e.stopPropagation();
+          window._widgets?.locateWidget?.locate();
       });
 
           // Helper function to parse and modify URL query parameters

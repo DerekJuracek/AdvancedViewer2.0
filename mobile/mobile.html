@@ -124,26 +124,39 @@ $(document).ready(function () {
       <button class="btn btn-info btn-sm mb-2" type="submit" id="searchButton">
         Search
       </button>
-      <button
-        type="button"
-        id="clear-btn"
-        class="btn btn-light btn-sm btn-info mb-2 ml-2"
-        data-toggle="popover"
-        data-placement="bottom"
-        data-html="true"
-        data-content="Use reset to clear previous search."
-        style="height: 31.81px; width: 38px; padding: 0;"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg"  fill="white" width="16" height="16" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
-          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"></path>
+
+     <div class="top-dropdown mb-2">
+      <button class="dropdown-toggle btn btn-info btn-sm " aria-haspopup="true" aria-expanded="false" type="button">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <path d="M4 6l4 4 4-4" fill="none" stroke="#fff" stroke-width="2"></path>
         </svg>
       </button>
+
+      <div class="dropdown-menu">
+        <button
+          class="dropdown-item btn btn-light btn-info "
+          data-action="reset"
+          type="button"
+          id="clear-btn"
+          data-toggle="popover"
+          data-placement="bottom"
+          data-html="true"
+          data-content="Use reset to clear previous search."
+        >
+          <calcite-icon icon="reset" scale="s"></calcite-icon>
+        </button>
+
+        <button class="dropdown-item btn-info" id="locate" data-action="locate" type="button">
+          <calcite-icon icon="gps-on" scale="s"></calcite-icon>
+        </button>
+
+        <button class="dropdown-item btn-info" id="home" data-action="home" type="button">
+          <calcite-icon icon="home" scale="s"></calcite-icon>
+        </button>
+      </div>
+  </div>
     </form>
     <div id="suggestions" class="list-group mt-2 suggestions-dropdown" style="position: absolute; z-index: 1002"></div>
-    <!-- <div style="text-align: center" id="welcomeImage"> -->
-
-    <!-- </div> -->
   </div>
 </nav>
 
