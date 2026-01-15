@@ -24,16 +24,22 @@
         window.location.replace('http://127.0.0.1:5501/mobile/mobile.html' + query + hash)
       } else if (window.location.href.toLowerCase().includes('github')) {
       window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/mobile/mobile.html' + query + hash);
-      } else {
+      } else if (window.location.href.toLowerCase().includes('terrenogis') && query.length > 0 && hash.length > 0) {
         window.location.replace('https://terrenogis.com/mobile/mobile.html' + query + hash);
+      } else {
+        window.location.href = "https://www.qds.biz/gis-service";
       }
     } else {
       if (window.location.href.toLowerCase().includes('5501')) {
         window.location.replace('http://127.0.0.1:5501/desktop/home.html' + query + hash)
-      } else if (window.location.href.toLowerCase().includes('github')) {
+      } else if (window.location.href.toLowerCase().includes('github') && query.length > 0 && hash.length > 0) {
       window.location.replace('https://derekjuracek.github.io/AdvancedViewer2.0/desktop/home.html' + query + hash);
+      } else if (window.location.href.toLowerCase().includes('github')) {
+      window.location.href = "https://www.qds.biz/gis-service";
+      }else if (window.location.href.toLowerCase().includes('terrenogis') && query.length > 0 && hash.length > 0) {
+        window.location.replace('https://terrenogis.com/mobile/mobile.html' + query + hash);
       } else {
-        window.location.replace('https://terrenogis.com/desktop/home.html' + query + hash);
+        window.location.href = "https://www.qds.biz/gis-service";
       }
     }
   </script>
