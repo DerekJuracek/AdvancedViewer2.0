@@ -2120,21 +2120,28 @@ dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
   }
 
   function toggleContent(target) {
-    if (lastTarget === target && $(target).is(":visible")) {
-      $("#closed").show();
-      $("#open").hide();
-      $(".content").hide();
-      $(".content > div").hide();
-      lastTarget = null;
-    } else {
-      $("#open").show();
-      $("#closed").hide();
-      $(".content").show();
-      $(".content > div").hide();
-      $(target).show();
-      lastTarget = target;
-    }
+  const $btn = $("#action-exp");
+  const isSameAndVisible = (lastTarget === target && $(target).is(":visible"));
+
+  if (isSameAndVisible) {
+    // Close
+    $(".content").hide();
+    $(".content > div").hide();
+    lastTarget = null;
+
+    // aria state drives the icon rotation
+    $btn.attr("aria-expanded", "false");
+  } else {
+    // Open / switch target
+    $(".content").show();
+    $(".content > div").hide();
+    $(target).show();
+    lastTarget = target;
+
+    $btn.attr("aria-expanded", "true");
   }
+}
+
 
   $(".action-btn").click(function () {
     const target = $(this).data("target");

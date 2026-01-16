@@ -162,19 +162,29 @@ $(document).ready(function () {
 
     <div id="viewDiv"></div>
     <div class="action-bar">
-       <button id="action-exp"
-          class="drawer-toggle btn btn-info btn-sm"
-          aria-expanded="false"
-          aria-controls="bottomContent"
-          type="button">
-        <svg id="closed" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4.20697L4 8.20697V6.79297L8 2.79297L12 6.79297V8.20697L8 4.20697ZM4 14.207L8 10.207L12 14.207V12.793L8 8.79297L4 12.793V14.207Z" fill="#FFFAFA"/>
-        </svg>
+       <button
+  id="action-exp"
+  class="drawer-toggle btn btn-info btn-sm"
+  aria-expanded="false"
+  aria-controls="bottomContent"
+  type="button"
+>
+  <svg
+    class="chevron-icon"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    aria-hidden="true"
+  >
+    <path
+      d="M4 6l4 4 4-4"
+      fill="none"
+      stroke="#fff"
+      stroke-width="2"
+    />
+  </svg>
+</button>
 
-        <svg id="open" style="display: none;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M4 7.79297L8 11.793L12 7.79297V9.20697L8 13.207L4 9.20697V7.79297ZM12 3.20697V1.79297L8 5.79297L4 1.79297V3.20697L8 7.20697L12 3.20697Z" fill="#FFFDFD"/>
-        </svg>
-      </button>
 
         <div class="btn-group actions" role="group">
             <button type="button" class="btn btn-info action-btn" data-target=".search-results">Search</button>

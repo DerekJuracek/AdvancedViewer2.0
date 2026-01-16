@@ -1571,20 +1571,18 @@ calcite-combobox::part(items-wrapper) {
   transform: rotate(180deg);
 }
 
-
-
-/* .esri-widget--panel[calcite-mode="dark"] {
-  background-color: var(--calcite-ui-foreground-1) !important;
-  color: var(--calcite-ui-text-1) !important;
+#action-exp .chevron-icon {
+  transition: transform 150ms ease;
+  transform: rotate(180deg); /* default CLOSED = up */
 }
 
-.esri-basemap-layer-list,
-.esri-basemap-layer-list calcite-block,
-.esri-basemap-layer-list calcite-list,
-.esri-basemap-layer-list calcite-list-item {
-  background-color: #1a1a1a !important;
-  color: #f3f3f3 !important;
-} */
+#action-exp[aria-expanded="true"] .chevron-icon {
+  transform: rotate(0deg);   /* OPEN = down */
+}
+
+
+
+
 
 
 
