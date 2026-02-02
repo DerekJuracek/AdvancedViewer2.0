@@ -1,6 +1,8 @@
 require([
   "esri/WebMap",
   "esri/views/MapView",
+  "esri/geometry/projection",
+  "esri/geometry/SpatialReference",
   "esri/layers/FeatureLayer",
   "esri/layers/ImageryLayer",
   "esri/layers/MapImageLayer",
@@ -21,9 +23,12 @@ require([
   "esri/rest/support/PrintParameters",
   "esri/widgets/Print/PrintViewModel",
   "esri/widgets/Print/TemplateOptions",
+  "esri/geometry/geometryEngineAsync"
 ], function (
   WebMap,
   MapView,
+  projection,
+  SpatialReference,
   FeatureLayer,
   ImageryLayer,
   MapImageLayer,
@@ -43,7 +48,8 @@ require([
   PrintTemplate,
   PrintParameters,
   PrintViewModel,
-  TemplateOptions
+  TemplateOptions,
+  geometryEngineAsync
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
@@ -4388,25 +4394,41 @@ require([
         });
       }
 
-      function runAttBuffer(value) {
+      async function runAttBuffer(value) {
         $("#abutters-spinner").show();
-        if (value === 0) {
-          value = -10;
-        }
-        let buffer = value;
-        let unit = queryUnits;
-        let bufferResults;
-        let targetExtent;
 
-        if (sessionStorage.getItem("condos") === "no") {
-          bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
-        } else {
-          bufferResults = geometryEngine.geodesicBuffer(detailsGeometry, buffer, unit);
-        }
+        try {
+          if (value === 0) value = -10;
 
-        addOrUpdateBufferGraphic(bufferResults);
-        queryAttDetailsBuffer(bufferResults);
-      }
+          const buffer = value;
+          const unit = queryUnits;
+
+          const sr = detailsGeometry?.spatialReference;
+        
+          await projection.load();
+          const sr4326 = new SpatialReference({ wkid: 4326 });
+
+          let geom4326 = detailsGeometry;
+          if (!(sr?.isWGS84 || sr?.wkid === 4326)) {
+            geom4326 = projection.project(detailsGeometry, sr4326);
+            if (!geom4326) throw new Error(`Projection failed: ${sr?.wkid} -> 4326`);
+          }
+
+          const buffer4326 = await geometryEngineAsync.geodesicBuffer(
+            geom4326,
+            buffer,
+            unit
+          );
+
+          addOrUpdateBufferGraphic(buffer4326);
+          queryAttDetailsBuffer(buffer4326);
+        } catch (err) {
+          console.error("runAttBuffer failed:", err);
+        } finally {
+          $("#abutters-spinner").hide();
+        }
+}
+
 
       function clickDetailsPanel(item) {
         $("#select-button").prop("disabled", true);
