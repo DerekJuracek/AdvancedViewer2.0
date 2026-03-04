@@ -24,6 +24,7 @@ require([
   let configUrl = urlParams.get("viewer");
 
   const configFiles = [
+    "bridgewaterct",
     "canaanct",
     "colebrookct",
     "colebrookctassessor",
