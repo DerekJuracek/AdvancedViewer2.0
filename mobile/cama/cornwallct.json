@@ -27,7 +27,7 @@
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=031&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Cornwall",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Cornwall_Demographics_2025.pdf",
-  "useVisionForTaxBillUrl": "yes",
+  "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=cornwall",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Cornwall/Tax_Maps/assessormap_",
   "useUniqueIdforParcelMap": "yes",
