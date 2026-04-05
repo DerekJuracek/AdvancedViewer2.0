@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+  <style>rect{fill:#fffdfa;stroke:#0b5a7a;stroke-width:2;} .label{font:14px Arial, Helvetica, sans-serif;fill:#052a36}</style>
+  <rect x="30" y="30" width="260" height="80" rx="8"/>
+  <text x="50" y="60" class="label">Frontend App</text>
+  <text x="50" y="78" class="label">(ArcGIS JS, Calcite, jQuery)</text>
+
+  <rect x="340" y="30" width="220" height="80" rx="8"/>
+  <text x="360" y="60" class="label">JSON Configs</text>
+  <text x="360" y="78" class="label">(cama/*.json)</text>
+
+  <rect x="650" y="30" width="220" height="80" rx="8"/>
+  <text x="670" y="60" class="label">ArcGIS Services</text>
+  <text x="670" y="78" class="label">(Feature/Map/Imagery)</text>
+
+  <rect x="340" y="150" width="220" height="60" rx="8"/>
+  <text x="360" y="180" class="label">Municipal Integrations</text>
+  <text x="360" y="197" class="label">(CAMA, tax, property card)</text>
+
+  <line x1="290" y1="70" x2="340" y2="70" stroke="#0b5a7a" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="560" y1="70" x2="650" y2="70" stroke="#0b5a7a" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="450" y1="110" x2="450" y2="150" stroke="#0b5a7a" stroke-width="2" marker-end="url(#arrow)" />
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b5a7a" />
+    </marker>
+  </defs>
+</svg>

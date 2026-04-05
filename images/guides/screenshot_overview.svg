@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+  <style>rect{fill:#f8fafc;stroke:#94a3b8;stroke-width:2} .text{font:16px Arial, Helvetica, sans-serif;fill:#0f172a}</style>
+  <rect x="10" y="10" width="980" height="580" rx="6"/>
+  <text x="40" y="50" class="text">[Placeholder screenshot] Viewer main map with parcel highlights</text>
+  <rect x="40" y="80" width="380" height="220" rx="4" style="fill:#fff;stroke:#cbd5e1"/>
+  <text x="50" y="110" class="text">Map area</text>
+  <rect x="440" y="80" width="500" height="220" rx="4" style="fill:#fff;stroke:#cbd5e1"/>
+  <text x="450" y="110" class="text">Results / property card</text>
+  <rect x="40" y="320" width="900" height="220" rx="4" style="fill:#fff;stroke:#cbd5e1"/>
+  <text x="50" y="350" class="text">Toolbars: search, filters, layer list</text>
+</svg>
