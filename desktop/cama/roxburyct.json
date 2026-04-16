@@ -22,7 +22,7 @@
   "customWelcomeMessage": "<strong>Physical Address:</strong><br> 29 North Street Roxbury, CT 06783 <br><br><strong>Mailing Address:<br></strong> PO Box 203 Roxbury, CT 06783 <br><br><strong>Assessor Hours of Operation:<br></strong> Tues and Thurs: <br>9 am - Noon & 1 am - 4 pm<br><br>Friday: <br>9 am to noon<br><strong><br>Please be aware: online property record data is working grand list year data, and is subject to change at any time.</strong>",
   "DetailLinks": ["links", "ids", "vals", "sales"],
   "DetailLinksToInclude": ["links", "ids", "sales"],
-  "accessorName": "-Linda Bertaccini – Assessor <br>    -Jamie Hatch - Assistant Assessor",
+  "accessorName": "-Linda Bertaccini – Assessor <br>    -Lauren Fraser - Acting Assessor",
   "includePermitLink": "no",
   "propertyCardPdf": "no",
   "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=120&uniqueid=",
