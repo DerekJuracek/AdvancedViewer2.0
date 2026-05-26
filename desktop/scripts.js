@@ -17,12 +17,6 @@ require([
   "esri/widgets/Bookmarks",
   "esri/widgets/Legend",
   "esri/widgets/Print",
-  "esri/layers/support/TileInfo",
-  "esri/geometry/Extent",
-  "esri/rest/support/PrintTemplate",
-  "esri/rest/support/PrintParameters",
-  "esri/widgets/Print/PrintViewModel",
-  "esri/widgets/Print/TemplateOptions",
   "esri/geometry/geometryEngineAsync"
 ], function (
   WebMap,
@@ -43,12 +37,6 @@ require([
   Bookmarks,
   Legend,
   Print,
-  TileInfo,
-  Extent,
-  PrintTemplate,
-  PrintParameters,
-  PrintViewModel,
-  TemplateOptions,
   geometryEngineAsync
 ) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -291,10 +279,6 @@ require([
                   `<strong><p style="color:green;">Successfully uploaded REST Service.</p></strong>`
                 );
 
-                webmap.layers.on("change", function (event) {
-                  console.log(event, " layer was added/removed from the map.");
-                });
-
                 var pickListContainer = $("#layerList");
                 addLayerToPickList(urlInputLayer, pickListContainer);
 
@@ -335,11 +319,6 @@ require([
                   `<strong><p style="color:green;">Successfully uploaded REST Service.</p></strong>`
                 );
 
-                webmap.layers.on("change", function (event) {
-                  // console.log(event);
-                  console.log(event, " layer was added/removed from the map.");
-                });
-
                 // Add the newly added layer to the pick list
                 var pickListContainer = $("#layerList");
                 addLayerToPickList(urlInputLayer, pickListContainer);
@@ -359,6 +338,7 @@ require([
           }
         });
       });
+
 
       view.when(() => {
         let urlButton3 = document.getElementById("urlButtonMapService");
@@ -380,11 +360,6 @@ require([
                 $("#urlMessageMapService").html(
                   `<strong><p style="color:green;">Successfully uploaded REST Service.</p></strong>`
                 );
-
-                webmap.layers.on("change", function (event) {
-                  // console.log(event);
-                  console.log(event, " layer was added/removed from the map.");
-                });
 
                 // Add the newly added layer to the pick list
                 var pickListContainer = $("#layerList");
@@ -433,28 +408,6 @@ require([
           container: $("#BookmarksDiv")[0],
           dragEnabled: true,
         });
-      });
-
-      // Template for Scale 1:1200
-      const template1200 = new TemplateOptions({
-        title: "Print Map at Scale 1:1200",
-        layout: "a4-portrait", // Use portrait orientation
-        scale: 1200,
-        scaleEnabled: true, // Enforce the scale
-        dpi: 96, // Set DPI, modify if needed for higher resolution
-        legendEnabled: true, // Set to false if you don't want a legend
-        northArrowEnabled: true, // Optional, adds a north arrow if available in the layout
-      });
-
-      // Template for Scale 1:2400
-      const template2400 = new TemplateOptions({
-        title: "Print Map at Scale 1:2400",
-        layout: "a4-portrait", // Use portrait orientation
-        scale: 2400,
-        scaleEnabled: true, // Enforce the scale
-        dpi: 96, // Set DPI, modify if needed for higher resolution
-        legendEnabled: true, // Set to false if you don't want a legend
-        northArrowEnabled: true, // Optional, adds a north arrow if available in the layout
       });
 
       view.when(() => {
@@ -734,10 +687,8 @@ require([
         }
       );
 
-      let measureContainer = document.getElementById("topbar");
-      view.ui.add(measureContainer, "bottom-right");
-
       let activeWidget1 = null;
+      let measureWatchHandle = null;
       document
         .getElementById("distanceButton")
         .addEventListener("click", function () {
@@ -801,18 +752,19 @@ require([
             }
 
             if (activeWidget1 && activeWidget1.viewModel) {
-              // Listen for the "measure-end" event on the viewModel
-              activeWidget1.viewModel.watch("state", function (state) {
-                if (state === "measured") {
-                  if (handleUsed == "click") {
-                    clickHandle = view.on("click", handleClick);
-                  } else if (handleUsed == "details") {
-                    DetailsHandle = view.on("click", handleDetailsClick);
-                    detailsHandleUsed == "";
-                  } else {
+              measureWatchHandle = reactiveUtils.watch(
+                () => activeWidget1.viewModel.state,
+                (state) => {
+                  if (state === "measured") {
+                    if (handleUsed == "click") {
+                      clickHandle = view.on("click", handleClick);
+                    } else if (handleUsed == "details") {
+                      DetailsHandle = view.on("click", handleDetailsClick);
+                      detailsHandleUsed == "";
+                    }
                   }
                 }
-              });
+              );
             }
 
             view.ui.add(activeWidget1, "bottom-right");
@@ -849,20 +801,20 @@ require([
               }
             }
 
-            // Assuming activeWidget1 is an instance of DistanceMeasurement2D or AreaMeasurement2D
             if (activeWidget1 && activeWidget1.viewModel) {
-              // Listen for the "measure-end" event on the viewModel
-              activeWidget1.viewModel.watch("state", function (state) {
-                if (state === "measured") {
-                  if (handleUsed == "click") {
-                    clickHandle = view.on("click", handleClick);
-                  } else if (handleUsed == "details") {
-                    DetailsHandle = view.on("click", handleDetailsClick);
-                    detailsHandleUsed == "";
-                  } else {
+              measureWatchHandle = reactiveUtils.watch(
+                () => activeWidget1.viewModel.state,
+                (state) => {
+                  if (state === "measured") {
+                    if (handleUsed == "click") {
+                      clickHandle = view.on("click", handleClick);
+                    } else if (handleUsed == "details") {
+                      DetailsHandle = view.on("click", handleDetailsClick);
+                      detailsHandleUsed == "";
+                    }
                   }
                 }
-              });
+              );
             }
             // detailsHandleUsed == "";
             view.ui.add(activeWidget1, "bottom-right");
@@ -871,6 +823,10 @@ require([
             break;
           case null:
             if (activeWidget1) {
+              if (measureWatchHandle) {
+                measureWatchHandle.remove();
+                measureWatchHandle = null;
+              }
               view.ui.remove(activeWidget1);
               activeWidget1.destroy();
               activeWidget1 = null;
@@ -1811,19 +1767,23 @@ require([
         }
       }
 
-      // Watch for changes in the zoom level
-      view.watch("zoom", function (newValue, oldValue) {
-        if (newValue !== oldValue) {
-          clickRefreshButton();
+      reactiveUtils.watch(
+        () => view.zoom,
+        (newValue, oldValue) => {
+          if (newValue !== oldValue) {
+            clickRefreshButton();
+          }
         }
-      });
+      );
 
-      // Optionally, watch for changes in the center (pan)
-      view.watch("center", function (newValue, oldValue) {
-        if (newValue !== oldValue) {
-          clickRefreshButton();
+      reactiveUtils.watch(
+        () => view.center,
+        (newValue, oldValue) => {
+          if (newValue !== oldValue) {
+            clickRefreshButton();
+          }
         }
-      });
+      );
 
       function clearContents(e, string) {
         const currentUrl = window.location.href;
@@ -2286,7 +2246,6 @@ require([
         $("status-loader").show();
         $("#featureWid").empty();
 
-        console.log(firstList)
 
         let seenIds = new Set();
         let seenUID = new Set();
@@ -2363,7 +2322,6 @@ require([
 
         let zoomToItemId;
         let Id;
-        console.log(uniqueArray)
 
         uniqueArray.forEach(function (feature) {
           let objectID = feature.objectid;
@@ -2554,7 +2512,6 @@ require([
           $("#abutters-attributes").prop("disabled", false);
           $("#abutters-zoom").prop("disabled", false);
           if (event.target.closest(".no-zoomto")) {
-            console.log("dont zoom");
             shouldZoomTo = false;
           }
           buildDetailsPanel(objectID, itemId, shouldZoomTo);
@@ -2571,7 +2528,6 @@ require([
         let pointGisLink;
         let clickEvent = false;
         function createList(features) {
-          console.log('process features:', features)
           features.forEach(function (feature) {
             // PUT BACK TO FILTER OUT EMPTY OWNERS
             if ((feature.attributes.Owner === "" || null || undefined || feature.attributes.Owner === "RESIDENT") && !lasso && !clickEvent) {
@@ -2754,7 +2710,6 @@ require([
         }
 
         if (owner == "RESIDENT" && (!ClickEvent)) {
-          console.log('serach on resident not clicking')
           return 
         } else {
 
@@ -2942,10 +2897,6 @@ require([
       let sketch = new SketchViewModel({
         view: view,
         layer: sketchGL,
-        defaultCreateOptions: {
-          mode: "freehand",
-        },
-
         polygonSymbol: {
           type: "simple-fill",
           style: "cross",
@@ -3021,7 +2972,7 @@ require([
         $("#select-button").prop("disabled", false);
 
         if (lasso && !select) {
-          sketch.create("polygon");
+          sketch.create("polygon", { mode: "freehand" });
 
           $("#select-button").removeClass("btn-warning");
           $("#lasso").addClass("btn-warning");
@@ -3408,7 +3359,6 @@ require([
                   }, 200)
                 }
             }
-            console.log('from layer:', result.features)
 
             processFeatures(result.features);
           
@@ -3685,7 +3635,6 @@ require([
           ) {
             backButtonPanelShowSelect();
             view.graphics.removeAll();
-            console.log(polygonGraphics)
             view.graphics.addMany(polygonGraphics);
          
             if (polygonGraphics.length > 1) {
@@ -3770,32 +3719,6 @@ require([
           }
         });
       });
-
-      function loadAbuttersIntitialPanel() {
-        $("#results-div").css("height", "300px");
-        $("#exportButtons").show();
-        $("#exportResults").show();
-        $("#exportSearch").hide();
-        $("#csvExportResults").show();
-        $("#csvExportSearch").hide();
-        $("#WelcomeBox").hide();
-        $("#detailBox").hide();
-        $("#featureWid").hide();
-        $("#result-btns").hide();
-        $("#total-results").hide();
-        $("#ResultDiv").hide();
-        $("#details-btns").hide();
-        $("#abut-mail").hide();
-        $("#filterDiv").hide();
-        $("#layerListDiv").hide();
-        $("#abutters-content").show();
-        $("#selected-feature").empty();
-        $("#backButton").show();
-        $("#detailsButton").show();
-        $("#parcel-feature").empty();
-        $("#backButton-div").css("padding-top", "78px");
-        $("#abutters-title").html(`Abutting Parcels (0)`);
-      }
 
       function loadAbuttersAttrIntitialPanel() {
         $("#results-div").css("height", "300px");
@@ -5186,7 +5109,7 @@ require([
         };
         let bufferGraphicId = "uniqueBufferGraphicId";
 
-        view.graphics.removeAll(polygonGraphics);
+        view.graphics.removeAll();
 
         const fillSymbol = {
           type: "simple-fill",
@@ -5218,7 +5141,7 @@ require([
       }
 
       function zoomToFeature(objectid, gisLink, triggerList) {
-        view.graphics.removeAll(polygonGraphics);
+        view.graphics.removeAll();
 
         detailsChanged = {
           isChanged: false,
@@ -5749,7 +5672,6 @@ require([
                     );
                   }
                 });
-                console.log('from table:', firstList)
 
                 let query2;
 
@@ -5812,11 +5734,7 @@ require([
       }
 
       function triggerDetailsZoom(results, main,) {
-        view.graphics.removeAll(polygonGraphics);
-
-        console.log(results)
-        console.log(main)
-
+        view.graphics.removeAll();
         let parcelGeometry = results[0].geometry;
         let GIS_LINK = results[0].attributes.GIS_LINK;
 
@@ -7485,7 +7403,6 @@ require([
 
           if (selectedScale) {
             view.scale = selectedScale;
-            console.log(view.scale)
           }
 
           $("#scale-value").val(selectedScale).html(selectedText);
@@ -7600,18 +7517,23 @@ require([
         }
       }
 
-      view.watch("zoom", function (newValue, oldValue) {
-        if (newValue !== oldValue) {
-          clickRefreshButton();
+      reactiveUtils.watch(
+        () => view.zoom,
+        (newValue, oldValue) => {
+          if (newValue !== oldValue) {
+            clickRefreshButton();
+          }
         }
-      });
+      );
 
-      // Optionally, watch for changes in the center (pan)
-      view.watch("center", function (newValue, oldValue) {
-        if (newValue !== oldValue) {
-          clickRefreshButton();
+      reactiveUtils.watch(
+        () => view.center,
+        (newValue, oldValue) => {
+          if (newValue !== oldValue) {
+            clickRefreshButton();
+          }
         }
-      });
+      );
 
       $(document).ready(function () {
         $("#side-Exp2").on("click", function () {
