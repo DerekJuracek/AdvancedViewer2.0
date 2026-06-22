@@ -27,7 +27,6 @@ require([
     "bridgewaterct",
     "canaanct",
     "colebrookct",
-    "colebrookctassessor",
     "columbiact",
     "cornwallct",
     "durhamct",
@@ -36,11 +35,9 @@ require([
     "norfolkct",
     "northcanaanct",
     "roxburyct",
-    "roxburyctassessor",
     "salisburyct",
     "scotlandct",
     "warrenct",
-    "warrenctassessor",
     "washingtonct",
     "wiltonct",
     "wolcottct",
@@ -184,11 +181,9 @@ require([
        if (sessionStorage.getItem("condos") === "no") {
           webmap.add(noCondosLayer);
           noCondosLayer.visible = true;
-          console.log('no condos layer added')
         } else {
           webmap.add(CondosLayer);
           CondosLayer.visible = true;
-          console.log('condos layer added')
         }
 
      
@@ -235,7 +230,6 @@ dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
     e.stopPropagation();
 
     const action = btn.dataset.action;
-    console.log("clicked:", action);
 
     // Close after click
     dropdown.classList.remove("open");
@@ -562,8 +556,6 @@ dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
       } else {
         // Revert to the original renderer if the basemap is the configured basemap title or "Washington Basemap"
         view.map.allLayers.forEach((layer) => {
-          console.log(layer)
-          console.log('reverting renderer')
           if (layer.title === "Parcel Boundaries") {
             layer.renderer = OG;
           }
