@@ -55,6 +55,7 @@ require([
     "norfolkct",
     "northcanaanct",
     "roxburyct",
+    "plainvillect",
     "salisburyct",
     "scotlandct",
     "warrenct",
