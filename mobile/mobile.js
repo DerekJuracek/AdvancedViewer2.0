@@ -32,6 +32,7 @@ require([
     "durhamct",
     "franklinct",
     "haddamct",
+    "norfolkct",
     "northcanaanct",
     "roxburyct",
     "salisburyct",
