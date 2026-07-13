@@ -1614,6 +1614,16 @@ calcite-combobox::part(items-wrapper) {
   overflow-y: auto;
 }
 
+#mailingDropdownMenu {
+  background-color: var(--background-color) !important;
+}
+
+#csvExportSearch,
+#exportSearch {
+  color: #00cc66 !important;
+  font-weight: bold;
+}
+
 
 
 
