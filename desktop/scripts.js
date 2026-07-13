@@ -3838,6 +3838,23 @@ require([
           $("#backButton-div").css("padding-top", "0px");
           $("#abutters-title").html(`Abutting Parcels (0)`);
           $(".center-container").show();
+          // Open right sidebar to Legend when layer list opens
+          if ($("#sidebar").hasClass("collapsed")) {
+            $("#sidebar").removeClass("collapsed");
+            $("#small-div").css("right", "250px");
+            $("#left-arrow").hide();
+            $("#right-arrow").show();
+          }
+          $("#rightPanel").hide();
+          $("#BookmarksDiv").hide();
+          $("#BasemapDiv").hide();
+          $("#Right-Btn-div").hide();
+          $("#PrintDiv").hide();
+          $("#ContactDiv").hide();
+          $("#AddDataDiv").hide();
+          $("#Right-Btn-div").show();
+          $("#LegendDiv").show();
+          $("#group-container-right").show();
         });
       });
 
