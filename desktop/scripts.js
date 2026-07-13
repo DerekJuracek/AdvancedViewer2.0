@@ -150,6 +150,7 @@ require([
         document.getElementById("disclaimer-text").innerHTML =
           configVars.customDisclaimerMessage;
       }
+      
 
       if (configVars.showParcelUpdateDate === true) {
         document.getElementById("parcel-update-date").innerHTML =
