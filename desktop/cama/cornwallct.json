@@ -17,6 +17,8 @@
   "showDisclaimer": "yes",
   "customDisclaimerPage": "no",
   "customDisclaimerMessage": "The GIS website is currently available with limited functionality as we transition through the CAMA conversion process. The data displayed is static as of February 24, 2025, and will not be updated until the conversion is complete. Once the new CAMA system is live, we will implement automated nightly transfers to ensure up-to-date information. Thank you for your patience during this transition.",
+  "showParcelUpdateDate": true,
+  "parcelUpdateDate": "01/01/2026",
   "welcomeImage": "https://publicweb-gis.s3.amazonaws.com/Images/MunicipalSeals/Cornwall_CT.png",
   "customWelcomePage": "no",
   "customWelcomeMessage": "We want something different.",

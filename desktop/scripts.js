@@ -128,6 +128,8 @@ require([
       configVars.showDisclaimer = config.showDisclaimer;
       configVars.customDisclaimerPage = config.customDisclaimerPage;
       configVars.customDisclaimerMessage = config.customDisclaimerMessage;
+      configVars.showParcelUpdateDate = config.showParcelUpdateDate;
+      configVars.parcelUpdateDate = config.parcelUpdateDate;
       configVars.DetailLinks = config.DetailLinks;
       configVars.DetailLinksToInclude = config.DetailLinksToInclude;
       configVars.includePermitLink = config.includePermitLink;
@@ -147,6 +149,13 @@ require([
       if (configVars.customDisclaimerPage === "yes") {
         document.getElementById("disclaimer-text").innerHTML =
           configVars.customDisclaimerMessage;
+      }
+
+      if (configVars.showParcelUpdateDate === true) {
+        document.getElementById("parcel-update-date").innerHTML =
+          configVars.parcelUpdateDate;
+      } else {
+        document.getElementById("parcel-update-line").style.display = "none";
       }
 
       if (configVars.includePermitLink === "yes") {
