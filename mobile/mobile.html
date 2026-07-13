@@ -96,6 +96,46 @@ $(document).ready(function () {
 </script>
 </head>
 <body>
+
+  <!-- Full-screen disclaimer overlay -->
+  <script>
+    if (sessionStorage.getItem("agreedToDisclaimer") === "yes") {
+      document.write('<style>#mobileDisclaimer{display:none!important}</style>');
+    }
+  </script>
+  <div id="mobileDisclaimer" style="
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #343a40; color: white;
+    z-index: 9999; display: flex; flex-direction: column;
+    padding: 24px 16px 16px; box-sizing: border-box;
+  ">
+    <h5 style="text-align: center; margin-bottom: 16px;">Disclaimer</h5>
+    <div id="mobile-disclaimer-text" style="font-size: 13px; flex: 1; overflow-y: auto; padding-bottom: 12px;">
+      <strong>By searching or selecting any links on this page, you accept the following disclaimer.</strong><br><br>
+      Maps are for graphical purposes only. They do not represent a legal survey. While every effort has been made to
+      ensure that these datasets are accurate and reliable within the limits of the current state of the art, The
+      Municipal organization cannot assume liability for any damages caused by any errors or omissions in the data,
+      nor as a result of the failure of the data to function on a particular system. The Municipality makes no
+      warranty, expressed or implied, nor does the fact of distribution constitute such a warranty.<br><br>
+      <strong>The information presented on the online property card represents values from the working year and is
+      subject to periodic updates and modifications. For definitive and final property details or any clarifications,
+      individuals are strongly encouraged to verify the information directly at the Assessor's office.</strong><br><br>
+      Please note that the parcel and its value information showcased here are reflective of the
+      <strong>October 1st, 2025</strong> Grand List but will present current Ownership/Sales. Users should be aware
+      that this information may not represent the most current data available and should consult the Assessor's
+      office for any recent changes or updates.<br><br>
+      Maintenance, updates and publishing of the parcels are carried out by Terreno GIS.
+    </div>
+    <div style="border-top: 1px solid #555; padding-top: 14px;">
+      <div style="margin-bottom: 12px;">
+        <input type="checkbox" id="mobileAgreeCheck" style="margin-right: 8px;">
+        <label for="mobileAgreeCheck" style="margin: 0;">I agree.</label>
+      </div>
+      <button id="mobileAgreeBtn" class="btn btn-danger btn-block" disabled>Accept</button>
+    </div>
+  </div>
+
   <nav class="navbar navbar-dark custom-navbar">
   <div class="container-fluid d-flex flex-column align-items-center text-center" style="padding-top: 5px;">
     <!-- <span class="navbar-brand mb-2 h1" id="title">Town of Washington, CT</span> -->
@@ -217,5 +257,5 @@ $(document).ready(function () {
 </body>
   <script src="https://js.arcgis.com/4.32/"></script>
   <script src="./parcel.js"></script>
-  <script src="./mobile.min.js?v=1.0.18"></script>
+  <script src="./mobile.js"></script>
 </html>

@@ -117,6 +117,16 @@ require([
               configVars.permitLink = config.permitLink;
             }
 
+      if (configVars.showDisclaimer === "no") {
+        sessionStorage.setItem("agreedToDisclaimer", "yes");
+        $("#mobileDisclaimer").hide();
+      }
+
+      if (configVars.customDisclaimerPage === "yes") {
+        document.getElementById("mobile-disclaimer-text").innerHTML =
+          configVars.customDisclaimerMessage;
+      }
+
     //document.getElementById("AccessorName").innerHTML = config.accessorName;
       $(".help-url").attr("href", configVars.helpUrl);
       document.getElementById("imageContainer").src = configVars.welcomeImage;
@@ -161,6 +171,27 @@ require([
 
       view.when(() => {
         configVars.homeExtent = view.extent;
+      });
+
+      view.when(() => {
+        if (sessionStorage.getItem("agreedToDisclaimer") === "yes") {
+          $("#mobileDisclaimer").hide();
+        } else {
+          $("#mobileDisclaimer").show();
+        }
+
+        $("#mobileAgreeBtn").prop("disabled", true);
+        $("#mobileAgreeCheck").change(function () {
+          if ($(this).is(":checked")) {
+            $("#mobileAgreeBtn").prop("disabled", false);
+            sessionStorage.setItem("agreedToDisclaimer", "yes");
+          } else {
+            $("#mobileAgreeBtn").prop("disabled", true);
+          }
+        });
+        $("#mobileAgreeBtn").on("click", function () {
+          $("#mobileDisclaimer").fadeOut(300);
+        });
       });
 
       const noCondosLayer = new FeatureLayer({
