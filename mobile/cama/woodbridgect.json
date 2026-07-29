@@ -36,7 +36,7 @@
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Woodbridge",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
-  "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Woodbridge_Housing_2024.pdf",
+  "housingUrl": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Woodbridge_Housing.pdf",
   "masterTable": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/arcgis/rest/services/CT_Woodbridge_Adv_Viewer_Parcels/FeatureServer/0",
   "condoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/arcgis/rest/services/CT_Woodbridge_Adv_Viewer_Parcels/FeatureServerr/1",
   "noCondoLayer": "https://services1.arcgis.com/j6iFLXhyiD3XTMyD/arcgis/rest/services/CT_Woodbridge_Adv_Viewer_Parcels/FeatureServer/1",
