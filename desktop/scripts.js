@@ -38,6 +38,7 @@ require([
   Legend,
   Print,
   geometryEngineAsync
+  
 ) {
   const urlParams = new URLSearchParams(window.location.search);
   let currentURL = window.location.href;
