@@ -28,7 +28,7 @@
   "includePermitLink": "yes",
   "permitLink": "http://permitlinkusa-online.com/csp/bridgewaterct/DocumentLink.PublicDLinkHome.cls",
   "propertyCardPdf": "no",
-  "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=16&uniqueid=",
+  "propertyCard": "https://www.propertyrecordcards.com/PropertyResults.aspx?towncode=016&uniqueid=",
   "pdf_Image": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Bridgewater",
   "pdf_demographics": "https://publicweb-gis.s3.amazonaws.com/CT_Town_Profiles/Bridgewater_Demographics.pdf",
   "useVisionForTaxBillUrl": "no",
