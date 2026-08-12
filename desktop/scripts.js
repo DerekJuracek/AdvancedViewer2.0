@@ -6058,46 +6058,65 @@ require([
             "GIS_LINK",
           ];
 
-          let uniqueSuggestions = new Set();
+          // Suggestions are grouped under a sticky header per field, in this
+          // display order, instead of one flat undifferentiated list.
+          const suggestionFieldGroups = [
+            { field: "Owner", label: "Owner" },
+            { field: "Co_Owner", label: "Co-Owner" },
+            { field: "Location", label: "Location" },
+            { field: "Street_Name", label: "Street Name" },
+            { field: "MBL", label: "MBL" },
+            { field: "Uniqueid", label: "Unique ID" },
+            { field: "GIS_LINK", label: "GIS Link" },
+          ];
 
           noCondosTable.queryFeatures(query).then((response) => {
             let suggestionsContainer = document.getElementById("suggestions");
             suggestionsContainer.innerHTML = ""; // Clear previous suggestions
 
+            const matchesByField = new Map();
+            suggestionFieldGroups.forEach(({ field }) =>
+              matchesByField.set(field, new Set())
+            );
+
             response.features.forEach((feature) => {
-              [
-                "Street_Name",
-                "MBL",
-                "Location",
-                "Co_Owner",
-                "Uniqueid",
-                "Owner",
-                "GIS_LINK",
-              ].forEach((fieldName) => {
-                let value = feature.attributes[fieldName];
-                if (
-                  value &&
-                  value.includes(searchTerm) &&
-                  !uniqueSuggestions.has(value)
-                ) {
-                  let suggestionDiv = document.createElement("div");
-                  suggestionDiv.className = "list-group-item";
-                  suggestionDiv.innerText = `${value}`;
-
-                  suggestionsContainer.appendChild(suggestionDiv);
-
-                  // Add the value to the Set
-                  uniqueSuggestions.add(value);
-                  suggestionsContainer.style.display = "block";
-
-                  suggestionDiv.addEventListener("click", function (e) {
-                    clickedToggle = true;
-                    runQuery(e.target.innerHTML);
-                    clickedToggle = false;
-                  });
+              suggestionFieldGroups.forEach(({ field }) => {
+                let value = feature.attributes[field];
+                if (value && value.includes(searchTerm)) {
+                  matchesByField.get(field).add(value);
                 }
               });
             });
+
+            suggestionFieldGroups.forEach(({ field, label }) => {
+              const values = Array.from(matchesByField.get(field)).sort((a, b) =>
+                a.toLowerCase().localeCompare(b.toLowerCase())
+              );
+              if (values.length === 0) return;
+
+              const groupHeader = document.createElement("div");
+              groupHeader.className = "suggestions-group-header";
+              groupHeader.textContent = label;
+              suggestionsContainer.appendChild(groupHeader);
+
+              values.forEach((value) => {
+                let suggestionDiv = document.createElement("div");
+                suggestionDiv.className = "list-group-item";
+                suggestionDiv.innerText = `${value}`;
+
+                suggestionsContainer.appendChild(suggestionDiv);
+
+                suggestionDiv.addEventListener("click", function (e) {
+                  document.getElementById("searchInput").value = value;
+                  clickedToggle = true;
+                  runQuery(e.target.innerHTML);
+                  clickedToggle = false;
+                });
+              });
+            });
+
+            suggestionsContainer.style.display =
+              suggestionsContainer.childElementCount > 0 ? "block" : "none";
           });
         });
 
