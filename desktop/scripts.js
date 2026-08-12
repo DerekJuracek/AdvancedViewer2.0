@@ -4198,6 +4198,48 @@ require([
         }, 250);
       }
 
+      // Abutting-parcel polygons found by the last buffer query, so a
+      // re-run (buffer value changed) clears the old highlights before
+      // drawing the new set instead of stacking them.
+      let abuttersHighlightGraphics = [];
+
+      function clearAbuttersHighlights() {
+        abuttersHighlightGraphics.forEach((graphic) =>
+          view.graphics.remove(graphic)
+        );
+        abuttersHighlightGraphics = [];
+      }
+
+      // Highlights each abutting parcel with the same green used for the
+      // currently-selected/zoomed-to parcel elsewhere (e.g. zoomToFeature),
+      // rather than the purple search-result color, so it doesn't blend
+      // into the selected polygon that the abutters search is centered on.
+      function highlightAbuttingParcels(features) {
+        clearAbuttersHighlights();
+
+        const fillSymbol = {
+          type: "simple-fill",
+          color: [0, 0, 0, 0.1],
+          outline: {
+            color: [145, 199, 61, 1],
+            width: 1,
+          },
+        };
+
+        features.forEach((feature) => {
+          if (!feature.geometry) return;
+
+          const graphic = new Graphic({
+            geometry: feature.geometry,
+            symbol: fillSymbol,
+            id: `abuttersHighlight-${feature.attributes.GIS_LINK}`,
+          });
+
+          view.graphics.add(graphic);
+          abuttersHighlightGraphics.push(graphic);
+        });
+      }
+
       function queryAttDetailsBuffer(geometry) {
         const parcelQuery = {
           spatialRelationship: "intersects", // Relationship operation to apply
@@ -4211,6 +4253,7 @@ require([
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.queryFeatures(parcelQuery).then((results) => {
             const bufferRes = results.features;
+            highlightAbuttingParcels(bufferRes);
             bufferRes.forEach((parcel) => {
               bufferResults.push(parcel.attributes.GIS_LINK);
             });
@@ -4220,6 +4263,7 @@ require([
         } else {
           CondosLayer.queryFeatures(parcelQuery).then((results2) => {
             const bufferRes = results2.features;
+            highlightAbuttingParcels(bufferRes);
             bufferRes.forEach((parcel) => {
               bufferResults.push(parcel.attributes.GIS_LINK);
             });
