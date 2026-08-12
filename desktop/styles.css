@@ -657,6 +657,18 @@ ul {
   background-color: #e0e0e0;
 }
 
+.suggestions-group-header {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background-color: var(--background-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
 .expanded {
   height: 400px; /* expanded height */
   z-index: 1000;

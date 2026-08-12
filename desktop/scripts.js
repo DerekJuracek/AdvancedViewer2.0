@@ -4198,6 +4198,48 @@ require([
         }, 250);
       }
 
+      // Abutting-parcel polygons found by the last buffer query, so a
+      // re-run (buffer value changed) clears the old highlights before
+      // drawing the new set instead of stacking them.
+      let abuttersHighlightGraphics = [];
+
+      function clearAbuttersHighlights() {
+        abuttersHighlightGraphics.forEach((graphic) =>
+          view.graphics.remove(graphic)
+        );
+        abuttersHighlightGraphics = [];
+      }
+
+      // Highlights each abutting parcel with the same green used for the
+      // currently-selected/zoomed-to parcel elsewhere (e.g. zoomToFeature),
+      // rather than the purple search-result color, so it doesn't blend
+      // into the selected polygon that the abutters search is centered on.
+      function highlightAbuttingParcels(features) {
+        clearAbuttersHighlights();
+
+        const fillSymbol = {
+          type: "simple-fill",
+          color: [0, 0, 0, 0.1],
+          outline: {
+            color: [145, 199, 61, 1],
+            width: 1,
+          },
+        };
+
+        features.forEach((feature) => {
+          if (!feature.geometry) return;
+
+          const graphic = new Graphic({
+            geometry: feature.geometry,
+            symbol: fillSymbol,
+            id: `abuttersHighlight-${feature.attributes.GIS_LINK}`,
+          });
+
+          view.graphics.add(graphic);
+          abuttersHighlightGraphics.push(graphic);
+        });
+      }
+
       function queryAttDetailsBuffer(geometry) {
         const parcelQuery = {
           spatialRelationship: "intersects", // Relationship operation to apply
@@ -4211,6 +4253,7 @@ require([
         if (sessionStorage.getItem("condos") === "no") {
           noCondosLayer.queryFeatures(parcelQuery).then((results) => {
             const bufferRes = results.features;
+            highlightAbuttingParcels(bufferRes);
             bufferRes.forEach((parcel) => {
               bufferResults.push(parcel.attributes.GIS_LINK);
             });
@@ -4220,6 +4263,7 @@ require([
         } else {
           CondosLayer.queryFeatures(parcelQuery).then((results2) => {
             const bufferRes = results2.features;
+            highlightAbuttingParcels(bufferRes);
             bufferRes.forEach((parcel) => {
               bufferResults.push(parcel.attributes.GIS_LINK);
             });
@@ -6058,46 +6102,65 @@ require([
             "GIS_LINK",
           ];
 
-          let uniqueSuggestions = new Set();
+          // Suggestions are grouped under a sticky header per field, in this
+          // display order, instead of one flat undifferentiated list.
+          const suggestionFieldGroups = [
+            { field: "Owner", label: "Owner" },
+            { field: "Co_Owner", label: "Co-Owner" },
+            { field: "Location", label: "Location" },
+            { field: "Street_Name", label: "Street Name" },
+            { field: "MBL", label: "MBL" },
+            { field: "Uniqueid", label: "Unique ID" },
+            { field: "GIS_LINK", label: "GIS Link" },
+          ];
 
           noCondosTable.queryFeatures(query).then((response) => {
             let suggestionsContainer = document.getElementById("suggestions");
             suggestionsContainer.innerHTML = ""; // Clear previous suggestions
 
+            const matchesByField = new Map();
+            suggestionFieldGroups.forEach(({ field }) =>
+              matchesByField.set(field, new Set())
+            );
+
             response.features.forEach((feature) => {
-              [
-                "Street_Name",
-                "MBL",
-                "Location",
-                "Co_Owner",
-                "Uniqueid",
-                "Owner",
-                "GIS_LINK",
-              ].forEach((fieldName) => {
-                let value = feature.attributes[fieldName];
-                if (
-                  value &&
-                  value.includes(searchTerm) &&
-                  !uniqueSuggestions.has(value)
-                ) {
-                  let suggestionDiv = document.createElement("div");
-                  suggestionDiv.className = "list-group-item";
-                  suggestionDiv.innerText = `${value}`;
-
-                  suggestionsContainer.appendChild(suggestionDiv);
-
-                  // Add the value to the Set
-                  uniqueSuggestions.add(value);
-                  suggestionsContainer.style.display = "block";
-
-                  suggestionDiv.addEventListener("click", function (e) {
-                    clickedToggle = true;
-                    runQuery(e.target.innerHTML);
-                    clickedToggle = false;
-                  });
+              suggestionFieldGroups.forEach(({ field }) => {
+                let value = feature.attributes[field];
+                if (value && value.includes(searchTerm)) {
+                  matchesByField.get(field).add(value);
                 }
               });
             });
+
+            suggestionFieldGroups.forEach(({ field, label }) => {
+              const values = Array.from(matchesByField.get(field)).sort((a, b) =>
+                a.toLowerCase().localeCompare(b.toLowerCase())
+              );
+              if (values.length === 0) return;
+
+              const groupHeader = document.createElement("div");
+              groupHeader.className = "suggestions-group-header";
+              groupHeader.textContent = label;
+              suggestionsContainer.appendChild(groupHeader);
+
+              values.forEach((value) => {
+                let suggestionDiv = document.createElement("div");
+                suggestionDiv.className = "list-group-item";
+                suggestionDiv.innerText = `${value}`;
+
+                suggestionsContainer.appendChild(suggestionDiv);
+
+                suggestionDiv.addEventListener("click", function (e) {
+                  document.getElementById("searchInput").value = value;
+                  clickedToggle = true;
+                  runQuery(e.target.innerHTML);
+                  clickedToggle = false;
+                });
+              });
+            });
+
+            suggestionsContainer.style.display =
+              suggestionsContainer.childElementCount > 0 ? "block" : "none";
           });
         });
 

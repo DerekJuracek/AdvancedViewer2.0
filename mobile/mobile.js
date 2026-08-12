@@ -1875,27 +1875,29 @@ dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
       };
 
       function buildSuggestions(searchTerm) {
-          const searchFields = [
-            "Street_Name",
-            "MBL",
-            "Location",
-            "Co_Owner",
-            "Uniqueid",
-            "Owner",
-            "GIS_LINK",
+          // Suggestions are grouped under a header per field, in this
+          // display order, instead of one flat undifferentiated list.
+          const suggestionFieldGroups = [
+            { field: "Owner", label: "Owner" },
+            { field: "Co_Owner", label: "Co-Owner" },
+            { field: "Location", label: "Location" },
+            { field: "Street_Name", label: "Street Name" },
+            { field: "MBL", label: "MBL" },
+            { field: "Uniqueid", label: "Unique ID" },
+            { field: "GIS_LINK", label: "GIS Link" },
           ];
 
           $("#searchInput ul").remove();
           $("#suggestions").hide();
           $("#dropdown").show();
-      
+
           // Construct your where clause
           let whereClause = `
-            Street_Name LIKE '%${searchTerm}%' OR 
-            MBL LIKE '%${searchTerm}%' OR 
-            Location LIKE '%${searchTerm}%' OR 
-            Co_Owner LIKE '%${searchTerm}%' OR 
-            Uniqueid LIKE '%${searchTerm}%' OR 
+            Street_Name LIKE '%${searchTerm}%' OR
+            MBL LIKE '%${searchTerm}%' OR
+            Location LIKE '%${searchTerm}%' OR
+            Co_Owner LIKE '%${searchTerm}%' OR
+            Uniqueid LIKE '%${searchTerm}%' OR
             Owner LIKE '%${searchTerm}%' OR
             GIS_LINK LIKE '%${searchTerm}%'
         `;
@@ -1903,43 +1905,61 @@ dropdown.querySelectorAll(".dropdown-item").forEach((btn) => {
           let query = noCondosTable.createQuery();
           query.where = whereClause;
           query.returnGeometry = false;
-          query.outFields = searchFields;
-          let uniqueSuggestions = new Set();
+          query.outFields = suggestionFieldGroups.map(({ field }) => field);
 
           noCondosTable.queryFeatures(query).then((response) => {
             let suggestionsContainer = document.getElementById("suggestions");
             suggestionsContainer.innerHTML = "";
+
+            const matchesByField = new Map();
+            suggestionFieldGroups.forEach(({ field }) =>
+              matchesByField.set(field, new Set())
+            );
+
             response.features.forEach((feature) => {
-              searchFields.forEach((fieldName) => {
-                let value = feature.attributes[fieldName];
-                if (
-                  value &&
-                  value.includes(searchTerm) &&
-                  !uniqueSuggestions.has(value)
-                ) {
-                  let suggestionDiv = document.createElement("div");
-                  suggestionDiv.className = "list-group-item";
-                  suggestionDiv.innerText = `${value}`;
-
-                  suggestionsContainer.appendChild(suggestionDiv);
-
-                  uniqueSuggestions.add(value);
-                  suggestionsContainer.style.display = "block";
-
-                  suggestionDiv.addEventListener("click", function (e) {
-                    clickedToggle = true;
-                    let value = e.target.textContent
-
-                    if (clickedToggle) {
-                      runQuerySearchTerm = value.replace(/&amp;/g, "&");
-                      runQuery();
-                    }
-                 
-                    clickedToggle = false;
-                  });
+              suggestionFieldGroups.forEach(({ field }) => {
+                let value = feature.attributes[field];
+                if (value && value.includes(searchTerm)) {
+                  matchesByField.get(field).add(value);
                 }
               });
             });
+
+            suggestionFieldGroups.forEach(({ field, label }) => {
+              const values = Array.from(matchesByField.get(field)).sort((a, b) =>
+                a.toLowerCase().localeCompare(b.toLowerCase())
+              );
+              if (values.length === 0) return;
+
+              const groupHeader = document.createElement("div");
+              groupHeader.className = "suggestions-group-header";
+              groupHeader.textContent = label;
+              suggestionsContainer.appendChild(groupHeader);
+
+              values.forEach((value) => {
+                let suggestionDiv = document.createElement("div");
+                suggestionDiv.className = "list-group-item";
+                suggestionDiv.innerText = `${value}`;
+
+                suggestionsContainer.appendChild(suggestionDiv);
+
+                suggestionDiv.addEventListener("click", function (e) {
+                  document.getElementById("searchInput").value = value;
+                  clickedToggle = true;
+                  let clickedValue = e.target.textContent
+
+                  if (clickedToggle) {
+                    runQuerySearchTerm = clickedValue.replace(/&amp;/g, "&");
+                    runQuery();
+                  }
+
+                  clickedToggle = false;
+                });
+              });
+            });
+
+            suggestionsContainer.style.display =
+              suggestionsContainer.childElementCount > 0 ? "block" : "none";
           });
       }
 
