@@ -34,7 +34,7 @@
   "useVisionForTaxBillUrl": "no",
   "tax_bill": "https://www.mytaxbill.org/inet/bill/parcel.do?town=norfolk",
   "taxMapUrl": "https://publicweb-gis.s3.amazonaws.com/PDFs/CT_Norfolk/Tax_Maps/TaxMap_",
-  "useUniqueIdforParcelMap": "no",
+  "useUniqueIdforParcelMap": "yes",
   "includeFilter": "yes",
   "parcelMapUrl": "CT_Norfolk",
   "helpUrl": "https://publicweb-gis.s3.amazonaws.com/HelpMaterials/PublicViewer/HelpPublicViewer.html",
