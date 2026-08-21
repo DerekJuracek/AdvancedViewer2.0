@@ -280,11 +280,3 @@ Initialization flow:
 Component diagram:
 
 ![Component diagram](images/diagrams/component_diagram.svg)
-
-If you'd like, I can also:
-
-- Commit this README replacement to the repo
-- Export the diagrams as alternative formats (PNG/PDF)
-- Convert this into a formal user guide with screenshots
-
-Tell me which option you'd like next.
