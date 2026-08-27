@@ -1,12 +1,10 @@
 :root {
   --info-color: #17a2b8; /* Light Blue = to bootstrap info blue */
   --secondary-color: #2ecc71; /* Green */
-  --third:rgba(145, 199, 61,1)
+  --third:rgba(145, 199, 61,1);
   --accent-color: #e74c3c; /* Red */
   --text-color: #333; /* Dark Grey */
-  /* --background-color: rgba(180, 180, 180, 0.8); */
   --background-color: rgba(30, 30, 30, 0.85); 
-
 }
 
 a {
@@ -35,18 +33,24 @@ div.esri-scale-bar__label {
 }
 div.esri-distance-measurement-2d__container {
   height: 100px !important;
+  z-index: 1500 !important;
 }
 
 div.esri-area-measurement-2d__container {
   height: 100px !important;
+  z-index: 1500 !important;
+}
+
+/* The measurement widgets are added via view.ui.add(activeWidget1,
+   "bottom-right"), which docks them in this corner container inside
+   #viewDiv. #viewDiv itself has no z-index, so .sidebar's z-index: 1000
+   (see below) was winning and covering the widget panel. */
+.esri-ui-bottom-right {
+  z-index: 1500 !important;
 }
 
 header.esri-print__header-title {
   display: none;
-  /* font-size: 10px !important;  
-
-  padding: 0 0 0 0 !important;
-  margin: 0 0 0 0; */
 }
 
 .esri-distance-measurement-2d__clear-button {
@@ -350,12 +354,17 @@ div.btn.btn-secondary.bg-info.btn-sm.dropdown-toggle.show {
 #distanceButton, #areaButton, #clearMeasurement {
   border-color: white !important;
   background-color: rgba(127, 42, 145, 1) !important;
-} 
+}
 
 #distanceButton:hover, #areaButton:hover, #clearMeasurement:hover {
   box-shadow: 0 0 0 0.2rem rgba(145, 199, 61,1) !important;
   border-color: transparent;
-  background-color: rgba(127, 42, 145, 1) !important; 
+  background-color: rgba(127, 42, 145, 1) !important;
+}
+
+#distanceButton.active, #areaButton.active {
+  background-color: rgba(145, 199, 61, 1) !important;
+  border-color: rgba(145, 199, 61, 1) !important;
 }
 
 .btn-info:hover {
@@ -663,7 +672,7 @@ ul {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #fff;
+  color: #00cc66;
   background-color: var(--background-color);
   border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   pointer-events: none;
@@ -731,7 +740,7 @@ ul {
   border-top-left-radius: 15px;
   position: absolute; /* Change position to 'absolute' */
   right: 0; /* This ensures it's flush with the right side of the container */
-  height: 80%;
+  height: 65%;
   width: 250px;
   z-index: 1000;
   background-color: var(--background-color) !important;
@@ -1126,20 +1135,14 @@ calcite-slider::part(tick) {
 #detailBox #feature-wid {
   position: absolute;
   display: block;
-
   top: 0;
   left: 0;
   width: 100%;
-  /* height: 100%; */
   color: antiquewhite;
   padding-left: 30px;
-  /* background-color: rgba(0, 0, 0, 0.5); */
   z-index: 1000;
 }
 
-#detailBox {
-  /* height: 100%; */
-}
 
 .details {
   display: flex;

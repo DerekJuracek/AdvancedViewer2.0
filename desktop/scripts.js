@@ -681,7 +681,7 @@ require([
                   $("#select-button").removeClass("btn-warning");
                   return;
                 } else {
-                  clickHandle = view.on("click", handleClick);
+                  enableSelectClick();
                   $("#lasso").removeClass("btn-warning");
                   $("#select-button").addClass("btn-warning");
                   select = true;
@@ -698,28 +698,23 @@ require([
       );
 
       let activeWidget1 = null;
-      let measureWatchHandle = null;
       document
         .getElementById("distanceButton")
         .addEventListener("click", function () {
+          const wasActive = this.classList.contains("active");
           setActiveWidget(null);
-          if (!this.classList.contains("active")) {
+          if (!wasActive) {
             setActiveWidget("distance");
-            // $("#distanceButton").addClass("btn-warning");
-          } else {
-            setActiveButton(null);
-            // $("#distanceButton").removeClass("btn-warning");
           }
         });
 
       document
         .getElementById("areaButton")
         .addEventListener("click", function () {
+          const wasActive = this.classList.contains("active");
           setActiveWidget(null);
-          if (!this.classList.contains("active")) {
+          if (!wasActive) {
             setActiveWidget("area");
-          } else {
-            setActiveButton(null);
           }
         });
 
@@ -737,13 +732,18 @@ require([
             // skip the initial 'new measurement' button
             activeWidget1.viewModel.start();
 
-            if (!DetailsHandle && !clickHandle) {
-              handleUsed = "none yet";
-            }
+            // While a measurement tool is active, parcel select/details
+            // clicks stay fully disabled for the whole session - they must
+            // NOT come back after the first completed measurement, so there
+            // is no state watcher re-adding clickHandle/DetailsHandle here.
+            // handleUsed = "none yet" also tells the zoom-level watcher
+            // (above) to keep skipping its own click re-enable while
+            // measuring, since a threshold-crossing zoom shouldn't restore
+            // selection either.
+            handleUsed = "none yet";
 
             if (DetailsHandle) {
               try {
-                handleUsed = "details";
                 DetailsHandle?.remove();
                 DetailsHandle = null;
               } catch (error) {
@@ -753,29 +753,14 @@ require([
 
             if (clickHandle) {
               try {
-                handleUsed = "click";
                 clickHandle.remove();
-                // console.log(handleUsed);
+                clickHandle = null;
               } catch (error) {
-                console.error("Failed to remove DetailsHandle", error);
+                console.error("Failed to remove clickHandle", error);
               }
             }
 
-            if (activeWidget1 && activeWidget1.viewModel) {
-              measureWatchHandle = reactiveUtils.watch(
-                () => activeWidget1.viewModel.state,
-                (state) => {
-                  if (state === "measured") {
-                    if (handleUsed == "click") {
-                      clickHandle = view.on("click", handleClick);
-                    } else if (handleUsed == "details") {
-                      DetailsHandle = view.on("click", handleDetailsClick);
-                      detailsHandleUsed == "";
-                    }
-                  }
-                }
-              );
-            }
+            $("#select-button").removeClass("btn-warning");
 
             view.ui.add(activeWidget1, "bottom-right");
             setActiveButton(document.getElementById("distanceButton"));
@@ -788,12 +773,12 @@ require([
 
             activeWidget1.viewModel.start();
 
-            if (!DetailsHandle && !clickHandle) {
-              handleUsed = "none yet";
-            }
+            // Same as the distance case: no watcher re-enabling clicks once
+            // a measurement completes - stays locked for the whole session.
+            handleUsed = "none yet";
+
             if (DetailsHandle) {
               try {
-                handleUsed = "details";
                 DetailsHandle?.remove();
                 DetailsHandle = null;
               } catch (error) {
@@ -803,45 +788,33 @@ require([
 
             if (clickHandle) {
               try {
-                handleUsed = "click";
                 clickHandle?.remove();
                 clickHandle = null;
               } catch (error) {
-                console.error("Failed to remove DetailsHandle", error);
+                console.error("Failed to remove clickHandle", error);
               }
             }
 
-            if (activeWidget1 && activeWidget1.viewModel) {
-              measureWatchHandle = reactiveUtils.watch(
-                () => activeWidget1.viewModel.state,
-                (state) => {
-                  if (state === "measured") {
-                    if (handleUsed == "click") {
-                      clickHandle = view.on("click", handleClick);
-                    } else if (handleUsed == "details") {
-                      DetailsHandle = view.on("click", handleDetailsClick);
-                      detailsHandleUsed == "";
-                    }
-                  }
-                }
-              );
-            }
-            // detailsHandleUsed == "";
+            $("#select-button").removeClass("btn-warning");
             view.ui.add(activeWidget1, "bottom-right");
 
             setActiveButton(document.getElementById("areaButton"));
             break;
           case null:
             if (activeWidget1) {
-              if (measureWatchHandle) {
-                measureWatchHandle.remove();
-                measureWatchHandle = null;
-              }
               view.ui.remove(activeWidget1);
               activeWidget1.destroy();
               activeWidget1 = null;
               detailsHandleUsed == "";
+              // Leaving measurement mode - stop telling the zoom watcher to
+              // skip re-enabling selection.
+              handleUsed = "";
             }
+            // Always reset the measurement buttons' visual state here (not
+            // just when toggled off directly) so any caller of
+            // setActiveWidget(null) - including the Select button - leaves
+            // the UI consistent.
+            setActiveButton(null);
             break;
         }
       }
@@ -856,6 +829,22 @@ require([
           selectedButton.classList.add("active", "btn-warning");
           selectedButton.classList.remove("bg-info");
         }
+      }
+
+      // Every place in this file that wants to (re-)enable parcel
+      // select/details clicks must go through these two functions instead
+      // of calling view.on("click", ...) directly. That's what guarantees a
+      // measurement tool being active always wins, no matter which of the
+      // many navigation paths (search results, details back button, lasso,
+      // filters, URL search, etc.) tries to turn clicking back on.
+      function enableSelectClick() {
+        if (activeWidget1) return;
+        clickHandle = view.on("click", handleClick);
+      }
+
+      function enableDetailsClick() {
+        if (activeWidget1) return;
+        DetailsHandle = view.on("click", handleDetailsClick);
       }
 
       let noCondosLayer = new FeatureLayer({
@@ -1825,6 +1814,16 @@ require([
 
         handleUsed = "";
 
+        // Tear down the measurement widget before re-enabling select
+        // clicks below - enableSelectClick() is a no-op while activeWidget1
+        // is still set, so this must happen first or the select button
+        // ends up looking active without clicking actually working.
+        view.ui.remove(activeWidget1);
+        if (activeWidget1) {
+          activeWidget1.destroy();
+          activeWidget1 = null;
+        }
+
         if (select) {
           overRideSelect(true);
         } else {
@@ -1833,7 +1832,7 @@ require([
 
         $("#select-button").removeClass("btn-warning");
         $("#select-button").addClass("btn-warning");
-        clickHandle = view.on("click", handleClick);
+        enableSelectClick();
         select = true;
         lasso = false;
         $("#searchInput ul").remove();
@@ -1896,12 +1895,6 @@ require([
         $("#areaButton").removeClass("btn-warning");
         $("#distanceButton").addClass("bg-info");
         $("#featureWid").empty();
-
-        view.ui.remove(activeWidget1);
-        if (activeWidget1) {
-          activeWidget1.destroy();
-          activeWidget1 = null;
-        }
 
         detailsHandleUsed == "";
         view.graphics.removeAll();
@@ -2782,13 +2775,13 @@ require([
 
             if (polygonGraphics.length === 0) {
               if (!DetailsHandle) {
-                DetailsHandle = view.on("click", handleDetailsClick);
+                enableDetailsClick();
               }
               if (clickHandle) {
                 clickHandle?.remove();
                 clickHandle = null;
               }
-              clickHandle = view.on("click", handleClick);
+              enableSelectClick();
             }
 
             // will zoom to extent of adding and deselecting
@@ -3027,6 +3020,7 @@ require([
 
       $("#select-button").on("click", function (e) {
         sketch.cancel();
+        setActiveWidget(null); // exit measurement mode, if active
         if (overRide) {
           select = true;
         } else {
@@ -3069,7 +3063,7 @@ require([
               console.error("Failed to remove DetailsHandle", error);
             }
           }
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
         } else if (select && lasso) {
           if (DetailsHandle) {
             DetailsHandle?.remove();
@@ -3079,7 +3073,7 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
         } else {
           if (clickHandle) {
             try {
@@ -3385,9 +3379,9 @@ require([
 
         if (lassoGisLinks) {
           $("#select-button").addClass("btn-warning");
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
         } else {
-          DetailsHandle = view.on("click", handleDetailsClick);
+          enableDetailsClick();
           $("#select-button").removeClass("btn-warning");
         }
 
@@ -3580,9 +3574,12 @@ require([
       }
 
       function backButtonClickSelectorLogic() {
-        // clickHandle = view.on("click", handleClick);
+        // Going back to results always exits measurement mode - the results
+        // view only ever wants select clicks, never a measurement in
+        // progress or a leftover details-click-through handler.
+        setActiveWidget(null);
+
         if (!lasso && !select) {
-          // add details and remove when search and no lasso
           if (DetailsHandle) {
             DetailsHandle?.remove();
             DetailsHandle = null;
@@ -3597,8 +3594,8 @@ require([
             clickHandle?.remove();
             clickHandle = null;
           }
-          $("#select-button").removeClass("btn-warning");
-          DetailsHandle = view.on("click", handleDetailsClick);
+          $("#select-button").addClass("btn-warning");
+          enableSelectClick();
         } else if ((!lasso && select) || (!select && lasso)) {
           if (clickHandle) {
             clickHandle.remove();
@@ -3608,7 +3605,7 @@ require([
             DetailsHandle = null;
           }
           $("#select-button").addClass("btn-warning");
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
         } else if (lasso && !select) {
           if (clickHandle) {
             clickHandle?.remove();
@@ -3618,11 +3615,11 @@ require([
             DetailsHandle?.remove();
             DetailsHandle = null;
           }
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
           $("#select-button").addClass("btn-warning");
         } else {
           // else add the select click, not the details
-          // DetailsHandle = view.on("click", handleDetailsClick);
+          // enableDetailsClick();
           if (clickHandle) {
             clickHandle?.remove();
             clickHandle = null;
@@ -3632,7 +3629,7 @@ require([
             DetailsHandle = null;
           }
           $("#select-button").addClass("btn-warning");
-          clickHandle = view.on("click", handleClick);
+          enableSelectClick();
         }
       }
 
@@ -3719,7 +3716,7 @@ require([
             DetailsHandle?.remove();
             DetailsHandle = null;
           }
-          DetailsHandle = view.on("click", handleDetailsClick);
+          enableDetailsClick();
           // Find and remove the existing buffer graphic
           const existingBufferGraphicIndex = view.graphics.items.findIndex(
             (g) => g.id === bufferGraphicId
@@ -5451,7 +5448,7 @@ require([
           DetailsHandle?.remove();
           DetailsHandle = null;
         }
-        DetailsHandle = view.on("click", handleDetailsClick);
+        enableDetailsClick();
       }
 
       const buildAbuttersPanel = function (e, b) {
@@ -5904,7 +5901,7 @@ require([
           DetailsHandle?.remove();
           DetailsHandle = null;
         }
-        DetailsHandle = view.on("click", handleDetailsClick);
+        enableDetailsClick();
       }
 
       function triggerListGroup(results, main, searchTerm) {
